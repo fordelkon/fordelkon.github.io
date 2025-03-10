@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fordelkon.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这篇博客主要自底向上地介绍Git命令行，有时甚至会使用一些python代码来对一些Git的功能进行更加详细的分析。我一直认为基础一旦打好，那么一些更高级的用法也可以循序渐进地了解，而且是更加透彻的了解。不是像博主一开始那样以为只要死记硬背git add，git commit,git pull，git clone等常见命令的一些用法就可以了😭（实际上网上大多数教程就是这样教的…），在这上面走了不少">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git详解">
+<meta property="og:url" content="http://fordelkon.github.io/2025/03/07/2025-3-7-git/index.html">
+<meta property="og:site_name" content="delkon&#39;s blog">
+<meta property="og:description" content="这篇博客主要自底向上地介绍Git命令行，有时甚至会使用一些python代码来对一些Git的功能进行更加详细的分析。我一直认为基础一旦打好，那么一些更高级的用法也可以循序渐进地了解，而且是更加透彻的了解。不是像博主一开始那样以为只要死记硬背git add，git commit,git pull，git clone等常见命令的一些用法就可以了😭（实际上网上大多数教程就是这样教的…），在这上面走了不少">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/gitinit.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/add.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/gitaddcommit.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/blob.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/tree.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/commit.png">
+<meta property="article:published_time" content="2025-03-07T08:08:40.614Z">
+<meta property="article:modified_time" content="2025-03-09T10:06:59.370Z">
+<meta property="article:author" content="delkon">
+<meta property="article:tag" content="Git">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fordelkon.github.io/codes/git/gitinit.png">
+
+<link rel="canonical" href="http://fordelkon.github.io/2025/03/07/2025-3-7-git/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Git详解 | delkon's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="delkon's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+      <a target="_blank" rel="noopener" href="https://github.com/fordelkon" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">delkon's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life is short, I use Python</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fordelkon.github.io/2025/03/07/2025-3-7-git/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="delkon">
+      <meta itemprop="description" content="Stay hungry, stay foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="delkon's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Git详解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-03-07 16:08:40" itemprop="dateCreated datePublished" datetime="2025-03-07T16:08:40+08:00">2025-03-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-03-09 18:06:59" itemprop="dateModified" datetime="2025-03-09T18:06:59+08:00">2025-03-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">Linux操作系统</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>28 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这篇博客主要自底向上地介绍Git命令行，有时甚至会使用一些<code>python</code>代码来对一些Git的功能进行更加详细的分析。我一直认为基础一旦打好，那么一些更高级的用法也可以循序渐进地了解，而且是更加透彻的了解。不是像博主一开始那样以为只要死记硬背<code>git add</code>，<code>git commit</code>,<code>git pull</code>，<code>git clone</code>等常见命令的一些用法就可以了😭（实际上网上大多数教程就是这样教的…），在这上面走了不少弯路，所以从头开始打地基写作此文留以警示⚠️。</p>
+<span id="more"></span>
+
+<h2 id="Git仓库（Git-Repository）"><a href="#Git仓库（Git-Repository）" class="headerlink" title="Git仓库（Git Repository）"></a>Git仓库（Git Repository）</h2><p>要学习Git，首先我们要知道我们运行Git命令是对什么对象进行操作的，在Git的相关术语中，我们把这个对象叫做Git仓库（Git Repository），Git仓库实际上就是一个文件夹，在这个文件夹里我们通过.git文件夹（隐藏文件夹）对Git仓库中的文件（非隐藏文件夹）内容的改变进行记录，当然并不是所有非隐藏文件夹中文件的改变都会被记录，被.gitingore文件所标识的文件被改变后.git文件夹不会对其进行记录。根据我上面所说，<strong>Git操作最隐晦的地方就在于对于.git文件夹中内容的修改来保证对于Git仓库非隐藏文件夹中文件内容修改的记录</strong>。</p>
+<p>根据上面的描述，我们可以得到一下简略的公式：<br>$$<br>Git\ Repository &#x3D; .git文件夹 + 非隐藏文件夹\tag{1}<br>$$<br>更加详尽的来说以<code>python</code>来构建Git仓库类：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GitRepository</span> (<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;A git repository&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    worktree = <span class="literal">None</span></span><br><span class="line">    gitdir = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, path</span>):</span><br><span class="line">        <span class="variable language_">self</span>.worktree = path</span><br><span class="line">        <span class="variable language_">self</span>.gitdir = os.path.join(path, <span class="string">&quot;.git&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="git文件夹内部结构探究"><a href="#git文件夹内部结构探究" class="headerlink" title=".git文件夹内部结构探究"></a>.git文件夹内部结构探究</h2><p>前面我们已经知道了<strong>Git操作最隐晦的地方就在于对于.git文件夹中内容的修改来保证对于Git仓库非隐藏文件夹中文件内容修改的记录</strong>，那接下来我们就要对此进行脱贫攻坚了。由于.git是隐藏文件夹，所以我们要先对.git文件夹中的文件分布有一定的了解，<code>git init</code>初始化后的.git文件夹中的文件分布如图1所示，此时Git仓库内除了.git文件夹之外一片荒芜。</p>
+<p><img data-src="/../../codes/git/gitinit.png" alt="我的图片"></p>
+<center>
+<strong>图1：运行git init之后.git文件夹的文件分布结构</strong>
+</center>
+
+<p>然后我们再本地Git仓库中添加可见文件，添加后的结果如图2所示。</p>
+<p><img data-src="/../../codes/git/add.png" alt="image"></p>
+<center>
+<strong>图2：Git仓库添加文件后的文件分布</strong>
+</center>
+
+<p>将上述所有文件运行<code>git add</code>之后在进行<code>git commit</code>观察.git文件夹中的文件分布，如图3所示。可以看到相较于最初的.git文件，我们在<code>git add</code>和<code>git commit</code>之后文件夹中多出了<code>index</code>文件，<code>log</code>文件夹，<code>objects</code>文件夹中的8个文件以及<code>refs/heads</code>下的<code>main</code>文件，其他的一些变化我们不做考虑。<strong>有果导因我们可以知道.git文件夹内部的这些变化中有对于Git仓库非隐藏文件夹文件修改的记录。</strong></p>
+<p><img data-src="/../../codes/git/gitaddcommit.png" alt="image"></p>
+<center>
+<strong>图3：运行git add和git commit之后.git文件夹的文件分布结构</strong>
+</center>
+
+<h2 id="Git对象（Git-Object）"><a href="#Git对象（Git-Object）" class="headerlink" title="Git对象（Git Object）"></a>Git对象（Git Object）</h2><p>上面的变化究竟是如何实现的呢？要知道Git中的几乎一切都被存储为Git对象！也就是说我们可以通过Git对象进行操作来完成上面的变化。说了这么多，让我们来为Git对象下一个比较官方的定义：<strong>Git对象就是在 Git 仓库中的文件，它们的路径由它们的内容决定。</strong> </p>
+<p>Git对象范性可以借由<code>python</code>来实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GitObject</span> (<span class="title class_ inherited__">object</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, data=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="keyword">if</span> data != <span class="literal">None</span>:</span><br><span class="line">            <span class="variable language_">self</span>.deserialize(data)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="variable language_">self</span>.init()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">serialize</span>(<span class="params">self</span>):</span><br><span class="line">	    <span class="string">&quot;&quot;&quot;将对象转变为zip文件解压缩后的byte格式&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">raise</span> Exception(<span class="string">&quot;Unimplemented!&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">deserialize</span>(<span class="params">self, data</span>):</span><br><span class="line">	    <span class="string">&quot;&quot;&quot;data通常为zip文件解压缩后的byte格式，根据类型解码&quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">raise</span> Exception(<span class="string">&quot;Unimplemented!&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">init</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">pass</span> <span class="comment"># Just do nothing. This is a reasonable default!</span></span><br></pre></td></tr></table></figure>
+
+<p>Git对象又细分为以下四种类型：GitBlob（Binary Large Object）对象， GitCommit对象， GitTree对象， GitTag对象，以下分别进行介绍。</p>
+<h3 id="GitBlob对象"><a href="#GitBlob对象" class="headerlink" title="GitBlob对象"></a>GitBlob对象</h3><p>我们先最直观的看看Git中对于Blob内容的展示，如图4所示：</p>
+<p><img data-src="/../../codes/git/blob.png" alt="image"></p>
+<center>
+<strong>图4：运行git cat-file之后对a.txt所对应的类型和类型内容的展示</strong>
+</center>
+
+<p>Blobs 是用户数据：你放入 Git 中的每个文件的内容（如a.txt、b.txt、src&#x2F;c.txt、src&#x2F;d.txt中的内容）的字节形式都被存储为一个 blob。这样做使它们很容易操作，因为 blob 没有特定的语法或约束，除了基本的对象存储机制之外，它们只是未指定的数据。</p>
+<p>GitBlob对象的<code>python</code>实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GitBlob</span>(<span class="title class_ inherited__">GitObject</span>):</span><br><span class="line">    fmt=<span class="string">b&#x27;blob&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">serialize</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.blobdata</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">deserialize</span>(<span class="params">self, data</span>):</span><br><span class="line">        <span class="variable language_">self</span>.blobdata = data</span><br></pre></td></tr></table></figure>
+
+<h3 id="GitTree对象"><a href="#GitTree对象" class="headerlink" title="GitTree对象"></a>GitTree对象</h3><p>同上，我们先最直观的看看Git中对于树内容的展示，如图5所示：</p>
+<p><img data-src="/../../codes/git/tree.png" alt="image"></p>
+<center>
+<strong>图5：运行git cat-file之后对最顶层的树所对应的类型和类型内容的展示</strong>
+</center>
+
+<p>非正式地说，树（tree）描述了Git仓库非隐藏文件夹中的内容，它将 blobs（文件对象）与路径关联起来。树是一个由三个元素组成的元组数组，这些元素包括文件模式、相对于工作树的路径，以及一个 SHA-1 值。一个典型的树的内容如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>SHA-1</th>
+<th>Path</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>100644</td>
+<td>06f844865cfc4b68116d2cbf00833b294aae63ec</td>
+<td>.DS_Store</td>
+</tr>
+<tr>
+<td>100644</td>
+<td>e12523960bf9941182c801077be75dce699ff37c</td>
+<td>a.txt</td>
+</tr>
+<tr>
+<td>100644</td>
+<td>753e270e92068316ec7fa2b6a40e780a4e1d14d7</td>
+<td>b.txt</td>
+</tr>
+<tr>
+<td>040000</td>
+<td>30d66379dddee7068ab4fd3a17cc1ef9555278ac</td>
+<td>src</td>
+</tr>
+</tbody></table>
+<p>模式（Mode）就是文件的模式，路径（Path）是文件的位置。SHA-1 是指向一个 blob 或另一个树对象。如果是 blob，路径表示的是一个文件；如果是树对象，路径表示的是一个目录。</p>
+<p>常见的文件模式有以下几种：</p>
+<ul>
+<li><strong>100644</strong>: 普通文件，具有标准的读写权限（普通的文本文件或代码文件）。</li>
+<li><strong>100755</strong>: 可执行文件，具有执行权限（如脚本或可执行程序）。</li>
+<li><strong>040000</strong>: 目录（directory）。</li>
+<li><strong>120000</strong>: 符号链接（symbolic link）。</li>
+<li><strong>160000</strong>: Git 子模块（submodule）。</li>
+</ul>
+<p>而实际上当我们解析树的时候，也就是对<code>.git/objects</code>中树的SHA-1路径所代表的文件进行解压缩后提纯到的树对象内容的字节编码，它们的格式通常如下：</p>
+<blockquote>
+<p>[mode] space [path] 0x00 [sha-1] （byte格式）</p>
+</blockquote>
+<p>由于树对应的文件夹中的文件不止一个，有时甚至会有在文件夹中进行文件夹嵌套。因此我们要设计出叶子对应单个文件，树对应由不同文件所组成的文件夹。</p>
+<p>我们可以将叶子对象和树对象按以下<code>python</code>代码来表示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GitTreeLeaf</span> (<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, mode, path, sha</span>):</span><br><span class="line">        <span class="variable language_">self</span>.mode = mode <span class="comment"># 模式</span></span><br><span class="line">        <span class="variable language_">self</span>.path = path <span class="comment"># 文件路径</span></span><br><span class="line">        <span class="variable language_">self</span>.sha = sha <span class="comment"># 文件路径索引到的文件内容标准化后所对应的sha-1值</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GitTree</span>(<span class="title class_ inherited__">GitObject</span>):</span><br><span class="line">    fmt=<span class="string">b&#x27;tree&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">deserialize</span>(<span class="params">self, data</span>):</span><br><span class="line">	    <span class="comment"># tree_parse是解析所得到的树对象的字节编码数据</span></span><br><span class="line">        <span class="variable language_">self</span>.items = tree_parse(data)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">serialize</span>(<span class="params">self</span>):</span><br><span class="line">	    <span class="comment"># tree_serialize将解析后的结果求逆得到树对象的字节编码数据</span></span><br><span class="line">        <span class="keyword">return</span> tree_serialize(<span class="variable language_">self</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">init</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.items = <span class="built_in">list</span>()</span><br></pre></td></tr></table></figure>
+
+<p>由于一个树中有时不单单包含叶子更有可能包含子树，具体情形见上面一棵树的典型情况，<code>tree_parse</code>和<code>tree_serialize</code>函数如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">tree_parse</span>(<span class="params">raw</span>):</span><br><span class="line">    pos = <span class="number">0</span></span><br><span class="line">    <span class="built_in">max</span> = <span class="built_in">len</span>(raw)</span><br><span class="line">    ret = <span class="built_in">list</span>()</span><br><span class="line">    <span class="keyword">while</span> pos &lt; <span class="built_in">max</span>:</span><br><span class="line">        pos, data = tree_parse_one(raw, pos)</span><br><span class="line">        ret.append(data)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ret</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">tree_parse_one</span>(<span class="params">raw, start=<span class="number">0</span></span>):</span><br><span class="line">	<span class="comment"># [mode] space [path] 0x00 [sha-1] （byte格式）</span></span><br><span class="line">    <span class="comment"># 查找字节形式空格以确定mode</span></span><br><span class="line">    x = raw.find(<span class="string">b&#x27; &#x27;</span>, start)</span><br><span class="line">    <span class="keyword">assert</span> x-start == <span class="number">5</span> <span class="keyword">or</span> x-start==<span class="number">6</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 读取mode</span></span><br><span class="line">    mode = raw[start:x]</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(mode) == <span class="number">5</span>:</span><br><span class="line">        <span class="comment"># 标准到6字节</span></span><br><span class="line">        mode = <span class="string">b&quot;0&quot;</span> + mode</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 查找字节形式空终止符以确定path</span></span><br><span class="line">    y = raw.find(<span class="string">b&#x27;\x00&#x27;</span>, x)</span><br><span class="line">    <span class="comment"># 读取path</span></span><br><span class="line">    path = raw[x+<span class="number">1</span>:y]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 读取sha…</span></span><br><span class="line">    <span class="comment"># raw[y+1:y+21] 提取的是 20 字节的二进制数据（SHA-1 哈希值）。</span></span><br><span class="line">    raw_sha = <span class="built_in">int</span>.from_bytes(raw[y+<span class="number">1</span>:y+<span class="number">21</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line">    <span class="comment"># int.from_bytes(raw[y+1:y+21], &quot;big&quot;)将提取的 20 字节二进制数据转</span></span><br><span class="line">    <span class="comment"># 换为一个整数，然后使用 format(raw_sha, &quot;040x&quot;) 将这个整数转换为 40 </span></span><br><span class="line">    <span class="comment"># 位的十六进制字符串 。Git中通常使用的sha值时这种形式。比如.DS_Store对应</span></span><br><span class="line">    <span class="comment"># 的06f844865cfc4b68116d2cbf00833b294aae63ec</span></span><br><span class="line">    sha = <span class="built_in">format</span>(raw_sha, <span class="string">&quot;040x&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> y+<span class="number">21</span>, GitTreeLeaf(mode, path.decode(<span class="string">&quot;utf8&quot;</span>), sha)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">tree_serialize</span>(<span class="params">obj</span>):</span><br><span class="line">    obj.items.sort(key=tree_leaf_sort_key)</span><br><span class="line">    ret = <span class="string">b&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> obj.items:</span><br><span class="line">        ret += i.mode</span><br><span class="line">        ret += <span class="string">b&#x27; &#x27;</span></span><br><span class="line">        ret += i.path.encode(<span class="string">&quot;utf8&quot;</span>)</span><br><span class="line">        ret += <span class="string">b&#x27;\x00&#x27;</span></span><br><span class="line">        sha = <span class="built_in">int</span>(i.sha, <span class="number">16</span>)</span><br><span class="line">        ret += sha.to_bytes(<span class="number">20</span>, byteorder=<span class="string">&quot;big&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> ret</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">tree_leaf_sort_key</span>(<span class="params">leaf</span>):</span><br><span class="line">    <span class="keyword">if</span> leaf.mode.startswith(<span class="string">b&quot;10&quot;</span>):</span><br><span class="line">        <span class="keyword">return</span> leaf.path <span class="comment"># 文件</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> leaf.path + <span class="string">&quot;/&quot;</span> <span class="comment"># 文件夹</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="GitCommit对象"><a href="#GitCommit对象" class="headerlink" title="GitCommit对象"></a>GitCommit对象</h3><p>同上，我们先最直观的看看Git中对于树内容的展示，如图6所示：</p>
+<p><img data-src="/../../codes/git/commit.png" alt="image"></p>
+<center>
+<strong>图6：运行git cat-file之后对最顶层的提交所对应的类型和类型内容的展示</strong>
+</center>
+
+<p>一个提交（Commit）的典型如下所示：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tree 50306289de5ae719af85eaad3430d785517a11e7</span><br><span class="line">parent 735a65cef921f8e30ae55fdf19b695eb15ea8d45</span><br><span class="line">author fordelkon &lt;27xxx88816@qq.com&gt; 1741406298 +0800</span><br><span class="line">committer fordelkon &lt;27xxx88816@qq.com&gt; 1741406298 +0800</span><br><span class="line"></span><br><span class="line">life is short, I use Python</span><br></pre></td></tr></table></figure>
+
+<p>从上面的典型来看，一个提交由以下几部分组成：</p>
+<ul>
+<li>树对象，也就是工作树的内容、文件和目录；</li>
+<li>零个、一个或多个父提交；</li>
+<li>一个作者身份（姓名和邮箱）以及一个时间戳；</li>
+<li>一个提交者身份（姓名和邮箱）以及一个时间戳；</li>
+<li>一个提交信息。<br>从提交的组成来看，我们可以明白已经创建好的提交是不可变的。如果我们更改了作者、父提交或任何一个文件，那么我们实际上最终会创建一个新的、不同的提交对象与改变后的结果绑定。所以每一个提交都与它在整个仓库中的位置及其与最初提交的关系紧密相连。换句话说，一个给定的提交 ID （sha-1）不仅标识了某些文件的内容，还将提交与它的整个历史及整个仓库绑定在一起。也就是说，有了提交，我们的Git的历史记录功能就有了保证！</li>
+</ul>
+<p>一个提交对象的<code>python</code>代码如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GitCommit</span>(<span class="title class_ inherited__">GitObject</span>):</span><br><span class="line">    fmt=<span class="string">b&#x27;commit&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">deserialize</span>(<span class="params">self, data</span>):</span><br><span class="line">	    <span class="comment"># kvlm_parse是解析所得到的提交对象的字节编码数据</span></span><br><span class="line">        <span class="variable language_">self</span>.kvlm = kvlm_parse(data)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">serialize</span>(<span class="params">self</span>):</span><br><span class="line">	    <span class="comment"># kvlm_serialize将解析后的结果求逆得到提交对象的字节编码数据</span></span><br><span class="line">        <span class="keyword">return</span> kvlm_serialize(<span class="variable language_">self</span>.kvlm)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">init</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.kvlm = <span class="built_in">dict</span>()</span><br></pre></td></tr></table></figure>
+
+<p>由提交的典型来看，我们可以将提交对象的字节编码数据转换成键值对的字典格式，由于有空格和回车。更形象的表示如下:</p>
+<blockquote>
+<p>[key1] space [value1] \n … [keyn] space [valuen] \n [commit]</p>
+</blockquote>
+<p>因此，<code>kvlm_parse</code>和<code>kvlm_serialize</code>的python代码如下所示</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">kvlm_parse</span>(<span class="params">raw, start=<span class="number">0</span>, dct=<span class="literal">None</span></span>):</span><br><span class="line">    <span class="comment"># 如果 dct 为空，初始化一个空字典</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> dct:</span><br><span class="line">        dct = <span class="built_in">dict</span>()</span><br><span class="line">        <span class="comment"># 不能在函数参数中直接声明 dct=dict()，否则所有函数调用会共用同一个字典，</span></span><br><span class="line">        <span class="comment"># 导致每次调用时字典不断增长。</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 这个函数是递归的：它读取一个键/值对，然后调用自身来处理下一个位置。</span></span><br><span class="line">    <span class="comment"># 因此我们首先需要知道当前的位置：是在一个关键字，还是已经到了消息部分。</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 查找下一个空格和换行符的位置</span></span><br><span class="line">    spc = raw.find(<span class="string">b&#x27; &#x27;</span>, start)</span><br><span class="line">    nl = raw.find(<span class="string">b&#x27;\n&#x27;</span>, start)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 如果空格出现在换行符之前，说明我们有一个关键字。否则，它是最终的消息部分，</span></span><br><span class="line">    <span class="comment"># 我们会读取直到文件的末尾。</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 基本情况</span></span><br><span class="line">    <span class="comment"># =========</span></span><br><span class="line">    <span class="comment"># 如果换行符先出现（或者根本没有空格，这种情况下 find 返回 -1），</span></span><br><span class="line">    <span class="comment"># 我们假设遇到了一个空行。空行意味着剩余的数据是消息部分。</span></span><br><span class="line">    <span class="comment"># 我们将它存储在字典中，键为 None，然后返回。</span></span><br><span class="line">    <span class="keyword">if</span> (spc &lt; <span class="number">0</span>) <span class="keyword">or</span> (nl &lt; spc):</span><br><span class="line">        <span class="keyword">assert</span> nl == start</span><br><span class="line">        dct[<span class="literal">None</span>] = raw[start+<span class="number">1</span>:]  <span class="comment"># 存储消息部分</span></span><br><span class="line">        <span class="keyword">return</span> dct</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 递归情况</span></span><br><span class="line">    <span class="comment"># ==============</span></span><br><span class="line">    <span class="comment"># 读取一个键值对并递归处理下一个。</span></span><br><span class="line">    key = raw[start:spc]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 查找值的结尾。以空格开头的行表示值的延续行，</span></span><br><span class="line">    <span class="comment"># 因此我们需要循环，直到找到一个不是以空格开头的换行符。</span></span><br><span class="line">    end = start</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        end = raw.find(<span class="string">b&#x27;\n&#x27;</span>, end+<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> raw[end+<span class="number">1</span>] != <span class="built_in">ord</span>(<span class="string">&#x27; &#x27;</span>): <span class="keyword">break</span>  <span class="comment"># 找到一个不以空格开头的换行符</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取值，同时删除延续行的前导空格</span></span><br><span class="line">    value = raw[spc+<span class="number">1</span>:end].replace(<span class="string">b&#x27;\n &#x27;</span>, <span class="string">b&#x27;\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 不要覆盖现有的数据内容</span></span><br><span class="line">    <span class="keyword">if</span> key <span class="keyword">in</span> dct:</span><br><span class="line">        <span class="comment"># 如果字典中已有该键，且值为列表，则直接添加新值</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">type</span>(dct[key]) == <span class="built_in">list</span>:</span><br><span class="line">            dct[key].append(value)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 如果已有的值不是列表，创建一个列表来存储多个值</span></span><br><span class="line">            dct[key] = [ dct[key], value ]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># 如果字典中没有该键，则直接存储键值对</span></span><br><span class="line">        dct[key]=value</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 递归处理剩余的部分</span></span><br><span class="line">    <span class="keyword">return</span> kvlm_parse(raw, start=end+<span class="number">1</span>, dct=dct)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">kvlm_serialize</span>(<span class="params">kvlm</span>):</span><br><span class="line">    ret = <span class="string">b&#x27;&#x27;</span>  <span class="comment"># 初始化一个空的字节串用于存储序列化结果</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 输出字段</span></span><br><span class="line">    <span class="keyword">for</span> k <span class="keyword">in</span> kvlm.keys():</span><br><span class="line">        <span class="comment"># 跳过消息体本身（消息存储在字典的 None 键中）</span></span><br><span class="line">        <span class="keyword">if</span> k == <span class="literal">None</span>: <span class="keyword">continue</span></span><br><span class="line">        val = kvlm[k]</span><br><span class="line">        <span class="comment"># 将单个值规范化为列表，以便统一处理</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">type</span>(val) != <span class="built_in">list</span>:</span><br><span class="line">            val = [ val ]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 遍历值列表，处理每个值</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> val:</span><br><span class="line">            <span class="comment"># 拼接键和值，并确保换行符后面有一个空格（用于表示值的延续行）</span></span><br><span class="line">            ret += k + <span class="string">b&#x27; &#x27;</span> + (v.replace(<span class="string">b&#x27;\n&#x27;</span>, <span class="string">b&#x27;\n &#x27;</span>)) + <span class="string">b&#x27;\n&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 最后拼接消息体，消息体之前需要一个空行分隔</span></span><br><span class="line">    ret += <span class="string">b&#x27;\n&#x27;</span> + kvlm[<span class="literal">None</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ret  <span class="comment"># 返回序列化后的字节串</span></span><br></pre></td></tr></table></figure>
+<h3 id="GitTag对象"><a href="#GitTag对象" class="headerlink" title="GitTag对象"></a>GitTag对象</h3><p>标签实际上就是引用（refs）。它们位于 .git&#x2F;refs&#x2F;tags&#x2F; 目录下。值得注意的是，标签有两种类型：轻量标签和标签对象。</p>
+<h4 id="轻量标签（“Lightweight”-tags）"><a href="#轻量标签（“Lightweight”-tags）" class="headerlink" title="轻量标签（“Lightweight” tags）"></a>轻量标签（“Lightweight” tags）</h4><p>仅仅是指向提交、树对象或 blob 对象的普通引用。</p>
+<h4 id="标签对象（Tag-objects）"><a href="#标签对象（Tag-objects）" class="headerlink" title="标签对象（Tag objects）"></a>标签对象（Tag objects）</h4><p>是指向标签类型对象的普通引用。与轻量标签不同，标签对象包含作者、日期、可选的 PGP 签名以及可选的注释。它们的格式与提交对象相同。</p>
+<p>因此，GitTag的<code>python</code>代码如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GitTag</span>(<span class="title class_ inherited__">GitCommit</span>):</span><br><span class="line">    fmt = <span class="string">b&#x27;tag&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>我们已经了解了上面四种Git对象，那么也就知道了Git对象的内容决定路径的性质可以保证对于非隐藏文件夹中文件内容修改的记录。也就是说，Git仓库非隐藏文件夹中的文件一旦被修改，那么相应的Git对象的路径也会发生改变，将修改后的不同的Git对象的文件标准化后压缩按照改变的路径存储在<code>.git/objects</code>文件夹下，这样可以保证对该改变的记录。那么文件的内容和文件的路径有着明确的映射关系吗？Git给出的答案是对标准化后的文件内容进行 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/SHA-1">SHA-1</a><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cryptographic_hash_function">哈希</a>后得到文件的路径。如何进行标准化也是我们值得注意的，Git中实现的方案是<strong>字节形式类型头+字节形式空格+字节形式大小+字节形式空分离符+对象内容的字节编码。</strong> 具体方案如下所示：</p>
+<blockquote>
+<p>[fmt] space [size] 0x00 [data] (byte格式)</p>
+</blockquote>
+<p>根据这一标准化的形式我们可以对对象进行读和写操作，所有对象的核心载体是对象内容的字节编码。具体<code>python</code>代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">object_read</span>(<span class="params">repo, sha</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Read object sha from Git repository repo.  Return a</span></span><br><span class="line"><span class="string">    GitObject whose exact type depends on the object.&quot;&quot;&quot;</span></span><br><span class="line">	<span class="comment"># 由sha1值得到对应路径</span></span><br><span class="line">    path = repo_file(repo, <span class="string">&quot;objects&quot;</span>, sha[<span class="number">0</span>:<span class="number">2</span>], sha[<span class="number">2</span>:])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.isfile(path):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span> (path, <span class="string">&quot;rb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        raw = zlib.decompress(f.read())</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 读取对象类型</span></span><br><span class="line">        x = raw.find(<span class="string">b&#x27; &#x27;</span>) <span class="comment"># 0x20 字节形式空格</span></span><br><span class="line">        fmt = raw[<span class="number">0</span>:x] <span class="comment"># 字节形式类型头</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 读取有效的对象大小</span></span><br><span class="line">        y = raw.find(<span class="string">b&#x27;\x00&#x27;</span>, x) <span class="comment"># 0x00 字节形式空分离符</span></span><br><span class="line">        size = <span class="built_in">int</span>(raw[x:y].decode(<span class="string">&quot;ascii&quot;</span>))</span><br><span class="line">        <span class="keyword">if</span> size != <span class="built_in">len</span>(raw)-y-<span class="number">1</span>:</span><br><span class="line">            <span class="keyword">raise</span> Exception(<span class="string">f&quot;Malformed object <span class="subst">&#123;sha&#125;</span>: bad length&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 根据对象类型选择生成器</span></span><br><span class="line">        <span class="keyword">match</span> fmt:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">b&#x27;commit&#x27;</span> : c=GitCommit</span><br><span class="line">            <span class="keyword">case</span> <span class="string">b&#x27;tree&#x27;</span>   : c=GitTree</span><br><span class="line">            <span class="keyword">case</span> <span class="string">b&#x27;tag&#x27;</span>    : c=GitTag</span><br><span class="line">            <span class="keyword">case</span> <span class="string">b&#x27;blob&#x27;</span>   : c=GitBlob</span><br><span class="line">            <span class="keyword">case</span> _:</span><br><span class="line">                <span class="keyword">raise</span> Exception(<span class="string">f&quot;Unknown type <span class="subst">&#123;fmt.decode(<span class="string">&quot;ascii&quot;</span>)&#125;</span> for object <span class="subst">&#123;sha&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 调用生成器返回对象</span></span><br><span class="line">        <span class="keyword">return</span> c(raw[y+<span class="number">1</span>:]) <span class="comment"># raw[y+1:]对象内容的字节编码</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">object_write</span>(<span class="params">obj, repo=<span class="literal">None</span></span>):</span><br><span class="line">    <span class="comment"># 对象内容的字节编码</span></span><br><span class="line">    data = obj.serialize()</span><br><span class="line">    <span class="comment"># 添加一些前缀成为标准格式</span></span><br><span class="line">    result = obj.fmt + <span class="string">b&#x27; &#x27;</span> + <span class="built_in">str</span>(<span class="built_in">len</span>(data)).encode() + <span class="string">b&#x27;\x00&#x27;</span> + data</span><br><span class="line">    <span class="comment"># 计算sha1</span></span><br><span class="line">    sha = hashlib.sha1(result).hexdigest()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> repo:</span><br><span class="line">        <span class="comment"># 由sha1值得到对应路径</span></span><br><span class="line">        path=repo_file(repo, <span class="string">&quot;objects&quot;</span>, sha[<span class="number">0</span>:<span class="number">2</span>], sha[<span class="number">2</span>:], mkdir=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(path):</span><br><span class="line">            <span class="keyword">with</span> <span class="built_in">open</span>(path, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">                <span class="comment"># Compress and write</span></span><br><span class="line">                f.write(zlib.compress(result))</span><br><span class="line">    <span class="keyword">return</span> sha</span><br></pre></td></tr></table></figure>
+
+<p>好了，前戏已经准备了这么多，我们可以凭借Git仓库和Git对象来实现最最最重要的Git两连击吗（<code>git add</code>和<code>git commit</code>）？答案当然是……否定的。是的，我们已经拥有了这么多的对象，也有了读取和写入对象的功能，但是一旦我们改变文件（不妨就改变a.txt文件的内容），由前面我们说的主要的三种对象来看，GitBlob元数据会改变，随之而来的GitTree元数据会改变，进而GitCommit元数据也会改变。这个过程不是一挥而就的，所以Git种才会分为<code>git add</code>和<code>git commit</code>两步走。在<code>git add</code>的过程中我们将修改后的文件属性变化提交到暂存区（Staging area），也就是我们图3中的<code>.git/index</code>文件中。然后使用<code>git commit</code>将暂存区中的所有记录的文件统合生成新的GitTree，进而生成新的GitCommit。很明显，我们还需要一个表示暂存区的类型。</p>
+<h2 id="暂存区（Staging-area）"><a href="#暂存区（Staging-area）" class="headerlink" title="暂存区（Staging area）"></a>暂存区（Staging area）</h2><p>暂存区在.git文件夹中的展现形式就是<code>.git/index</code>文件，在一次提交之后，<code>.git/index</code>文件可以看作是该提交的一种副本：它保存了与对应的树相同的路径&#x2F;Blob（对象）的关联关系。但它还保存了Git仓库中关于文件的额外信息，比如它们的创建&#x2F;修改时间，因此 <code>git status</code> 通常不需要实际比较文件：它只需要检查文件的修改时间是否与索引文件中存储的时间相同，只有当它们不同时，才会执行实际的比较。类比树对象的表示，<code>.git/index</code>文件中包含许多元素，所以我们的第一个任务是对单个元素进行表示，之后是对整体<code>.git/index</code>文件进行表示。</p>
+<p>单个元素和整体<code>.git/index</code>文件的<code>python</code>表示如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GitIndexEntry</span> (<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, ctime=<span class="literal">None</span>, mtime=<span class="literal">None</span>, dev=<span class="literal">None</span>, ino=<span class="literal">None</span>,</span></span><br><span class="line"><span class="params">                 mode_type=<span class="literal">None</span>, mode_perms=<span class="literal">None</span>, uid=<span class="literal">None</span>, gid=<span class="literal">None</span>,</span></span><br><span class="line"><span class="params">                 fsize=<span class="literal">None</span>, sha=<span class="literal">None</span>, flag_assume_valid=<span class="literal">None</span>,</span></span><br><span class="line"><span class="params">                 flag_stage=<span class="literal">None</span>, name=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="comment"># 文件元数据最后更改的时间。格式是一个二元组</span></span><br><span class="line">        <span class="comment"># (以秒为单位的时间戳, 纳秒)</span></span><br><span class="line">        <span class="variable language_">self</span>.ctime = ctime</span><br><span class="line">        <span class="comment"># 文件数据最后更改的时间。格式是一个二元组</span></span><br><span class="line">        <span class="comment"># (以秒为单位的时间戳, 纳秒)</span></span><br><span class="line">        <span class="variable language_">self</span>.mtime = mtime</span><br><span class="line">        <span class="comment"># 包含该文件的设备ID</span></span><br><span class="line">        <span class="variable language_">self</span>.dev = dev</span><br><span class="line">        <span class="comment"># 文件的inode编号</span></span><br><span class="line">        <span class="variable language_">self</span>.ino = ino</span><br><span class="line">        <span class="comment"># 对象类型，可以是 b1000 (普通文件), b1010 (符号链接),</span></span><br><span class="line">        <span class="comment"># b1110 (gitlink)</span></span><br><span class="line">        <span class="variable language_">self</span>.mode_type = mode_type</span><br><span class="line">        <span class="comment"># 对象的权限，表示为一个整数</span></span><br><span class="line">        <span class="variable language_">self</span>.mode_perms = mode_perms</span><br><span class="line">        <span class="comment"># 文件所有者的用户ID</span></span><br><span class="line">        <span class="variable language_">self</span>.uid = uid</span><br><span class="line">        <span class="comment"># 文件所有者的组ID</span></span><br><span class="line">        <span class="variable language_">self</span>.gid = gid</span><br><span class="line">        <span class="comment"># 对象的大小，以字节为单位</span></span><br><span class="line">        <span class="variable language_">self</span>.fsize = fsize</span><br><span class="line">        <span class="comment"># 对象的SHA哈希值</span></span><br><span class="line">        <span class="variable language_">self</span>.sha = sha</span><br><span class="line">        <span class="comment"># 标志：假设该对象有效</span></span><br><span class="line">        <span class="variable language_">self</span>.flag_assume_valid = flag_assume_valid</span><br><span class="line">        <span class="comment"># 文件的阶段标志</span></span><br><span class="line">        <span class="variable language_">self</span>.flag_stage = flag_stage</span><br><span class="line">        <span class="comment"># 对象的名称（包括完整路径）</span></span><br><span class="line">        <span class="variable language_">self</span>.name = name</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">GitIndex</span> (<span class="title class_ inherited__">object</span>):</span><br><span class="line">    version = <span class="literal">None</span></span><br><span class="line">    entries = []</span><br><span class="line">    <span class="comment"># ext = None</span></span><br><span class="line">    <span class="comment"># sha = None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, version=<span class="number">2</span>, entries=<span class="literal">None</span></span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> entries:</span><br><span class="line">            entries = <span class="built_in">list</span>()</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.version = version</span><br><span class="line">        <span class="variable language_">self</span>.entries = entries</span><br></pre></td></tr></table></figure>
+
+<p><code>.git/index</code>文件是一个二进制文件，可能是出于性能考虑。尽管如此，它的格式相对简单。文件开始部分是一个头部信息，包含了 DIRC 魔法字节、版本号以及该索引文件中的条目总数。更形象的格式如下：</p>
+<blockquote>
+<p>[DIRC]  [version]  [count]  [entries]</p>
+</blockquote>
+<p>所以我们可以定义<code>index_read</code>和<code>index_write</code>函数如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">index_read</span>(<span class="params">repo</span>):</span><br><span class="line">    <span class="comment"># 获取仓库索引文件的路径</span></span><br><span class="line">    index_file = repo_file(repo, <span class="string">&quot;index&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 如果索引文件不存在（例如新仓库），则返回一个空的 GitIndex 实例</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(index_file):</span><br><span class="line">        <span class="keyword">return</span> GitIndex()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 打开索引文件，以二进制方式读取</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(index_file, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        raw = f.read()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 索引文件的头部包含 12 个字节</span></span><br><span class="line">    header = raw[:<span class="number">12</span>]</span><br><span class="line">    signature = header[:<span class="number">4</span>]</span><br><span class="line">    <span class="comment"># 检查索引文件的魔法字节，必须为 &quot;DIRC&quot;，代表 &quot;DirCache&quot;</span></span><br><span class="line">    <span class="keyword">assert</span> signature == <span class="string">b&quot;DIRC&quot;</span></span><br><span class="line">    <span class="comment"># 从头部解析版本号（4-8字节），此处只支持版本 2</span></span><br><span class="line">    version = <span class="built_in">int</span>.from_bytes(header[<span class="number">4</span>:<span class="number">8</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line">    <span class="keyword">assert</span> version == <span class="number">2</span>, <span class="string">&quot;wyag 只支持索引文件版本 2&quot;</span></span><br><span class="line">    <span class="comment"># 从头部解析索引文件中的条目数量（8-12字节）</span></span><br><span class="line">    count = <span class="built_in">int</span>.from_bytes(header[<span class="number">8</span>:<span class="number">12</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 用于存储读取到的索引条目</span></span><br><span class="line">    entries = <span class="built_in">list</span>()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 索引文件内容部分从第 12 个字节开始</span></span><br><span class="line">    content = raw[<span class="number">12</span>:]</span><br><span class="line">    idx = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 循环解析每个条目，根据文件头部给出的条目数进行循环</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, count):</span><br><span class="line">        <span class="comment"># 解析创建时间（秒数和纳秒数）</span></span><br><span class="line">        ctime_s =  <span class="built_in">int</span>.from_bytes(content[idx: idx+<span class="number">4</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line">        ctime_ns = <span class="built_in">int</span>.from_bytes(content[idx+<span class="number">4</span>: idx+<span class="number">8</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line">        <span class="comment"># 解析修改时间（秒数和纳秒数）</span></span><br><span class="line">        mtime_s = <span class="built_in">int</span>.from_bytes(content[idx+<span class="number">8</span>: idx+<span class="number">12</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line">        mtime_ns = <span class="built_in">int</span>.from_bytes(content[idx+<span class="number">12</span>: idx+<span class="number">16</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line">        <span class="comment"># 解析设备 ID</span></span><br><span class="line">        dev = <span class="built_in">int</span>.from_bytes(content[idx+<span class="number">16</span>: idx+<span class="number">20</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line">        <span class="comment"># 解析 inode 编号</span></span><br><span class="line">        ino = <span class="built_in">int</span>.from_bytes(content[idx+<span class="number">20</span>: idx+<span class="number">24</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line">        <span class="comment"># 忽略的字段</span></span><br><span class="line">        unused = <span class="built_in">int</span>.from_bytes(content[idx+<span class="number">24</span>: idx+<span class="number">26</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line">        <span class="keyword">assert</span> <span class="number">0</span> == unused</span><br><span class="line">        <span class="comment"># 解析文件模式（包括类型和权限）</span></span><br><span class="line">        mode = <span class="built_in">int</span>.from_bytes(content[idx+<span class="number">26</span>: idx+<span class="number">28</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line">        mode_type = mode &gt;&gt; <span class="number">12</span></span><br><span class="line">        <span class="keyword">assert</span> mode_type <span class="keyword">in</span> [<span class="number">0b1000</span>, <span class="number">0b1010</span>, <span class="number">0b1110</span>]  <span class="comment"># 文件类型必须是常规文件、符号链接或 gitlink</span></span><br><span class="line">        mode_perms = mode &amp; <span class="number">0b0000000111111111</span></span><br><span class="line">        <span class="comment"># 解析用户 ID 和组 ID</span></span><br><span class="line">        uid = <span class="built_in">int</span>.from_bytes(content[idx+<span class="number">28</span>: idx+<span class="number">32</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line">        gid = <span class="built_in">int</span>.from_bytes(content[idx+<span class="number">32</span>: idx+<span class="number">36</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line">        <span class="comment"># 解析文件大小</span></span><br><span class="line">        fsize = <span class="built_in">int</span>.from_bytes(content[idx+<span class="number">36</span>: idx+<span class="number">40</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line">        <span class="comment"># 解析 SHA（对象 ID），并格式化为 40 字符的小写十六进制字符串</span></span><br><span class="line">        sha = <span class="built_in">format</span>(<span class="built_in">int</span>.from_bytes(content[idx+<span class="number">40</span>: idx+<span class="number">60</span>], <span class="string">&quot;big&quot;</span>), <span class="string">&quot;040x&quot;</span>)</span><br><span class="line">        <span class="comment"># 解析标志位</span></span><br><span class="line">        flags = <span class="built_in">int</span>.from_bytes(content[idx+<span class="number">60</span>: idx+<span class="number">62</span>], <span class="string">&quot;big&quot;</span>)</span><br><span class="line">        <span class="comment"># 解析假定有效标志位</span></span><br><span class="line">        flag_assume_valid = (flags &amp; <span class="number">0b1000000000000000</span>) != <span class="number">0</span></span><br><span class="line">        <span class="comment"># 解析扩展标志位（被忽略）</span></span><br><span class="line">        flag_extended = (flags &amp; <span class="number">0b0100000000000000</span>) != <span class="number">0</span></span><br><span class="line">        <span class="keyword">assert</span> <span class="keyword">not</span> flag_extended</span><br><span class="line">        <span class="comment"># 解析阶段标志位</span></span><br><span class="line">        flag_stage =  flags &amp; <span class="number">0b0011000000000000</span></span><br><span class="line">        <span class="comment"># 解析文件名长度（12 位）</span></span><br><span class="line">        name_length = flags &amp; <span class="number">0b0000111111111111</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 读取了 62 个字节，继续处理文件名</span></span><br><span class="line">        idx += <span class="number">62</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 如果文件名长度小于 0xFFF，则文件名之后有一个空字节终止符</span></span><br><span class="line">        <span class="keyword">if</span> name_length &lt; <span class="number">0xFFF</span>:</span><br><span class="line">            <span class="keyword">assert</span> content[idx + name_length] == <span class="number">0x00</span></span><br><span class="line">            raw_name = content[idx:idx+name_length]</span><br><span class="line">            idx += name_length + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 处理文件名长度大于等于 0xFFF 的情况，需要查找空字节终止符</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;注意: 文件名长度为 0x<span class="subst">&#123;name_length:X&#125;</span> 字节长。&quot;</span>)</span><br><span class="line">            null_idx = content.find(<span class="string">b&#x27;\x00&#x27;</span>, idx + <span class="number">0xFFF</span>)</span><br><span class="line">            raw_name = content[idx: null_idx]</span><br><span class="line">            idx = null_idx + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将文件名解析为 UTF-8 字符串</span></span><br><span class="line">        name = raw_name.decode(<span class="string">&quot;utf8&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 索引文件中的数据以 8 字节对齐，因此需要根据指针对齐调整 idx</span></span><br><span class="line">        idx = <span class="number">8</span> * ceil(idx / <span class="number">8</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将解析出的索引条目添加到列表中</span></span><br><span class="line">        entries.append(GitIndexEntry(ctime=(ctime_s, ctime_ns),</span><br><span class="line">                                     mtime=(mtime_s,  mtime_ns),</span><br><span class="line">                                     dev=dev,</span><br><span class="line">                                     ino=ino,</span><br><span class="line">                                     mode_type=mode_type,</span><br><span class="line">                                     mode_perms=mode_perms,</span><br><span class="line">                                     uid=uid,</span><br><span class="line">                                     gid=gid,</span><br><span class="line">                                     fsize=fsize,</span><br><span class="line">                                     sha=sha,</span><br><span class="line">                                flag_assume_valid=flag_assume_valid,</span><br><span class="line">                                     flag_stage=flag_stage,</span><br><span class="line">                                     name=name))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 返回包含所有索引条目的 GitIndex 实例</span></span><br><span class="line">    <span class="keyword">return</span> GitIndex(version=version, entries=entries)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index_write</span>(<span class="params">repo, index</span>):</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(repo_file(repo, <span class="string">&quot;index&quot;</span>), <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 写入头部信息</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 写入魔术字节 &quot;DIRC&quot; 以标识该文件为 Git 索引文件。</span></span><br><span class="line">        f.write(<span class="string">b&quot;DIRC&quot;</span>)</span><br><span class="line">        <span class="comment"># 写入版本号（固定为 2）。</span></span><br><span class="line">        f.write(index.version.to_bytes(<span class="number">4</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line">        <span class="comment"># 写入索引条目数量。</span></span><br><span class="line">        f.write(<span class="built_in">len</span>(index.entries).to_bytes(<span class="number">4</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 写入条目数据</span></span><br><span class="line"></span><br><span class="line">        idx = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> e <span class="keyword">in</span> index.entries:</span><br><span class="line">            <span class="comment"># 写入创建时间（秒）和创建时间的纳秒部分。</span></span><br><span class="line">            f.write(e.ctime[<span class="number">0</span>].to_bytes(<span class="number">4</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line">            f.write(e.ctime[<span class="number">1</span>].to_bytes(<span class="number">4</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line">            <span class="comment"># 写入修改时间（秒）和修改时间的纳秒部分。</span></span><br><span class="line">            f.write(e.mtime[<span class="number">0</span>].to_bytes(<span class="number">4</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line">            f.write(e.mtime[<span class="number">1</span>].to_bytes(<span class="number">4</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line">            <span class="comment"># 写入设备号和 inode 号。</span></span><br><span class="line">            f.write(e.dev.to_bytes(<span class="number">4</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line">            f.write(e.ino.to_bytes(<span class="number">4</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 写入文件权限模式（类型和权限合并）。</span></span><br><span class="line">            mode = (e.mode_type &lt;&lt; <span class="number">12</span>) | e.mode_perms</span><br><span class="line">            f.write(mode.to_bytes(<span class="number">4</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 写入用户 ID 和组 ID。</span></span><br><span class="line">            f.write(e.uid.to_bytes(<span class="number">4</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line">            f.write(e.gid.to_bytes(<span class="number">4</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 写入文件大小。</span></span><br><span class="line">            f.write(e.fsize.to_bytes(<span class="number">4</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line">            <span class="comment"># 写入 SHA-1 对象 ID。</span></span><br><span class="line">            f.write(<span class="built_in">int</span>(e.sha, <span class="number">16</span>).to_bytes(<span class="number">20</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 处理标志位 `flag_assume_valid`。</span></span><br><span class="line">            flag_assume_valid = <span class="number">0x1</span> &lt;&lt; <span class="number">15</span> <span class="keyword">if</span> e.flag_assume_valid <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 将文件名编码为 UTF-8，并计算长度。</span></span><br><span class="line">            name_bytes = e.name.encode(<span class="string">&quot;utf8&quot;</span>)</span><br><span class="line">            bytes_len = <span class="built_in">len</span>(name_bytes)</span><br><span class="line">            <span class="keyword">if</span> bytes_len &gt;= <span class="number">0xFFF</span>:</span><br><span class="line">                name_length = <span class="number">0xFFF</span>  <span class="comment"># 长度过长时，标记为 0xFFF。</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                name_length = bytes_len</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 将 `flag_assume_valid`、`flag_stage` 和名称长度合并到 2 个字节中。</span></span><br><span class="line">            f.write((flag_assume_valid | e.flag_stage | name_length).to_bytes(<span class="number">2</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 写入文件名，并附加一个 0x00 作为结尾。</span></span><br><span class="line">            f.write(name_bytes)</span><br><span class="line">            f.write((<span class="number">0</span>).to_bytes(<span class="number">1</span>, <span class="string">&quot;big&quot;</span>))</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 计算当前条目的字节数。</span></span><br><span class="line">            idx += <span class="number">62</span> + <span class="built_in">len</span>(name_bytes) + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 若条目不是 8 字节对齐，则进行填充。</span></span><br><span class="line">            <span class="keyword">if</span> idx % <span class="number">8</span> != <span class="number">0</span>:</span><br><span class="line">                pad = <span class="number">8</span> - (idx % <span class="number">8</span>)</span><br><span class="line">                f.write((<span class="number">0</span>).to_bytes(pad, <span class="string">&quot;big&quot;</span>))</span><br><span class="line">                idx += pad</span><br></pre></td></tr></table></figure>
+
+<p>按照我们前面所说的，<code>git add</code>会根据所修改的文件路径对<code>.git/index</code>文件中的内容进行修改。具体实现方式是从<code>.git/index</code>文件中移除指定路径的条目（不物理删除文件），然后对每个路径，读取文件内容，计算文件的哈希值并获取文件的元数据信息，然后将文件的相关信息添加到<code>.git/index</code>文件中，包括 ctime、mtime、文件权限等，最后将新的索引条目写回索引文件。具体的<code>add</code>函数实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">repo, paths, delete=<span class="literal">True</span>, skip_missing=<span class="literal">False</span></span>):</span><br><span class="line">    <span class="comment"># 首先调用 rm 函数从索引中移除这些路径的条目，避免重复（不物理删除文件）。</span></span><br><span class="line">    rm(repo, paths, delete=<span class="literal">False</span>, skip_missing=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取工作树的根目录路径（末尾加上路径分隔符）</span></span><br><span class="line">    worktree = repo.worktree + os.sep</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将路径转换为 (绝对路径，相对路径) 的对，并确保它们在工作树内且为文件</span></span><br><span class="line">    clean_paths = <span class="built_in">set</span>()</span><br><span class="line">    <span class="keyword">for</span> path <span class="keyword">in</span> paths:</span><br><span class="line">        abspath = os.path.abspath(path)  <span class="comment"># 获取绝对路径</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> (abspath.startswith(worktree) <span class="keyword">and</span> os.path.isfile(abspath)):  <span class="comment"># 确保路径在工作树内且为文件</span></span><br><span class="line">            <span class="keyword">raise</span> Exception(<span class="string">f&quot;Not a file, or outside the worktree: <span class="subst">&#123;paths&#125;</span>&quot;</span>)  <span class="comment"># 如果路径无效或不在工作树内，抛出异常</span></span><br><span class="line">        relpath = os.path.relpath(abspath, repo.worktree)  <span class="comment"># 获取相对路径</span></span><br><span class="line">        clean_paths.add((abspath, relpath))  <span class="comment"># 添加到 clean_paths 集合中</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 查找并读取索引。由于 `rm` 已经修改了索引，这里再次读取。</span></span><br><span class="line">    <span class="comment"># @FIXME：可以通过传递命令来移动索引，而不是反复读写索引。</span></span><br><span class="line">    index = index_read(repo)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 遍历每个路径对，读取文件，生成哈希并更新索引条目</span></span><br><span class="line">    <span class="keyword">for</span> (abspath, relpath) <span class="keyword">in</span> clean_paths:</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(abspath, <span class="string">&quot;rb&quot;</span>) <span class="keyword">as</span> fd:</span><br><span class="line">            sha = object_hash(fd, <span class="string">b&quot;blob&quot;</span>, repo)  <span class="comment"># 计算文件的 SHA 哈希值</span></span><br><span class="line"></span><br><span class="line">            stat = os.stat(abspath)  <span class="comment"># 获取文件状态</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 获取文件的创建时间和修改时间（秒和纳秒）</span></span><br><span class="line">            ctime_s = <span class="built_in">int</span>(stat.st_ctime)</span><br><span class="line">            ctime_ns = stat.st_ctime_ns % <span class="number">10</span>**<span class="number">9</span></span><br><span class="line">            mtime_s = <span class="built_in">int</span>(stat.st_mtime)</span><br><span class="line">            mtime_ns = stat.st_mtime_ns % <span class="number">10</span>**<span class="number">9</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 创建 Git 索引条目对象</span></span><br><span class="line">            entry = GitIndexEntry(ctime=(ctime_s, ctime_ns), mtime=(mtime_s, mtime_ns), dev=stat.st_dev, ino=stat.st_ino,</span><br><span class="line">                                  mode_type=<span class="number">0b1000</span>, mode_perms=<span class="number">0o644</span>, uid=stat.st_uid, gid=stat.st_gid,</span><br><span class="line">                                  fsize=stat.st_size, sha=sha, flag_assume_valid=<span class="literal">False</span>,</span><br><span class="line">                                  flag_stage=<span class="literal">False</span>, name=relpath)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 将新条目添加到索引条目列表</span></span><br><span class="line">            index.entries.append(entry)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将更新后的索引写回文件</span></span><br><span class="line">    index_write(repo, index)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">rm</span>(<span class="params">repo, paths, delete=<span class="literal">True</span>, skip_missing=<span class="literal">False</span></span>):</span><br><span class="line">    <span class="comment"># 查找并读取索引文件</span></span><br><span class="line">    index = index_read(repo)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取工作树的根目录路径（末尾加上路径分隔符）</span></span><br><span class="line">    worktree = repo.worktree + os.sep</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将输入路径转换为绝对路径，并确保它们位于工作树内</span></span><br><span class="line">    abspaths = <span class="built_in">set</span>()</span><br><span class="line">    <span class="keyword">for</span> path <span class="keyword">in</span> paths:</span><br><span class="line">        abspath = os.path.abspath(path)  <span class="comment"># 获取绝对路径</span></span><br><span class="line">        <span class="keyword">if</span> abspath.startswith(worktree):  <span class="comment"># 确保路径在工作树中</span></span><br><span class="line">            abspaths.add(abspath)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> Exception(<span class="string">f&quot;Cannot remove paths outside of worktree: <span class="subst">&#123;paths&#125;</span>&quot;</span>)  <span class="comment"># 如果路径不在工作树内，抛出异常</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将要保留的索引条目列表，用于更新索引文件</span></span><br><span class="line">    kept_entries = <span class="built_in">list</span>()</span><br><span class="line">    <span class="comment"># 将要删除的路径列表，用于物理删除文件</span></span><br><span class="line">    remove = <span class="built_in">list</span>()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 遍历索引条目，删除匹配的路径，保留其余条目</span></span><br><span class="line">    <span class="keyword">for</span> e <span class="keyword">in</span> index.entries:</span><br><span class="line">        full_path = os.path.join(repo.worktree, e.name)  <span class="comment"># 获取索引条目的完整路径</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> full_path <span class="keyword">in</span> abspaths:  <span class="comment"># 如果路径在待删除列表中</span></span><br><span class="line">            remove.append(full_path)  <span class="comment"># 加入待删除列表</span></span><br><span class="line">            abspaths.remove(full_path)  <span class="comment"># 从待删除路径中移除</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            kept_entries.append(e)  <span class="comment"># 保留该条目</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 如果有未在索引中找到的路径，且 skip_missing=False，则抛出异常</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(abspaths) &gt; <span class="number">0</span> <span class="keyword">and</span> <span class="keyword">not</span> skip_missing:</span><br><span class="line">        <span class="keyword">raise</span> Exception(<span class="string">f&quot;Cannot remove paths not in the index: <span class="subst">&#123;abspaths&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 物理删除文件系统中的路径</span></span><br><span class="line">    <span class="keyword">if</span> delete:</span><br><span class="line">        <span class="keyword">for</span> path <span class="keyword">in</span> remove:</span><br><span class="line">            os.unlink(path)  <span class="comment"># 删除文件</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 更新索引条目，并将其写回索引文件</span></span><br><span class="line">    index.entries = kept_entries</span><br><span class="line">    index_write(repo, index)</span><br></pre></td></tr></table></figure>
+
+<p>然后再使用<code>git add</code>之后的<code>.git/index</code>文件生成树对象，最后再借由树对象生成提交对象！！！具体<code>python</code>代码实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">tree_from_index</span>(<span class="params">repo, index</span>):</span><br><span class="line">    <span class="comment"># 初始化一个字典，用于存储目录及其内容，根目录 &quot;&quot; 存储一个空列表。</span></span><br><span class="line">    contents = <span class="built_in">dict</span>()</span><br><span class="line">    contents[<span class="string">&quot;&quot;</span>] = <span class="built_in">list</span>()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 遍历索引中的每个条目，构建目录结构。</span></span><br><span class="line">    <span class="keyword">for</span> entry <span class="keyword">in</span> index.entries:</span><br><span class="line">        dirname = os.path.dirname(entry.name)  <span class="comment"># 获取当前条目的目录名</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 遍历目录路径，直到根目录，确保每个目录都被创建</span></span><br><span class="line">        key = dirname</span><br><span class="line">        <span class="keyword">while</span> key != <span class="string">&quot;&quot;</span>:</span><br><span class="line">            <span class="keyword">if</span> key <span class="keyword">not</span> <span class="keyword">in</span> contents:  <span class="comment"># 如果该目录尚未在 contents 中，创建一个空列表</span></span><br><span class="line">                contents[key] = <span class="built_in">list</span>()</span><br><span class="line">            key = os.path.dirname(key)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将条目添加到对应目录的内容列表中</span></span><br><span class="line">        contents[dirname].append(entry)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取所有目录的路径并按路径长度从长到短排序</span></span><br><span class="line">    sorted_paths = <span class="built_in">sorted</span>(contents.keys(), key=<span class="built_in">len</span>, reverse=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 初始化树的 SHA-1 哈希（根树的哈希值将会保存在这里）</span></span><br><span class="line">    sha = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 遍历排序后的路径（目录），构建树对象</span></span><br><span class="line">    <span class="keyword">for</span> path <span class="keyword">in</span> sorted_paths:</span><br><span class="line">        tree = GitTree()  <span class="comment"># 创建一个新的空树对象</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 遍历该目录下的条目，生成树叶并添加到树中</span></span><br><span class="line">        <span class="keyword">for</span> entry <span class="keyword">in</span> contents[path]:</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">isinstance</span>(entry, GitIndexEntry):  <span class="comment"># 普通的文件条目</span></span><br><span class="line">                <span class="comment"># 转换文件的权限模式，Git 使用十六进制表示，树对象需要的是八进制 ASCII 字符串</span></span><br><span class="line">                leaf_mode = <span class="string">f&quot;<span class="subst">&#123;entry.mode_type:02o&#125;</span><span class="subst">&#123;entry.mode_perms:04o&#125;</span>&quot;</span>.encode(<span class="string">&quot;ascii&quot;</span>)</span><br><span class="line">                leaf = GitTreeLeaf(mode=leaf_mode, path=os.path.basename(entry.name), sha=entry.sha)</span><br><span class="line">            <span class="keyword">else</span>:  <span class="comment"># 子目录条目（树）</span></span><br><span class="line">                leaf = GitTreeLeaf(mode=<span class="string">b&quot;040000&quot;</span>, path=entry[<span class="number">0</span>], sha=entry[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">            tree.items.append(leaf)  <span class="comment"># 将叶子添加到树对象中</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将生成的树对象写入对象存储，并获取其 SHA-1 哈希</span></span><br><span class="line">        sha = object_write(tree, repo)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将树对象的哈希值添加到其父目录的内容列表中，作为一对 (文件名, SHA)</span></span><br><span class="line">        parent = os.path.dirname(path)  <span class="comment"># 获取父目录路径</span></span><br><span class="line">        base = os.path.basename(path)   <span class="comment"># 获取当前目录的名称（例如 &quot;main.go&quot;）</span></span><br><span class="line">        contents[parent].append((base, sha))  <span class="comment"># 将父目录与新生成的树的哈希值关联</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sha  <span class="comment"># 返回根树的 SHA-1 哈希</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">commit_create</span>(<span class="params">repo, tree, parent, author, timestamp, message</span>):</span><br><span class="line">    commit = GitCommit()  <span class="comment"># 创建一个新的提交对象</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 设置提交对象的树字段为当前提交的树对象的 SHA-1 值</span></span><br><span class="line">    commit.kvlm[<span class="string">b&quot;tree&quot;</span>] = tree.encode(<span class="string">&quot;ascii&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 如果有父提交，设置父提交字段</span></span><br><span class="line">    <span class="keyword">if</span> parent:</span><br><span class="line">        commit.kvlm[<span class="string">b&quot;parent&quot;</span>] = parent.encode(<span class="string">&quot;ascii&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 清理提交信息，并在末尾加上换行符</span></span><br><span class="line">    message = message.strip() + <span class="string">&quot;\n&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 格式化时区偏移（例如 &quot;+0200&quot; 或 &quot;-0700&quot;）</span></span><br><span class="line">    offset = <span class="built_in">int</span>(timestamp.astimezone().utcoffset().total_seconds())  <span class="comment"># 获取时区偏移（秒）</span></span><br><span class="line">    hours = offset // <span class="number">3600</span>  <span class="comment"># 计算小时</span></span><br><span class="line">    minutes = (offset % <span class="number">3600</span>) // <span class="number">60</span>  <span class="comment"># 计算分钟</span></span><br><span class="line">    tz = <span class="string">&quot;&#123;&#125;&#123;:02&#125;&#123;:02&#125;&quot;</span>.<span class="built_in">format</span>(<span class="string">&quot;+&quot;</span> <span class="keyword">if</span> offset &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="string">&quot;-&quot;</span>, hours, minutes)  <span class="comment"># 格式化时区字符串</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将作者信息格式化为 &quot;Author Name &lt;email&gt; timestamp timezone&quot;</span></span><br><span class="line">    author = author + timestamp.strftime(<span class="string">&quot; %s &quot;</span>) + tz</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置提交对象的作者和提交者字段为相同的值</span></span><br><span class="line">    commit.kvlm[<span class="string">b&quot;author&quot;</span>] = author.encode(<span class="string">&quot;utf8&quot;</span>)</span><br><span class="line">    commit.kvlm[<span class="string">b&quot;committer&quot;</span>] = author.encode(<span class="string">&quot;utf8&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置提交信息字段</span></span><br><span class="line">    commit.kvlm[<span class="literal">None</span>] = message.encode(<span class="string">&quot;utf8&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将提交对象写入对象存储，并返回其 SHA-1 哈希</span></span><br><span class="line">    <span class="keyword">return</span> object_write(commit, repo)</span><br></pre></td></tr></table></figure>
+
+<p>现在，😮‍💨，所有Git基础的内容的底层原理以及其代码形式差不多就讲解完了。还有一些比较高级的Git内容比如我们常见的命名简化，分支以及.gitingore文件等等我们留待后文。</p>
+<h2 id="参考网站"><a href="#参考网站" class="headerlink" title="参考网站"></a>参考网站</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://wyag.thb.lt/">Write yourself a Git!</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/96631135">这才是真正的Git——Git内部原理揭秘！</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Git/" rel="tag"># Git</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2025/03/09/2025-3-9-eeg-data/" rel="next" title="EEG数据初探">
+      EEG数据初探 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Git%E4%BB%93%E5%BA%93%EF%BC%88Git-Repository%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">Git仓库（Git Repository）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git%E6%96%87%E4%BB%B6%E5%A4%B9%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84%E6%8E%A2%E7%A9%B6"><span class="nav-number">2.</span> <span class="nav-text">.git文件夹内部结构探究</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git%E5%AF%B9%E8%B1%A1%EF%BC%88Git-Object%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">Git对象（Git Object）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GitBlob%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.1.</span> <span class="nav-text">GitBlob对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GitTree%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.2.</span> <span class="nav-text">GitTree对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GitCommit%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.3.</span> <span class="nav-text">GitCommit对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GitTag%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.4.</span> <span class="nav-text">GitTag对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%BB%E9%87%8F%E6%A0%87%E7%AD%BE%EF%BC%88%E2%80%9CLightweight%E2%80%9D-tags%EF%BC%89"><span class="nav-number">3.4.1.</span> <span class="nav-text">轻量标签（“Lightweight” tags）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E5%AF%B9%E8%B1%A1%EF%BC%88Tag-objects%EF%BC%89"><span class="nav-number">3.4.2.</span> <span class="nav-text">标签对象（Tag objects）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%82%E5%AD%98%E5%8C%BA%EF%BC%88Staging-area%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">暂存区（Staging area）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E7%BD%91%E7%AB%99"><span class="nav-number">5.</span> <span class="nav-text">参考网站</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="delkon"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">delkon</p>
+  <div class="site-description" itemprop="description">Stay hungry, stay foolish</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fordelkon" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fordelkon" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">delkon</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">10k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">35 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>delkon&#39;s blog</title>
+  <icon>http://fordelkon.github.io/icon.png</icon>
+  <subtitle>Life is short, I use Python</subtitle>
+  <link href="http://fordelkon.github.io/atom.xml" rel="self"/>
   
-  
-  <link href="http://example.com/atom.xml" rel="self"/>
-  
-  <link href="http://example.com/"/>
-  <updated>2025-03-06T14:51:52.072Z</updated>
-  <id>http://example.com/</id>
+  <link href="http://fordelkon.github.io/"/>
+  <updated>2025-03-10T04:40:48.819Z</updated>
+  <id>http://fordelkon.github.io/</id>
   
   <author>
     <name>delkon</name>
@@ -17,35 +17,44 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Hello World</title>
-    <link href="http://example.com/2025/03/06/hello-world/"/>
-    <id>http://example.com/2025/03/06/hello-world/</id>
-    <published>2025-03-06T14:51:48.317Z</published>
-    <updated>2025-03-06T14:51:52.072Z</updated>
-    
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+    <title>EEG数据初探</title>
+    <link href="http://fordelkon.github.io/2025/03/09/2025-3-9-eeg-data/"/>
+    <id>http://fordelkon.github.io/2025/03/09/2025-3-9-eeg-data/</id>
+    <published>2025-03-09T06:44:23.398Z</published>
+    <updated>2025-03-10T04:40:48.819Z</updated>
     
     
-      
-      
-    <summary type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt; for</summary>
-      
+    <summary type="html">&lt;p&gt;最近在学习EEG数据的处理，发现网上的有关EEG数据的讲解较少，尤其是使用&lt;code&gt;mne-python&lt;/code&gt;库来对EEG数据进行处理，现在来对EEG数据和该库的整体进行大致的窥探。&lt;/p&gt;</summary>
     
     
     
+    <category term="Data Analysis" scheme="http://fordelkon.github.io/categories/Data-Analysis/"/>
+    
+    
+    <category term="Python" scheme="http://fordelkon.github.io/tags/Python/"/>
+    
+    <category term="EEG" scheme="http://fordelkon.github.io/tags/EEG/"/>
     
   </entry>
   
   <entry>
-    <title>Git</title>
-    <link href="http://example.com/2025/03/06/git/"/>
-    <id>http://example.com/2025/03/06/git/</id>
-    <published>2025-03-06T14:06:03.080Z</published>
-    <updated>2025-03-06T14:12:16.016Z</updated>
+    <title>Git详解</title>
+    <link href="http://fordelkon.github.io/2025/03/07/2025-3-7-git/"/>
+    <id>http://fordelkon.github.io/2025/03/07/2025-3-7-git/</id>
+    <published>2025-03-07T08:08:40.614Z</published>
+    <updated>2025-03-09T10:06:59.370Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;这篇博客主要自底向上地介绍Git命令行，有时甚至会使用一些&lt;code&gt;python&lt;/code&gt;代码来对一些Git的功能进行更加详细的分析。我一直认为基础一旦打好，那么一些更高级的用法也可以循序渐进地了解，而且是更加透彻的了解。不是像博主一开始那样以为只要死记硬背&lt;code&gt;git add&lt;/code&gt;，&lt;code&gt;git commit&lt;/code&gt;,&lt;code&gt;git pull&lt;/code&gt;，&lt;code&gt;git clone&lt;/code&gt;等常见命令的一些用法就可以了😭（实际上网上大多数教程就是这样教的…），在这上面走了不少弯路，所以从头开始打地基写作此文留以警示⚠️。&lt;/p&gt;</summary>
     
     
     
+    <category term="Linux操作系统" scheme="http://fordelkon.github.io/categories/Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
     
+    
+    <category term="Git" scheme="http://fordelkon.github.io/tags/Git/"/>
+    
+    <category term="Python" scheme="http://fordelkon.github.io/tags/Python/"/>
     
   </entry>
   
