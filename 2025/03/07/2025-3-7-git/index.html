@@ -33,8 +33,25 @@
 <meta property="og:image" content="http://fordelkon.github.io/codes/git/blob.png">
 <meta property="og:image" content="http://fordelkon.github.io/codes/git/tree.png">
 <meta property="og:image" content="http://fordelkon.github.io/codes/git/commit.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/object.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/change.gif">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/add.gif">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/commit.gif">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/highlevel.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/git3.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/git3high.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/branch.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/detached.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/detached_commit.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/detached_main.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/new_branch.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/reset.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/merge_before.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/merge_after.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/merge_before2.png">
+<meta property="og:image" content="http://fordelkon.github.io/codes/git/merge_after2.png">
 <meta property="article:published_time" content="2025-03-07T08:08:40.614Z">
-<meta property="article:modified_time" content="2025-03-09T10:06:59.370Z">
+<meta property="article:modified_time" content="2025-03-10T13:20:26.431Z">
 <meta property="article:author" content="delkon">
 <meta property="article:tag" content="Git">
 <meta property="article:tag" content="Python">
@@ -232,7 +249,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-03-09 18:06:59" itemprop="dateModified" datetime="2025-03-09T18:06:59+08:00">2025-03-09</time>
+                <time title="修改时间：2025-03-10 21:20:26" itemprop="dateModified" datetime="2025-03-10T21:20:26+08:00">2025-03-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -257,14 +274,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>7.8k</span>
+              <span>9.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>28 分钟</span>
+              <span>34 分钟</span>
             </span>
 
         </div>
@@ -280,7 +297,7 @@
 <span id="more"></span>
 
 <h2 id="Git仓库（Git-Repository）"><a href="#Git仓库（Git-Repository）" class="headerlink" title="Git仓库（Git Repository）"></a>Git仓库（Git Repository）</h2><p>要学习Git，首先我们要知道我们运行Git命令是对什么对象进行操作的，在Git的相关术语中，我们把这个对象叫做Git仓库（Git Repository），Git仓库实际上就是一个文件夹，在这个文件夹里我们通过.git文件夹（隐藏文件夹）对Git仓库中的文件（非隐藏文件夹）内容的改变进行记录，当然并不是所有非隐藏文件夹中文件的改变都会被记录，被.gitingore文件所标识的文件被改变后.git文件夹不会对其进行记录。根据我上面所说，<strong>Git操作最隐晦的地方就在于对于.git文件夹中内容的修改来保证对于Git仓库非隐藏文件夹中文件内容修改的记录</strong>。</p>
-<p>根据上面的描述，我们可以得到一下简略的公式：<br>$$<br>Git\ Repository &#x3D; .git文件夹 + 非隐藏文件夹\tag{1}<br>$$<br>更加详尽的来说以<code>python</code>来构建Git仓库类：</p>
+<p>根据上面的描述，我们可以得到一下简略的公式：<br>$$Git\ Repository &#x3D; .git文件夹 + 非隐藏文件夹\tag{1}$$<br>更加详尽的来说以<code>python</code>来构建Git仓库类：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GitRepository</span> (<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;A git repository&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    worktree = <span class="literal">None</span></span><br><span class="line">    gitdir = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, path</span>):</span><br><span class="line">        <span class="variable language_">self</span>.worktree = path</span><br><span class="line">        <span class="variable language_">self</span>.gitdir = os.path.join(path, <span class="string">&quot;.git&quot;</span>)</span><br></pre></td></tr></table></figure>
 
 <h2 id="git文件夹内部结构探究"><a href="#git文件夹内部结构探究" class="headerlink" title=".git文件夹内部结构探究"></a>.git文件夹内部结构探究</h2><p>前面我们已经知道了<strong>Git操作最隐晦的地方就在于对于.git文件夹中内容的修改来保证对于Git仓库非隐藏文件夹中文件内容修改的记录</strong>，那接下来我们就要对此进行脱贫攻坚了。由于.git是隐藏文件夹，所以我们要先对.git文件夹中的文件分布有一定的了解，<code>git init</code>初始化后的.git文件夹中的文件分布如图1所示，此时Git仓库内除了.git文件夹之外一片荒芜。</p>
@@ -290,11 +307,7 @@
 </center>
 
 <p>然后我们再本地Git仓库中添加可见文件，添加后的结果如图2所示。</p>
-<p><img data-src="/../../codes/git/add.png" alt="image"></p>
-<center>
-<strong>图2：Git仓库添加文件后的文件分布</strong>
-</center>
-
+<p><img data-src="/../../codes/git/add.png" alt="image"><br><left><br><strong>图2：Git仓库添加文件后的文件分布</strong><br></left></p>
 <p>将上述所有文件运行<code>git add</code>之后在进行<code>git commit</code>观察.git文件夹中的文件分布，如图3所示。可以看到相较于最初的.git文件，我们在<code>git add</code>和<code>git commit</code>之后文件夹中多出了<code>index</code>文件，<code>log</code>文件夹，<code>objects</code>文件夹中的8个文件以及<code>refs/heads</code>下的<code>main</code>文件，其他的一些变化我们不做考虑。<strong>有果导因我们可以知道.git文件夹内部的这些变化中有对于Git仓库非隐藏文件夹文件修改的记录。</strong></p>
 <p><img data-src="/../../codes/git/gitaddcommit.png" alt="image"></p>
 <center>
@@ -429,10 +442,91 @@
 <p>然后再使用<code>git add</code>之后的<code>.git/index</code>文件生成树对象，最后再借由树对象生成提交对象！！！具体<code>python</code>代码实现如下：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">tree_from_index</span>(<span class="params">repo, index</span>):</span><br><span class="line">    <span class="comment"># 初始化一个字典，用于存储目录及其内容，根目录 &quot;&quot; 存储一个空列表。</span></span><br><span class="line">    contents = <span class="built_in">dict</span>()</span><br><span class="line">    contents[<span class="string">&quot;&quot;</span>] = <span class="built_in">list</span>()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 遍历索引中的每个条目，构建目录结构。</span></span><br><span class="line">    <span class="keyword">for</span> entry <span class="keyword">in</span> index.entries:</span><br><span class="line">        dirname = os.path.dirname(entry.name)  <span class="comment"># 获取当前条目的目录名</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 遍历目录路径，直到根目录，确保每个目录都被创建</span></span><br><span class="line">        key = dirname</span><br><span class="line">        <span class="keyword">while</span> key != <span class="string">&quot;&quot;</span>:</span><br><span class="line">            <span class="keyword">if</span> key <span class="keyword">not</span> <span class="keyword">in</span> contents:  <span class="comment"># 如果该目录尚未在 contents 中，创建一个空列表</span></span><br><span class="line">                contents[key] = <span class="built_in">list</span>()</span><br><span class="line">            key = os.path.dirname(key)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将条目添加到对应目录的内容列表中</span></span><br><span class="line">        contents[dirname].append(entry)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取所有目录的路径并按路径长度从长到短排序</span></span><br><span class="line">    sorted_paths = <span class="built_in">sorted</span>(contents.keys(), key=<span class="built_in">len</span>, reverse=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 初始化树的 SHA-1 哈希（根树的哈希值将会保存在这里）</span></span><br><span class="line">    sha = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 遍历排序后的路径（目录），构建树对象</span></span><br><span class="line">    <span class="keyword">for</span> path <span class="keyword">in</span> sorted_paths:</span><br><span class="line">        tree = GitTree()  <span class="comment"># 创建一个新的空树对象</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 遍历该目录下的条目，生成树叶并添加到树中</span></span><br><span class="line">        <span class="keyword">for</span> entry <span class="keyword">in</span> contents[path]:</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">isinstance</span>(entry, GitIndexEntry):  <span class="comment"># 普通的文件条目</span></span><br><span class="line">                <span class="comment"># 转换文件的权限模式，Git 使用十六进制表示，树对象需要的是八进制 ASCII 字符串</span></span><br><span class="line">                leaf_mode = <span class="string">f&quot;<span class="subst">&#123;entry.mode_type:02o&#125;</span><span class="subst">&#123;entry.mode_perms:04o&#125;</span>&quot;</span>.encode(<span class="string">&quot;ascii&quot;</span>)</span><br><span class="line">                leaf = GitTreeLeaf(mode=leaf_mode, path=os.path.basename(entry.name), sha=entry.sha)</span><br><span class="line">            <span class="keyword">else</span>:  <span class="comment"># 子目录条目（树）</span></span><br><span class="line">                leaf = GitTreeLeaf(mode=<span class="string">b&quot;040000&quot;</span>, path=entry[<span class="number">0</span>], sha=entry[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">            tree.items.append(leaf)  <span class="comment"># 将叶子添加到树对象中</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将生成的树对象写入对象存储，并获取其 SHA-1 哈希</span></span><br><span class="line">        sha = object_write(tree, repo)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将树对象的哈希值添加到其父目录的内容列表中，作为一对 (文件名, SHA)</span></span><br><span class="line">        parent = os.path.dirname(path)  <span class="comment"># 获取父目录路径</span></span><br><span class="line">        base = os.path.basename(path)   <span class="comment"># 获取当前目录的名称（例如 &quot;main.go&quot;）</span></span><br><span class="line">        contents[parent].append((base, sha))  <span class="comment"># 将父目录与新生成的树的哈希值关联</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sha  <span class="comment"># 返回根树的 SHA-1 哈希</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">commit_create</span>(<span class="params">repo, tree, parent, author, timestamp, message</span>):</span><br><span class="line">    commit = GitCommit()  <span class="comment"># 创建一个新的提交对象</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 设置提交对象的树字段为当前提交的树对象的 SHA-1 值</span></span><br><span class="line">    commit.kvlm[<span class="string">b&quot;tree&quot;</span>] = tree.encode(<span class="string">&quot;ascii&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 如果有父提交，设置父提交字段</span></span><br><span class="line">    <span class="keyword">if</span> parent:</span><br><span class="line">        commit.kvlm[<span class="string">b&quot;parent&quot;</span>] = parent.encode(<span class="string">&quot;ascii&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 清理提交信息，并在末尾加上换行符</span></span><br><span class="line">    message = message.strip() + <span class="string">&quot;\n&quot;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 格式化时区偏移（例如 &quot;+0200&quot; 或 &quot;-0700&quot;）</span></span><br><span class="line">    offset = <span class="built_in">int</span>(timestamp.astimezone().utcoffset().total_seconds())  <span class="comment"># 获取时区偏移（秒）</span></span><br><span class="line">    hours = offset // <span class="number">3600</span>  <span class="comment"># 计算小时</span></span><br><span class="line">    minutes = (offset % <span class="number">3600</span>) // <span class="number">60</span>  <span class="comment"># 计算分钟</span></span><br><span class="line">    tz = <span class="string">&quot;&#123;&#125;&#123;:02&#125;&#123;:02&#125;&quot;</span>.<span class="built_in">format</span>(<span class="string">&quot;+&quot;</span> <span class="keyword">if</span> offset &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="string">&quot;-&quot;</span>, hours, minutes)  <span class="comment"># 格式化时区字符串</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将作者信息格式化为 &quot;Author Name &lt;email&gt; timestamp timezone&quot;</span></span><br><span class="line">    author = author + timestamp.strftime(<span class="string">&quot; %s &quot;</span>) + tz</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置提交对象的作者和提交者字段为相同的值</span></span><br><span class="line">    commit.kvlm[<span class="string">b&quot;author&quot;</span>] = author.encode(<span class="string">&quot;utf8&quot;</span>)</span><br><span class="line">    commit.kvlm[<span class="string">b&quot;committer&quot;</span>] = author.encode(<span class="string">&quot;utf8&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置提交信息字段</span></span><br><span class="line">    commit.kvlm[<span class="literal">None</span>] = message.encode(<span class="string">&quot;utf8&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将提交对象写入对象存储，并返回其 SHA-1 哈希</span></span><br><span class="line">    <span class="keyword">return</span> object_write(commit, repo)</span><br></pre></td></tr></table></figure>
 
-<p>现在，😮‍💨，所有Git基础的内容的底层原理以及其代码形式差不多就讲解完了。还有一些比较高级的Git内容比如我们常见的命名简化，分支以及.gitingore文件等等我们留待后文。</p>
+<h2 id="Git二连击可视化"><a href="#Git二连击可视化" class="headerlink" title="Git二连击可视化"></a>Git二连击可视化</h2><p>已经了解了上面的底层原理后，对Git两连击的的可视化也就十分简单了，详见下图，参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/96631135">这才是真正的Git——Git内部原理揭秘！</a>：<br><img data-src="/../../codes/git/object.png" alt="image"><br><img data-src="/../../codes/git/change.gif" alt="gif"><br><img data-src="/../../codes/git/add.gif" alt="gif"><br><img data-src="/../../codes/git/commit.gif" alt="gif"><br>现在，😮‍💨，所有Git基础的内容的底层原理以及其代码形式差不多就讲解完了。还有一些比较高级的Git内容我们留待后文。</p>
+<h2 id="Git常用命令进阶"><a href="#Git常用命令进阶" class="headerlink" title="Git常用命令进阶"></a>Git常用命令进阶</h2><p>我们已经可视化了Git两连击中细节，下面我们可以从高层次的视角（GitCommit）来对Git中的高阶常用命令进行可视化，可视化结果由<a target="_blank" rel="noopener" href="https://learngitbranching.js.org/?locale=zh_CN">Learn Git Branch</a>提供。我们经过一系列的<code>git add</code>和<code>git commit</code>以及<code>git checkout</code>之后得到的初始的GitCommit的分布情况如图7所示。</p>
+<p><img data-src="/../../codes/git/highlevel.png" alt="gif"></p>
+<center>
+<strong>图7：初始GitCommit分布情况</strong>
+</center>
+
+<p>接下来先介绍的4个命令的联系如图8所示：</p>
+<p><img data-src="/../../codes/git/git3.png" alt="gif"><br><img data-src="/../../codes/git/git3high.png" alt="gif"></p>
+<center>
+<strong>图8：git reset、git checkout、git add和 git commit的联系</strong>
+</center>
+
+<p><code>git add</code>和<code>git commit</code> 命令我们已经详细介绍过了，下面再简要对对这4个命令进行叙述。</p>
+<ul>
+<li><code>git add files</code> 把当前文件放入暂存区域。</li>
+<li><code>git commit -m message</code> 给暂存区域生成快照并提交，而<code>git commit -a -m message</code>自动将所有被跟踪的文件的更改暂存并提交，省略了<code>git add</code>的步骤。</li>
+<li><code>git reset files</code> 用来撤销最后一次<code>git add files</code>，你也可以用<code>git reset</code> 撤销所有暂存区域文件。</li>
+<li><code>git checkout files</code> 把文件从暂存区域复制到工作目录，用来丢弃本地修改，而<code>git checkout HEAD files</code> 用来将工作目录中指定文件恢复到当前分支最新一次提交时的状态（即 HEAD 指针指向的提交）。这相当于丢弃对这些文件的所有未提交修改，恢复到上一次提交的版本。</li>
+</ul>
+<h3 id="git-checkout"><a href="#git-checkout" class="headerlink" title="git checkout"></a><code>git checkout</code></h3><h4 id="分支参数"><a href="#分支参数" class="headerlink" title="分支参数"></a>分支参数</h4><p>checkout命令用于从历史提交（或者暂存区域）中拷贝文件到工作目录，也可用于切换分支。当不指定文件名，而是给出一个（本地）分支时，那么<code>HEAD</code>标识会移动到那个分支（也就是说，我们“切换”到那个分支了），然后暂存区域和工作目录中的内容会和<code>HEAD</code>对应的提交节点一致。新提交节点（下图中的C1）中的所有文件都会被复制（到暂存区域和工作目录中）；只存在于老的提交节点（C5）中的文件会被删除；不属于上述两者的文件会被忽略，不受影响。(分支在<code>.git</code>文件夹中对应<code>.git/refs/heads/</code>中的文件，<code>HEAD</code>对应<code>.git</code>文件夹中的<code>HEAD</code>文件，<code>git checkout stable</code>将<code>HEAD</code>文件内容由<code>ref: refs/heads/main</code>改变成<code>ref: refs/heads/stable</code>同时暂存区和工作目录也会发生变化)</p>
+<p><img data-src="/../../codes/git/branch.png" alt="gif"></p>
+<center>
+<strong>图9：git checkout stable将分支从main转换到stable</strong>
+</center>
+
+<h4 id="被分离的HEAD标识"><a href="#被分离的HEAD标识" class="headerlink" title="被分离的HEAD标识"></a>被分离的HEAD标识</h4><p>如果既没有指定文件名，也没有指定分支名，而是一个标签、远程分支、SHA-1值或者是像main~3类似的东西，就得到一个匿名分支，称作detached HEAD（被分离的HEAD标识），暂存区域和工作目录中的内容会和<code>HEAD</code>对应的提交节点一致。</p>
+<p><img data-src="/../../codes/git/detached.png" alt="gif"></p>
+<center>
+<strong>图10：git checkout main~3将HEAD分离出来</strong>
+</center>
+
+<p>HEAD处于分离状态时，提交操作可以正常进行如图11所示，但是不会更新任何已命名的分支。(你可以认为这是在更新一个匿名分支。)一旦此后你切换到别的分支，比如说main，那么这个提交节点（可能）再也不会被引用到，然后就会被丢弃掉了，如图12所示。</p>
+<p><img data-src="/../../codes/git/detached_commit.png" alt="gif"></p>
+<center>
+<strong>图11：HEAD标识处于分离状态时的提交操作</strong>
+</center>
+
+<p><img data-src="/../../codes/git/detached_main.png" alt="gif"></p>
+<center>
+<strong>图12：git checkout main运行后之前提交节点的情况</strong>
+</center>
+
+<p>但是，如果你想保存这个状态，可以用命令<code>git checkout -b name</code>来创建一个新的分支，如图13所示。</p>
+<p><img data-src="/../../codes/git/new_branch.png" alt="gif"></p>
+<center>
+<strong>图13：git checkout -b new运行后可以保存提交状态</strong>
+</center>
+
+<h3 id="git-reset"><a href="#git-reset" class="headerlink" title="git reset"></a><code>git reset</code></h3><p>reset命令把当前分支指向另一个位置，并且有选择的变动工作目录和索引。也用来在从历史仓库中复制文件到索引，而不动工作目录。</p>
+<p>如果不给选项，移动<code>HEAD</code>到指定的提交，并且将更改从暂存区移除，但保留在工作目录中（需要<code>git add</code>和<code>git commit</code>）。如果用<code>--hard</code>选项，移动<code>HEAD</code>到指定的提交，并且重置暂存区和工作目录，如果用<code>--soft</code>选项，仅仅移动<code>HEAD</code>到指定的提交，但保留工作区和暂存区的更改（仅需要<code>git commit</code>）。</p>
+<p><img data-src="/../../codes/git/reset.png" alt="gif"></p>
+<center>
+<strong>图14：现将HEAD指向main分支再运行git reset main~3后的情况</strong>
+</center>
+
+<p>如果没有给出提交点的版本号，那么默认用HEAD。这样，分支指向不变，但是索引会回滚到最后一次提交，如果用<code>--hard</code>选项，工作目录也同样。</p>
+<h3 id="git-merge"><a href="#git-merge" class="headerlink" title="git merge"></a><code>git merge</code></h3><p>merge 命令把不同分支合并起来。合并前，索引必须和当前提交相同。如果另一个分支是当前提交的祖父节点，那么合并命令将什么也不做。 另一种情况是如果当前提交是另一个分支的祖父节点，就导致fast-forward合并。指向只是简单的移动，并生成一个新的提交。</p>
+<p><img data-src="/../../codes/git/merge_before.png" alt="gif"></p>
+<center>
+<strong>图14：运行git merge main前的情况</strong>
+</center>
+
+<p><img data-src="/../../codes/git/merge_after.png" alt="gif"></p>
+<center>
+<strong>图15：运行git merge main后的情况，快速前进</strong>
+</center>
+
+<p>否则就是一次真正的合并。默认把当前提交(C5 如下所示)和另一个提交(C7)以及他们的共同祖父节点(C2)进行一次<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Three-way_merge">三方合并</a>。结果是先保存当前目录和索引，然后和父节点C7一起做一次新提交。</p>
+<p><img data-src="/../../codes/git/merge_before2.png" alt="gif"></p>
+<center>
+<strong>图16：运行git merge main前的情况</strong>
+</center>
+
+<p><img data-src="/../../codes/git/merge_after2.png" alt="gif"></p>
+<center>
+<strong>图17：运行git merge main后的情况，正宗融合</strong>
+</center>
+
+<h3 id="git-cherry-pick"><a href="#git-cherry-pick" class="headerlink" title="git cherry-pick"></a><code>git cherry-pick</code></h3><p><code>git cherry-pick</code>命令”复制”一个提交节点并在当前分支做一次完全一样的新提交。</p>
+<h3 id="git-rebase"><a href="#git-rebase" class="headerlink" title="git rebase"></a><code>git rebase</code></h3><p>衍合是合并命令的另一种选择。合并把两个父分支合并进行一次提交，提交历史不是线性的。衍合在当前分支上重演另一个分支的历史，提交历史是线性的。 本质上，这是线性化的自动的 <code>cherry-pick</code>。</p>
 <h2 id="参考网站"><a href="#参考网站" class="headerlink" title="参考网站"></a>参考网站</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://wyag.thb.lt/">Write yourself a Git!</a></li>
+<li><a target="_blank" rel="noopener" href="https://wyag.thb.lt/#org2e1a2c4">Write yourself a Git!</a></li>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/96631135">这才是真正的Git——Git内部原理揭秘！</a></li>
+<li><a target="_blank" rel="noopener" href="https://learngitbranching.js.org/?locale=zh_CN">Learn Git Branch</a></li>
 </ul>
 
     </div>
@@ -534,7 +628,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Git%E4%BB%93%E5%BA%93%EF%BC%88Git-Repository%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">Git仓库（Git Repository）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git%E6%96%87%E4%BB%B6%E5%A4%B9%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84%E6%8E%A2%E7%A9%B6"><span class="nav-number">2.</span> <span class="nav-text">.git文件夹内部结构探究</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git%E5%AF%B9%E8%B1%A1%EF%BC%88Git-Object%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">Git对象（Git Object）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GitBlob%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.1.</span> <span class="nav-text">GitBlob对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GitTree%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.2.</span> <span class="nav-text">GitTree对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GitCommit%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.3.</span> <span class="nav-text">GitCommit对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GitTag%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.4.</span> <span class="nav-text">GitTag对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%BB%E9%87%8F%E6%A0%87%E7%AD%BE%EF%BC%88%E2%80%9CLightweight%E2%80%9D-tags%EF%BC%89"><span class="nav-number">3.4.1.</span> <span class="nav-text">轻量标签（“Lightweight” tags）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E5%AF%B9%E8%B1%A1%EF%BC%88Tag-objects%EF%BC%89"><span class="nav-number">3.4.2.</span> <span class="nav-text">标签对象（Tag objects）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%82%E5%AD%98%E5%8C%BA%EF%BC%88Staging-area%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">暂存区（Staging area）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E7%BD%91%E7%AB%99"><span class="nav-number">5.</span> <span class="nav-text">参考网站</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Git%E4%BB%93%E5%BA%93%EF%BC%88Git-Repository%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">Git仓库（Git Repository）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git%E6%96%87%E4%BB%B6%E5%A4%B9%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84%E6%8E%A2%E7%A9%B6"><span class="nav-number">2.</span> <span class="nav-text">.git文件夹内部结构探究</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git%E5%AF%B9%E8%B1%A1%EF%BC%88Git-Object%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">Git对象（Git Object）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GitBlob%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.1.</span> <span class="nav-text">GitBlob对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GitTree%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.2.</span> <span class="nav-text">GitTree对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GitCommit%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.3.</span> <span class="nav-text">GitCommit对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GitTag%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.4.</span> <span class="nav-text">GitTag对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%BB%E9%87%8F%E6%A0%87%E7%AD%BE%EF%BC%88%E2%80%9CLightweight%E2%80%9D-tags%EF%BC%89"><span class="nav-number">3.4.1.</span> <span class="nav-text">轻量标签（“Lightweight” tags）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E5%AF%B9%E8%B1%A1%EF%BC%88Tag-objects%EF%BC%89"><span class="nav-number">3.4.2.</span> <span class="nav-text">标签对象（Tag objects）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%82%E5%AD%98%E5%8C%BA%EF%BC%88Staging-area%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">暂存区（Staging area）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git%E4%BA%8C%E8%BF%9E%E5%87%BB%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">5.</span> <span class="nav-text">Git二连击可视化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E8%BF%9B%E9%98%B6"><span class="nav-number">6.</span> <span class="nav-text">Git常用命令进阶</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#git-checkout"><span class="nav-number">6.1.</span> <span class="nav-text">git checkout</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E5%8F%82%E6%95%B0"><span class="nav-number">6.1.1.</span> <span class="nav-text">分支参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A2%AB%E5%88%86%E7%A6%BB%E7%9A%84HEAD%E6%A0%87%E8%AF%86"><span class="nav-number">6.1.2.</span> <span class="nav-text">被分离的HEAD标识</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-reset"><span class="nav-number">6.2.</span> <span class="nav-text">git reset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-merge"><span class="nav-number">6.3.</span> <span class="nav-text">git merge</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-cherry-pick"><span class="nav-number">6.4.</span> <span class="nav-text">git cherry-pick</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-rebase"><span class="nav-number">6.5.</span> <span class="nav-text">git rebase</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E7%BD%91%E7%AB%99"><span class="nav-number">7.</span> <span class="nav-text">参考网站</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -550,7 +644,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -563,7 +657,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -608,12 +702,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">10k</span>
+    <span title="站点总字数">17k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">35 分钟</span>
+    <span title="站点阅读时长">1:03</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>

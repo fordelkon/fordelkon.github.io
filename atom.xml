@@ -6,7 +6,7 @@
   <link href="http://fordelkon.github.io/atom.xml" rel="self"/>
   
   <link href="http://fordelkon.github.io/"/>
-  <updated>2025-03-10T04:40:48.819Z</updated>
+  <updated>2025-03-13T13:23:01.265Z</updated>
   <id>http://fordelkon.github.io/</id>
   
   <author>
@@ -15,6 +15,50 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>使用命令行的艺术</title>
+    <link href="http://fordelkon.github.io/2025/03/12/2025-3-12-Command%20Line%20Art2-%E9%87%8D%E5%AE%9A%E5%90%91%E5%92%8C%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86/"/>
+    <id>http://fordelkon.github.io/2025/03/12/2025-3-12-Command%20Line%20Art2-%E9%87%8D%E5%AE%9A%E5%90%91%E5%92%8C%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86/</id>
+    <published>2025-03-12T11:44:52.585Z</published>
+    <updated>2025-03-13T13:23:01.265Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;熟练使用命令行是一种常常被忽视，或被认为难以掌握的技能，但实际上，它会提高你作为工程师的灵活性以及生产力。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Linux操作系统" scheme="http://fordelkon.github.io/categories/Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
+    
+    
+    <category term="Shell" scheme="http://fordelkon.github.io/tags/Shell/"/>
+    
+    <category term="Linux" scheme="http://fordelkon.github.io/tags/Linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux Shell</title>
+    <link href="http://fordelkon.github.io/2025/03/11/2025-3-11-Command%20Line%20Art1-%20Bash%20Shell%E7%9B%B8%E5%85%B3/"/>
+    <id>http://fordelkon.github.io/2025/03/11/2025-3-11-Command%20Line%20Art1-%20Bash%20Shell%E7%9B%B8%E5%85%B3/</id>
+    <published>2025-03-11T08:41:31.290Z</published>
+    <updated>2025-03-13T08:15:27.322Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;本文旨在了解命令行的Shell语言的一些基础概念和有关使用命令行的Shell的一些快捷操作，额外带一些Linux系统中系统文件说明…&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Linux操作系统" scheme="http://fordelkon.github.io/categories/Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
+    
+    
+    <category term="Shell" scheme="http://fordelkon.github.io/tags/Shell/"/>
+    
+    <category term="Linux" scheme="http://fordelkon.github.io/tags/Linux/"/>
+    
+    <category term="docker" scheme="http://fordelkon.github.io/tags/docker/"/>
+    
+  </entry>
   
   <entry>
     <title>EEG数据初探</title>
@@ -42,7 +86,7 @@
     <link href="http://fordelkon.github.io/2025/03/07/2025-3-7-git/"/>
     <id>http://fordelkon.github.io/2025/03/07/2025-3-7-git/</id>
     <published>2025-03-07T08:08:40.614Z</published>
-    <updated>2025-03-09T10:06:59.370Z</updated>
+    <updated>2025-03-10T13:20:26.431Z</updated>
     
     
     <summary type="html">&lt;p&gt;这篇博客主要自底向上地介绍Git命令行，有时甚至会使用一些&lt;code&gt;python&lt;/code&gt;代码来对一些Git的功能进行更加详细的分析。我一直认为基础一旦打好，那么一些更高级的用法也可以循序渐进地了解，而且是更加透彻的了解。不是像博主一开始那样以为只要死记硬背&lt;code&gt;git add&lt;/code&gt;，&lt;code&gt;git commit&lt;/code&gt;,&lt;code&gt;git pull&lt;/code&gt;，&lt;code&gt;git clone&lt;/code&gt;等常见命令的一些用法就可以了😭（实际上网上大多数教程就是这样教的…），在这上面走了不少弯路，所以从头开始打地基写作此文留以警示⚠️。&lt;/p&gt;</summary>

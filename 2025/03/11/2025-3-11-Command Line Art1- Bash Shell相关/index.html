@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fordelkon.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文旨在了解命令行的Shell语言的一些基础概念和有关使用命令行的Shell的一些快捷操作，额外带一些Linux系统中系统文件说明…">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux Shell">
+<meta property="og:url" content="http://fordelkon.github.io/2025/03/11/2025-3-11-Command%20Line%20Art1-%20Bash%20Shell%E7%9B%B8%E5%85%B3/index.html">
+<meta property="og:site_name" content="delkon&#39;s blog">
+<meta property="og:description" content="本文旨在了解命令行的Shell语言的一些基础概念和有关使用命令行的Shell的一些快捷操作，额外带一些Linux系统中系统文件说明…">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-03-11T08:41:31.290Z">
+<meta property="article:modified_time" content="2025-03-13T08:15:27.322Z">
+<meta property="article:author" content="delkon">
+<meta property="article:tag" content="Shell">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="docker">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://fordelkon.github.io/2025/03/11/2025-3-11-Command%20Line%20Art1-%20Bash%20Shell%E7%9B%B8%E5%85%B3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Linux Shell | delkon's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="delkon's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+      <a target="_blank" rel="noopener" href="https://github.com/fordelkon" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">delkon's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life is short, I use Python</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fordelkon.github.io/2025/03/11/2025-3-11-Command%20Line%20Art1-%20Bash%20Shell%E7%9B%B8%E5%85%B3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="delkon">
+      <meta itemprop="description" content="Stay hungry, stay foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="delkon's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux Shell
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-03-11 16:41:31" itemprop="dateCreated datePublished" datetime="2025-03-11T16:41:31+08:00">2025-03-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-03-13 16:15:27" itemprop="dateModified" datetime="2025-03-13T16:15:27+08:00">2025-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">Linux操作系统</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>13 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文旨在了解命令行的Shell语言的一些基础概念和有关使用命令行的Shell的一些快捷操作，额外带一些Linux系统中系统文件说明…</p>
+<span id="more"></span>
+
+<h2 id="使用docker拉取Ubuntu容器"><a href="#使用docker拉取Ubuntu容器" class="headerlink" title="使用docker拉取Ubuntu容器"></a>使用docker拉取Ubuntu容器</h2><p>由于本人的笔记本并非Linux操作系统，为了方便命令行的学习而又不想搭建虚拟机双开系统，我们使用Docker来拉取一个Ubuntu镜像来方便我们学习。</p>
+<ul>
+<li><p>拉取Ubuntu镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull ubuntu</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行一个交互式的 Ubuntu 容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it ubuntu</span><br></pre></td></tr></table></figure>
+<p>这将拉起一个新的 Ubuntu 容器并进入它的命令行。<code>-it </code>标志表示以交互模式启动，并连接到该容器的终端。进入容器后，你将获得一个完全隔离的 Linux 系统，可以像平常一样使用 Shell。</p>
+</li>
+<li><p>退出容器<br>你可以在Linux系统中运行 exit 命令来退出容器。默认情况下，当你退出容器后，容器也会自动停止。如果你想保持容器在后台运行，可以通过以下方式运行容器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d ubuntu</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重新进入容器<br>如果是在Linux系统中运行exit命令后，退出容器后容器自动停止，此时再想打开这个容器的话我们先运行以下命令找到我们的容器ID。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>我的电脑上输出的结果是：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED          STATUS         PORTS     NAMES</span><br><span class="line">3a8357da8968   ubuntu    &quot;/bin/bash&quot;   2 minutes ago   Exited (0) About a minute ago             tender_elbakyan</span><br></pre></td></tr></table></figure>
+
+<p>然后再根据容器ID启动一个停止的容器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker start 3a8357da8968</span><br></pre></td></tr></table></figure>
+
+<p>进入一个已经在运行的容器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it 3a8357da8968 /bin/bash</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除容器和镜像<br>当我们不在需要容器和镜像的时候，可以删除容器和镜像来节省内存。首先根据容器ID删除容器：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">rm</span> 3a8357da8968</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>再根据镜像ID删除镜像。先得到镜像ID：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+
+<p>我的电脑的运行结果是：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">REPOSITORY   TAG       IMAGE ID       CREATED       SIZE</span><br><span class="line">ubuntu       latest    c3d1a3432580   6 weeks ago   101MB</span><br></pre></td></tr></table></figure>
+
+<p>再删除镜像：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi c3d1a3432580</span><br></pre></td></tr></table></figure>
+
+<h2 id="Bash-Shell"><a href="#Bash-Shell" class="headerlink" title="Bash Shell"></a>Bash Shell</h2><h3 id="Linux系统文件中的shell"><a href="#Linux系统文件中的shell" class="headerlink" title="Linux系统文件中的shell"></a>Linux系统文件中的shell</h3><p>Shell（壳程序）可以提供使用者操作应用程序的接口。<code>/bin/bash</code>是Linux默认的shell，Linux可用的shell记录在<code>/etc/shells</code>中，我们可以通过以下命令查看Linux可用的shells：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/shells</span><br></pre></td></tr></table></figure>
+
+<p>得到的输出是：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># /etc/shells: valid login shells</span><br><span class="line">/bin/sh</span><br><span class="line">/usr/bin/sh</span><br><span class="line">/bin/bash</span><br><span class="line">/usr/bin/bash</span><br><span class="line">/bin/rbash</span><br><span class="line">/usr/bin/rbash</span><br><span class="line">/usr/bin/dash</span><br></pre></td></tr></table></figure>
+
+<p>登陆Linux系统时，系统会给予一个shell，这个登陆取得的shell记录在<code>/etc/passwd</code>中，可以通过以下命令查看：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/passwd</span><br></pre></td></tr></table></figure>
+
+<p>得到的输出是：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@611b47761989:/# cat /etc/passwd</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin</span><br><span class="line">......（下面省略）......</span><br></pre></td></tr></table></figure>
+
+<h3 id="bash-shell的功能"><a href="#bash-shell的功能" class="headerlink" title="bash shell的功能"></a>bash shell的功能</h3><ul>
+<li>记忆使用过的指令（记录的指令在<code>~/.bash_history</code>中）</li>
+<li>命令与文件的补全（使用<code>tab</code>键，两次连按<code>tab</code>键会对匹配的命令或文件进行显示，如果只有一个与之匹配的命令或文件，则一次<code>tab</code>键会自动补全）</li>
+<li>设置命令别名<br>比如要现实目录下面的所有文件 （包含隐藏文件） 及所有的文件属性，我们可以运行以下命令：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ls</span> -al</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>但我们又是嫌弃这样写太过麻烦，我们可以对以上命令进行别名命名：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">alias</span> lm=<span class="string">&#x27;ls -al&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>那么<code>lm</code>的功能就和之前的<code>ls -al</code>功能一致了。</p>
+<ul>
+<li>程序化脚本（shell script）</li>
+<li>万用字符匹配*（正则表达式匹配）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*</td>
+<td>代表“ 0 个到无穷多个”任意字符</td>
+</tr>
+<tr>
+<td>?</td>
+<td>代表“一定有一个”任意字符</td>
+</tr>
+<tr>
+<td>[ ]</td>
+<td>同样代表“一定有一个在括号内”的字符（非任意字符）。例如<code>[abcd]</code> 代表“一定有一个字符， 可能是 a, b, c, d 这四个任何一个”</td>
+</tr>
+<tr>
+<td>[ - ]</td>
+<td>若有减号在中括号内时，代表“在编码顺序内的所有字符”。例如<code>[0-9]</code> 代表 0 到 9 之间的所有数字，因为数字的语系编码是连续的！</td>
+</tr>
+<tr>
+<td>[^ ]</td>
+<td>若中括号内的第一个字符为指数符号 （^） ，那表示“反向选择”，例如 <code>[^abc]</code> 代表 一定有一个字符，只要是非 a, b, c 的其他字符就接受的意思。</td>
+</tr>
+</tbody></table>
+<ul>
+<li>与命令行相关的特殊符号</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>#</td>
+<td>注解符号：这个最常被使用在 script 当中，视为说明！在后的数据均不执行</td>
+</tr>
+<tr>
+<td>\</td>
+<td>跳脱符号：将“特殊字符或万用字符”还原成一般字符</td>
+</tr>
+<tr>
+<td>|</td>
+<td>管道（pipe）：分隔两个管线命令的界定；</td>
+</tr>
+<tr>
+<td>;</td>
+<td>连续指令下达分隔符号：连续性命令的界定 （注意！与管线命令并不相同）</td>
+</tr>
+<tr>
+<td>~</td>
+<td>使用者的主文件夹</td>
+</tr>
+<tr>
+<td>$</td>
+<td>取用变量前置字符：亦即是变量之前需要加的变量取代值</td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>工作控制 （job control）：将指令变成背景下工作</td>
+</tr>
+<tr>
+<td>!</td>
+<td>逻辑运算意义上的“非” not 的意思！</td>
+</tr>
+<tr>
+<td>&#x2F;</td>
+<td>目录符号：路径分隔的符号</td>
+</tr>
+<tr>
+<td>&gt;, &gt;&gt;</td>
+<td>数据流重导向：输出导向，分别是“取代”与“累加”</td>
+</tr>
+<tr>
+<td>&lt;, &lt;&lt;</td>
+<td>数据流重导向：输入导向</td>
+</tr>
+<tr>
+<td>‘ ‘</td>
+<td>单引号，不具有变量置换的功能 （$ 变为纯文本）</td>
+</tr>
+<tr>
+<td>“ “</td>
+<td>具有变量置换的功能！ （$ 可保留相关功能）</td>
+</tr>
+<tr>
+<td></td>
+<td>两个“ &#96; ”中间为可以先执行的指令，亦可使用 $（ ）</td>
+</tr>
+<tr>
+<td>（ ）</td>
+<td>在中间为子 shell 的起始与结束</td>
+</tr>
+<tr>
+<td>{ }</td>
+<td>在中间为命令区块的组合！</td>
+</tr>
+</tbody></table>
+<h3 id="bash-shell的内置命令查询：type"><a href="#bash-shell的内置命令查询：type" class="headerlink" title="bash shell的内置命令查询：type"></a>bash shell的内置命令查询：type</h3><p>通过<code>type</code>指令我们可以知道每个指令是否为 bash 的内置指令，此外利用<code>type</code>搜寻后面的名称时，如果后面接的名称并不能以可执行文件的状态被找到， 那么该名称是不会被显示出来的。因此我们可以也可以直接运行可执行文件来代替原命令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> -a <span class="built_in">ls</span></span><br></pre></td></tr></table></figure>
+
+<p>得到的输出为：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls is aliased to `ls --color=auto&#x27;</span><br><span class="line">ls is /usr/bin/ls</span><br><span class="line">ls is /bin/ls</span><br></pre></td></tr></table></figure>
+
+<p>因此我们也可以直接运行<code>/usr/bin/ls</code>或<code>/bin/ls</code>来代替<code>ls</code>。找指令也可以使用<code>which</code>。</p>
+<h3 id="bash-shell中的快速编辑按钮"><a href="#bash-shell中的快速编辑按钮" class="headerlink" title="bash shell中的快速编辑按钮"></a>bash shell中的快速编辑按钮</h3><ul>
+<li><code>ctrl-r</code>搜索命令行历史记录（按下按键之后，输入关键字便可以搜索，重复按下<code>ctrl-r</code>会向后查找匹配项，按下<code>Enter</code>键会执行当前匹配的命令，而按下右方向键会将匹配项放入当前行中，不会直接执行，以便做出修改）。</li>
+<li><code>ctrl-w</code>删除你键入的最后一个单词，<code>ctrl-u</code>可以删除行内光标所在位置之前的内容，<code>alt-b</code>和 <code>alt-f</code>可以以单词为单位移动光标，<code>ctrl-a</code>可以将光标移至行首，<code>ctrl-e</code>可以将光标移至行尾，<code>ctrl-k</code>可以删除光标至行尾的所有内容，<code>ctrl-l</code>可以清屏。键入 <code>man readline</code> 可以查看 Bash 中的默认快捷键。内容有很多，例如 <code>alt-.</code>循环地移向前一个参数，而<code>alt-*</code>可以展开通配符。</li>
+</ul>
+<h3 id="shell的变量"><a href="#shell的变量" class="headerlink" title="shell的变量"></a>shell的变量</h3><p>使用<code>echo</code>命令可以读出变量<br><code>echo $&#123;variable&#125;</code>读出variable的值<br><code>echo $&#123;command&#125;</code>读出command的stdout</p>
+<h3 id="系统自带的环境变量"><a href="#系统自带的环境变量" class="headerlink" title="系统自带的环境变量"></a>系统自带的环境变量</h3><p>利用<code>etc</code>观察系统自带环境变量如下：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">HOSTNAME=611b47761989 # 这部主机的主机名称</span><br><span class="line">PWD=/ # 当前工作目录</span><br><span class="line">HOME=/root # 当前用户的主目录</span><br><span class="line">LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:</span><br><span class="line">TERM=xterm # 这个终端机使用的环境是什么类型</span><br><span class="line">SHLVL=1 # 当前 shell 会话的深度层级</span><br><span class="line">PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin # 系统搜索可执行文件的路径列表</span><br><span class="line">_=/usr/bin/env # 这是最后一个执行命令的路径</span><br></pre></td></tr></table></figure>
+
+<p>比较重要的除了上面介绍的之外还有一个RANDOM变量，在 BASH 的环境下，这个 RANDOM 变量的内容，介于 0~32767 之间，由<code>/dev/random</code>乱数器产生。</p>
+<h3 id="bash内的自订变量"><a href="#bash内的自订变量" class="headerlink" title="bash内的自订变量"></a>bash内的自订变量</h3><p>利用<code>set</code>命令观察bash内的其他变量如下：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">BASH=/bin/bash</span><br><span class="line">......</span><br><span class="line">BASH_ALIASES=()</span><br><span class="line">BASH_ARGC=([0]=&quot;0&quot;)</span><br><span class="line">BASH_ARGV=()</span><br><span class="line">BASH_CMDS=()</span><br><span class="line">BASH_LINENO=()</span><br><span class="line">BASH_LOADABLES_PATH=/usr/local/lib/bash:/usr/lib/bash:/opt/local/lib/bash:/usr/pkg/lib/bash:/opt/pkg/lib/bash:.</span><br><span class="line">BASH_SOURCE=()</span><br><span class="line">BASH_VERSINFO=([0]=&quot;5&quot; [1]=&quot;2&quot; [2]=&quot;21&quot; [3]=&quot;1&quot; [4]=&quot;release&quot; [5]=&quot;aarch64-unknown-linux-gnu&quot;)</span><br><span class="line">BASH_VERSION=&#x27;5.2.21(1)-release&#x27;</span><br><span class="line">COLUMNS=80</span><br><span class="line">DIRSTACK=()</span><br><span class="line">EUID=0</span><br><span class="line">GROUPS=()</span><br><span class="line">HISTCONTROL=ignoredups:ignorespace</span><br><span class="line">HISTFILE=/root/.bash_history</span><br><span class="line">HISTFILESIZE=2000</span><br><span class="line">HISTSIZE=1000</span><br><span class="line">HOME=/root</span><br><span class="line">HOSTNAME=611b47761989</span><br><span class="line">HOSTTYPE=aarch64</span><br><span class="line">IFS=$&#x27; \t\n&#x27;</span><br><span class="line">LINES=25</span><br><span class="line">......</span><br><span class="line">MACHTYPE=aarch64-unknown-linux-gnu</span><br><span class="line">MAILCHECK=60</span><br><span class="line">OPTERR=1</span><br><span class="line">OPTIND=1</span><br><span class="line">OSTYPE=linux-gnu</span><br><span class="line">PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin</span><br><span class="line">PIPESTATUS=([0]=&quot;0&quot;)</span><br><span class="line">PPID=0</span><br><span class="line">PS1=&#x27;\[\e]0;\u@\h: \w\a\]$&#123;debian_chroot:+($debian_chroot)&#125;\u@\h:\w\$ &#x27;</span><br><span class="line">PS2=&#x27;&gt; &#x27;</span><br><span class="line">PS4=&#x27;+ &#x27;</span><br><span class="line">PWD=/</span><br><span class="line">SHELL=/bin/bash</span><br><span class="line">SHELLOPTS=braceexpand:emacs:hashall:histexpand:history:interactive-comments:monitor</span><br><span class="line">SHLVL=1</span><br><span class="line">TERM=xterm</span><br><span class="line">UID=0</span><br><span class="line">_=clear</span><br></pre></td></tr></table></figure>
+
+<p>上面的变量有一些比较重要，我们分而述之。</p>
+<ol>
+<li>PS1：（提示字符的设置）<br>当我们每次按下<code>enter</code>键去执行某个指令后，最后要再次出现提示符时就会去读取这个变量值。<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PS1=<span class="string">&#x27;\[\e]0;\u@\h: \w\a\]$&#123;debian_chroot:+($debian_chroot)&#125;\u@\h:\w\$ &#x27;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>其中<code>\[\e]0;...\a\]</code>: 这是一个 ANSI 转义序列，用于在支持的终端中设置窗口的标题或图标。<code>$&#123;debian_chroot:+($debian_chroot)&#125;</code>是条件表达式，用于在 Debian 或其他带有 chroot 环境时显示当前的 chroot 名称。<code>\u@\h</code>显示格式为 用户名@主机名，<code>\w</code>显示当前的工作目录，最后<code>\$</code>根据当前用户是否是超级用户显示不同的符号。还有一些其他比较有意思的符号，比如</p>
+<ul>
+<li><code>#</code> ： 下达的第几个指令。</li>
+<li><code>\t</code> ：显示时间，为 24 小时格式的“HH:MM:SS”</li>
+<li><code>\T</code> ：显示时间，为 12 小时格式的“HH:MM:SS”</li>
+<li><code>\A</code> ：显示时间，为 24 小时格式的“HH:MM”</li>
+<li><code>\@</code> ：显示时间，为 12 小时格式的“am&#x2F;pm”样式</li>
+</ul>
+<ol start="2">
+<li><p><code>$</code>：本shell的PID<br>我们可以运行<code>echo $&#123;$&#125;</code>来展示本shell的PID号码，结果如下:</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">51</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>?</code>：上个执行指令的回传值<br>如果成功的执行上个指令， 则会回传一个 0 值，如果执行过程发生错误，就会回传非为 0 的数值。具体情形如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> cati</span><br></pre></td></tr></table></figure>
+<p>结果为：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash: cd: cati: No such file or directory</span><br></pre></td></tr></table></figure>
+<p>再运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;?&#125;</span></span><br></pre></td></tr></table></figure>
+<p>结果为：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="自订变量和环境变量的转换"><a href="#自订变量和环境变量的转换" class="headerlink" title="自订变量和环境变量的转换"></a>自订变量和环境变量的转换</h3><ul>
+<li>自订变量转成环境变量<br>采用<code>export</code>命令或<code>declare -x</code>：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> variable</span><br><span class="line"><span class="built_in">declare</span> -x variable</span><br></pre></td></tr></table></figure></li>
+<li>环境变量（由自订变量转换而成的环境变量）转成自订变量<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">declare</span> [-aixr] variable</span><br><span class="line">选项与参数：</span><br><span class="line">-a  ：将后面名为 variable 的变量定义成为阵列 （array） 类型</span><br><span class="line">-i  ：将后面名为 variable 的变量定义成为整数数字 （<span class="built_in">integer</span>） 类型</span><br><span class="line">-x  ：用法与 <span class="built_in">export</span> 一样，就是将后面的 variable 变成环境变量；</span><br><span class="line">-r  ：将变量设置成为 <span class="built_in">readonly</span> 类型，该变量不可被更改内容，也不能 <span class="built_in">unset</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>采用<code>declare +x</code>:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">declare</span> +x variable</span><br></pre></td></tr></table></figure>
+
+<h3 id="bash中与变量相关的一些特殊的符号"><a href="#bash中与变量相关的一些特殊的符号" class="headerlink" title="bash中与变量相关的一些特殊的符号"></a>bash中与变量相关的一些特殊的符号</h3><ul>
+<li><code>#</code>：从字符串开头删除与pattern匹配的最短部分，并返回剩下的字符串。也可以用来获取变量的字符长度。<br>语法：<code>$&#123;variable#pattern&#125;</code><br>语法：<code>$&#123;#variable&#125;</code></li>
+<li><code>##</code>：从字符串开头删除与pattern匹配的最长部分，并返回剩下的字符串。<br>语法：<code>$&#123;variable##pattern&#125;</code></li>
+</ul>
+<p>具体示例如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">str=abc.defg.hijkl.txt</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;str#*.&#125;</span> <span class="comment"># defg.hijkl.txt</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;str##*.&#125;</span> <span class="comment"># txt</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>%</code>: 从字符串末尾删除与 pattern 匹配的最短部分，并返回剩下的字符串。<br>语法：<code>$&#123;variable%pattern&#125;</code></p>
+</li>
+<li><p><code>%%</code>：从字符串末尾删除与 pattern 匹配的最短部分，并返回剩下的字符串。<br>语法：<code>$&#123;variable%%pattern&#125;</code><br>具体示例如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;str%.*&#125;</span> <span class="comment"># abc.defg.hijkl</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;str%%.*&#125;</span> <span class="comment"># abc</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>/</code>：将变量 variable 中第一个匹配 pattern 的部分替换为 replacement。<br>语法：<code>$&#123;variable/pattern/replacement&#125;</code></p>
+</li>
+<li><p><code>//</code>：将变量 variable 中所有匹配 pattern 的部分替换为 replacement。<br>语法：<code>$&#123;variable//pattern/replacement&#125;</code><br>具体示例如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fname=delkon-university-works</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;fname/-/_&#125;</span> <span class="comment"># delkon_university-works</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;fname//-/_&#125;</span> <span class="comment"># delkon_university_works</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>:-</code>：如果变量未定义或为空，则返回default值。<br>语法：<code>$&#123;variable:-default&#125;</code></p>
+</li>
+<li><p><code>:=</code>：如果变量未定义或为空，则将其赋值为 default。<br>语法：<code>$&#123;variable:=default&#125;</code></p>
+</li>
+<li><p><code>:+</code>：如果变量已定义且不为空，则返回 replacement，否则返回空字符串。<br>语法：<code>$&#123;variable:+replacement&#125;</code></p>
+</li>
+<li><p><code>:?</code>：如果变量未定义或为空，则输出 error 消息并退出脚本。<br>语法：<code>$&#123;variable:?error&#125;</code></p>
+</li>
+</ul>
+<p>具体一些情况如下表格所示：</p>
+<table>
+<thead>
+<tr>
+<th>变量设置方式</th>
+<th>str 没有设置</th>
+<th>str 为空字串</th>
+<th>str 已设置非为空字串</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>var=$&#123;str-expr&#125;</code></td>
+<td><code>var=expr</code></td>
+<td><code>var=</code></td>
+<td><code>var=$str</code></td>
+</tr>
+<tr>
+<td><code>var=$&#123;str:-expr&#125;</code></td>
+<td><code>var=expr</code></td>
+<td><code>var=expr</code></td>
+<td><code>var=$str</code></td>
+</tr>
+<tr>
+<td><code>var=$&#123;str+expr&#125;</code></td>
+<td><code>var=</code></td>
+<td><code>var=expr</code></td>
+<td><code>var=expr</code></td>
+</tr>
+<tr>
+<td><code>var=$&#123;str:+expr&#125;</code></td>
+<td><code>var=</code></td>
+<td><code>var=</code></td>
+<td><code>var=expr</code></td>
+</tr>
+<tr>
+<td><code>var=$&#123;str=expr&#125;</code></td>
+<td><code>str=expr</code> <code>var=expr</code></td>
+<td><code>str 不变 var=</code></td>
+<td><code>str 不变</code> <code>var=$str</code></td>
+</tr>
+<tr>
+<td><code>var=$&#123;str:=expr&#125;</code></td>
+<td><code>str=expr</code> <code>var=expr</code></td>
+<td><code>str=expr</code> <code>var=expr</code></td>
+<td><code>str 不变</code> <code>var=$str</code></td>
+</tr>
+<tr>
+<td><code>var=$&#123;str?expr&#125;</code></td>
+<td><code>expr 输出至 stderr</code></td>
+<td><code>var=</code></td>
+<td><code>var=$str</code></td>
+</tr>
+<tr>
+<td><code>var=$&#123;str:?expr&#125;</code></td>
+<td><code>expr 输出至 stderr</code></td>
+<td><code>expr 输出至 stderr</code></td>
+<td><code>var=$str</code></td>
+</tr>
+</tbody></table>
+<ul>
+<li><code>$&#123;variable:offset&#125;</code>和<code>$&#123;variable:offset:length&#125;</code>用来从变量中提取子字符串。</li>
+</ul>
+<h3 id="bash配置"><a href="#bash配置" class="headerlink" title="bash配置"></a>bash配置</h3><p><code>source</code>或<code>.</code>后接配置文件会立即使用该配置文件。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Shell/" rel="tag"># Shell</a>
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/03/09/2025-3-9-eeg-data/" rel="prev" title="EEG数据初探">
+      <i class="fa fa-chevron-left"></i> EEG数据初探
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/03/12/2025-3-12-Command%20Line%20Art2-%E9%87%8D%E5%AE%9A%E5%90%91%E5%92%8C%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86/" rel="next" title="使用命令行的艺术">
+      使用命令行的艺术 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8docker%E6%8B%89%E5%8F%96Ubuntu%E5%AE%B9%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">使用docker拉取Ubuntu容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bash-Shell"><span class="nav-number">2.</span> <span class="nav-text">Bash Shell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux%E7%B3%BB%E7%BB%9F%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84shell"><span class="nav-number">2.1.</span> <span class="nav-text">Linux系统文件中的shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bash-shell%E7%9A%84%E5%8A%9F%E8%83%BD"><span class="nav-number">2.2.</span> <span class="nav-text">bash shell的功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bash-shell%E7%9A%84%E5%86%85%E7%BD%AE%E5%91%BD%E4%BB%A4%E6%9F%A5%E8%AF%A2%EF%BC%9Atype"><span class="nav-number">2.3.</span> <span class="nav-text">bash shell的内置命令查询：type</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bash-shell%E4%B8%AD%E7%9A%84%E5%BF%AB%E9%80%9F%E7%BC%96%E8%BE%91%E6%8C%89%E9%92%AE"><span class="nav-number">2.4.</span> <span class="nav-text">bash shell中的快速编辑按钮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell%E7%9A%84%E5%8F%98%E9%87%8F"><span class="nav-number">2.5.</span> <span class="nav-text">shell的变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E8%87%AA%E5%B8%A6%E7%9A%84%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">2.6.</span> <span class="nav-text">系统自带的环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bash%E5%86%85%E7%9A%84%E8%87%AA%E8%AE%A2%E5%8F%98%E9%87%8F"><span class="nav-number">2.7.</span> <span class="nav-text">bash内的自订变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E8%AE%A2%E5%8F%98%E9%87%8F%E5%92%8C%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-number">2.8.</span> <span class="nav-text">自订变量和环境变量的转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bash%E4%B8%AD%E4%B8%8E%E5%8F%98%E9%87%8F%E7%9B%B8%E5%85%B3%E7%9A%84%E4%B8%80%E4%BA%9B%E7%89%B9%E6%AE%8A%E7%9A%84%E7%AC%A6%E5%8F%B7"><span class="nav-number">2.9.</span> <span class="nav-text">bash中与变量相关的一些特殊的符号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bash%E9%85%8D%E7%BD%AE"><span class="nav-number">2.10.</span> <span class="nav-text">bash配置</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="delkon"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">delkon</p>
+  <div class="site-description" itemprop="description">Stay hungry, stay foolish</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fordelkon" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fordelkon" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">delkon</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">17k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:03</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
