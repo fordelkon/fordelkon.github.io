@@ -6,7 +6,7 @@
   <link href="http://fordelkon.github.io/atom.xml" rel="self"/>
   
   <link href="http://fordelkon.github.io/"/>
-  <updated>2025-03-13T13:23:01.265Z</updated>
+  <updated>2025-03-13T14:58:25.323Z</updated>
   <id>http://fordelkon.github.io/</id>
   
   <author>
@@ -17,14 +17,14 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>使用命令行的艺术</title>
+    <title>使用命令行的艺术2 - 重定向和文件管理</title>
     <link href="http://fordelkon.github.io/2025/03/12/2025-3-12-Command%20Line%20Art2-%E9%87%8D%E5%AE%9A%E5%90%91%E5%92%8C%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86/"/>
     <id>http://fordelkon.github.io/2025/03/12/2025-3-12-Command%20Line%20Art2-%E9%87%8D%E5%AE%9A%E5%90%91%E5%92%8C%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86/</id>
     <published>2025-03-12T11:44:52.585Z</published>
-    <updated>2025-03-13T13:23:01.265Z</updated>
+    <updated>2025-03-13T14:58:25.323Z</updated>
     
     
-    <summary type="html">&lt;p&gt;熟练使用命令行是一种常常被忽视，或被认为难以掌握的技能，但实际上，它会提高你作为工程师的灵活性以及生产力。&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;熟练使用命令行是一种常常被忽视，或被认为难以掌握的技能，但实际上，它会提高你作为工程师的灵活性以及生产力。本文旨在了解命令行中的重定向功能和文件管理功能。&lt;/p&gt;</summary>
     
     
     
@@ -38,14 +38,14 @@
   </entry>
   
   <entry>
-    <title>Linux Shell</title>
+    <title>使用命令行的艺术1 - Bash Shell相关</title>
     <link href="http://fordelkon.github.io/2025/03/11/2025-3-11-Command%20Line%20Art1-%20Bash%20Shell%E7%9B%B8%E5%85%B3/"/>
     <id>http://fordelkon.github.io/2025/03/11/2025-3-11-Command%20Line%20Art1-%20Bash%20Shell%E7%9B%B8%E5%85%B3/</id>
     <published>2025-03-11T08:41:31.290Z</published>
-    <updated>2025-03-13T08:15:27.322Z</updated>
+    <updated>2025-03-13T14:57:32.054Z</updated>
     
     
-    <summary type="html">&lt;p&gt;本文旨在了解命令行的Shell语言的一些基础概念和有关使用命令行的Shell的一些快捷操作，额外带一些Linux系统中系统文件说明…&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;熟练使用命令行是一种常常被忽视，或被认为难以掌握的技能，但实际上，它会提高你作为工程师的灵活性以及生产力。本文旨在了解命令行的Shell语言的一些基础概念和有关使用命令行的Shell的一些快捷操作，额外带一些Linux系统中系统文件说明…&lt;/p&gt;</summary>
     
     
     
