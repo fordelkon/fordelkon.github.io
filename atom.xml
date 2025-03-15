@@ -6,7 +6,7 @@
   <link href="http://fordelkon.github.io/atom.xml" rel="self"/>
   
   <link href="http://fordelkon.github.io/"/>
-  <updated>2025-03-15T08:53:36.262Z</updated>
+  <updated>2025-03-15T15:45:45.303Z</updated>
   <id>http://fordelkon.github.io/</id>
   
   <author>
@@ -21,16 +21,10 @@
     <link href="http://fordelkon.github.io/2025/03/15/2025-3-15-Command%20Line%20Art3-Shell%20Script%E7%9B%B8%E5%85%B3/"/>
     <id>http://fordelkon.github.io/2025/03/15/2025-3-15-Command%20Line%20Art3-Shell%20Script%E7%9B%B8%E5%85%B3/</id>
     <published>2025-03-15T03:40:32.185Z</published>
-    <updated>2025-03-15T08:53:36.262Z</updated>
+    <updated>2025-03-15T15:45:45.303Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;Shell-Script&quot;&gt;&lt;a href=&quot;#Shell-Script&quot; class=&quot;headerlink&quot; title=&quot;Shell Script&quot;&gt;&lt;/a&gt;Shell Script&lt;/h2&gt;&lt;h3 id=&quot;运行方式&quot;&gt;&lt;a href=&quot;#运行方式&quot;</summary>
-        
-      
+    <summary type="html">&lt;p&gt;学会如何编写shell script对于编程能力是很大的提升，尤其是在进行大型项目是使用命令行来控制多个文件分别运行的时候，直接bash一下.&lt;code&gt;sh&lt;/code&gt;文件可以省下多少重复的操作！往小处说，一些复杂的功能可以由shell script很简单的实现，所以了解shell script还是很有必要的……&lt;/p&gt;</summary>
     
     
     

@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"fordelkon.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Shell Script运行方式 利用bash运行script，在bash的子进程中运行 利用source运行script，在父进程bash中运行编写showname.sh来对两种运行方法进行测试：1234567891011#!bin&#x2F;bash#Program:#       User inputs his first name and last name. Program shows his f">
+  <meta name="description" content="学会如何编写shell script对于编程能力是很大的提升，尤其是在进行大型项目是使用命令行来控制多个文件分别运行的时候，直接bash一下.sh文件可以省下多少重复的操作！往小处说，一些复杂的功能可以由shell script很简单的实现，所以了解shell script还是很有必要的……">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用命令行的艺术3 - Shell Script相关">
 <meta property="og:url" content="http://fordelkon.github.io/2025/03/15/2025-3-15-Command%20Line%20Art3-Shell%20Script%E7%9B%B8%E5%85%B3/index.html">
 <meta property="og:site_name" content="delkon&#39;s blog">
-<meta property="og:description" content="Shell Script运行方式 利用bash运行script，在bash的子进程中运行 利用source运行script，在父进程bash中运行编写showname.sh来对两种运行方法进行测试：1234567891011#!bin&#x2F;bash#Program:#       User inputs his first name and last name. Program shows his f">
+<meta property="og:description" content="学会如何编写shell script对于编程能力是很大的提升，尤其是在进行大型项目是使用命令行来控制多个文件分别运行的时候，直接bash一下.sh文件可以省下多少重复的操作！往小处说，一些复杂的功能可以由shell script很简单的实现，所以了解shell script还是很有必要的……">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-03-15T03:40:32.185Z">
-<meta property="article:modified_time" content="2025-03-15T08:53:36.262Z">
+<meta property="article:modified_time" content="2025-03-15T15:45:45.303Z">
 <meta property="article:author" content="delkon">
 <meta property="article:tag" content="Shell">
 <meta property="article:tag" content="Linux">
@@ -220,7 +220,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2025-03-15 11:40:32 / 修改时间：16:53:36" itemprop="dateCreated datePublished" datetime="2025-03-15T11:40:32+08:00">2025-03-15</time>
+              <time title="创建时间：2025-03-15 11:40:32 / 修改时间：23:45:45" itemprop="dateCreated datePublished" datetime="2025-03-15T11:40:32+08:00">2025-03-15</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -245,14 +245,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.6k</span>
+              <span>3.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>13 分钟</span>
+              <span>14 分钟</span>
             </span>
 
         </div>
@@ -264,7 +264,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="Shell-Script"><a href="#Shell-Script" class="headerlink" title="Shell Script"></a>Shell Script</h2><h3 id="运行方式"><a href="#运行方式" class="headerlink" title="运行方式"></a>运行方式</h3><ul>
+        <p>学会如何编写shell script对于编程能力是很大的提升，尤其是在进行大型项目是使用命令行来控制多个文件分别运行的时候，直接bash一下.<code>sh</code>文件可以省下多少重复的操作！往小处说，一些复杂的功能可以由shell script很简单的实现，所以了解shell script还是很有必要的……</p>
+<span id="more"></span>
+
+<h2 id="Shell-Script"><a href="#Shell-Script" class="headerlink" title="Shell Script"></a>Shell Script</h2><h3 id="运行方式"><a href="#运行方式" class="headerlink" title="运行方式"></a>运行方式</h3><ul>
 <li>利用bash运行script，在bash的子进程中运行</li>
 <li>利用source运行script，在父进程bash中运行<br>编写<code>showname.sh</code>来对两种运行方法进行测试：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!bin/bash</span></span><br><span class="line"><span class="comment">#Program:</span></span><br><span class="line"><span class="comment">#       User inputs his first name and last name. Program shows his full name.</span></span><br><span class="line"><span class="comment">#History:</span></span><br><span class="line"><span class="comment">#2025/03/15     delkon  First release as showname.sh</span></span><br><span class="line"></span><br><span class="line">PATH=<span class="variable">$PATH</span>:/home/ubuntu/ShellScript</span><br><span class="line"><span class="built_in">export</span> PATH</span><br><span class="line"><span class="built_in">read</span> -p <span class="string">&quot;Please input your first name:&quot;</span> firstname</span><br><span class="line"><span class="built_in">read</span> -p <span class="string">&quot;Please input your last name:&quot;</span> lastname</span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;Your full name is: <span class="variable">$&#123;firstname&#125;</span> <span class="variable">$&#123;lastname&#125;</span>&quot;</span></span><br></pre></td></tr></table></figure></li>
 </ul>
