@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fordelkon.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在使用PyTorch进行深度学习模型搭建的时候，构建我们自己的模型训练器是必不可少的一步。如果你仅仅会使用optimizer.zero_grad()，loss.backward()，optimizer.step()三连来进行反向传播训练（就像之前的我一样），那么现在或许是时候来学习如何做出更加酷炫的训练器了……">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PyTorch训练器配置">
+<meta property="og:url" content="http://fordelkon.github.io/2025/03/14/2025-3-14-PyTorch%20Trainer%20Config/index.html">
+<meta property="og:site_name" content="delkon&#39;s blog">
+<meta property="og:description" content="在使用PyTorch进行深度学习模型搭建的时候，构建我们自己的模型训练器是必不可少的一步。如果你仅仅会使用optimizer.zero_grad()，loss.backward()，optimizer.step()三连来进行反向传播训练（就像之前的我一样），那么现在或许是时候来学习如何做出更加酷炫的训练器了……">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-03-14T07:02:19.141Z">
+<meta property="article:modified_time" content="2025-03-14T11:27:47.136Z">
+<meta property="article:author" content="delkon">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="DL">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://fordelkon.github.io/2025/03/14/2025-3-14-PyTorch%20Trainer%20Config/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>PyTorch训练器配置 | delkon's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="delkon's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+      <a target="_blank" rel="noopener" href="https://github.com/fordelkon" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">delkon's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life is short, I use Python</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fordelkon.github.io/2025/03/14/2025-3-14-PyTorch%20Trainer%20Config/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="delkon">
+      <meta itemprop="description" content="Stay hungry, stay foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="delkon's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PyTorch训练器配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-03-14 15:02:19 / 修改时间：19:27:47" itemprop="dateCreated datePublished" datetime="2025-03-14T15:02:19+08:00">2025-03-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Deep-Learning-Programming/" itemprop="url" rel="index"><span itemprop="name">Deep Learning Programming</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>935</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在使用PyTorch进行深度学习模型搭建的时候，构建我们自己的模型训练器是必不可少的一步。如果你仅仅会使用<code>optimizer.zero_grad()</code>，<code>loss.backward()</code>，<code>optimizer.step()</code>三连来进行反向传播训练（就像之前的我一样），那么现在或许是时候来学习如何做出更加酷炫的训练器了……</p>
+<span id="more"></span>
+
+<h2 id="优化器（Optimizer）系列"><a href="#优化器（Optimizer）系列" class="headerlink" title="优化器（Optimizer）系列"></a>优化器（Optimizer）系列</h2><p>PyTorch的封装使得一个简易优化器的搭建变得十分简单，比如说建立一个Adam优化器，我们可以直接写出如下代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">optimizer = torch.optim.Adam(model.parameters(), lr=<span class="number">1e-5</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这样一个简易的Adam优化器就完成了。这里的model是我自己随便写着作实验所使用的玩具模型，具体实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SimpleConv</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>(SimpleConv, <span class="variable language_">self</span>).__init__()</span><br><span class="line">        <span class="variable language_">self</span>.conv = nn.Conv2d(<span class="number">3</span>, <span class="number">1</span>, <span class="number">3</span>, padding=<span class="number">1</span>)</span><br><span class="line">        <span class="variable language_">self</span>.bn = nn.BatchNorm2d(<span class="number">1</span>)</span><br><span class="line">        <span class="variable language_">self</span>.act = nn.ELU()</span><br><span class="line">        <span class="variable language_">self</span>.flatten = nn.Flatten()</span><br><span class="line">        <span class="variable language_">self</span>.fc = nn.Linear(<span class="number">16</span>, <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.fc(<span class="variable language_">self</span>.flatten(<span class="variable language_">self</span>.act(<span class="variable language_">self</span>.bn(<span class="variable language_">self</span>.conv(x)))))</span><br></pre></td></tr></table></figure>
+
+<p>我们需要了解<code>optimizer</code>的一些属性比如<code>optimizer.param_groups</code>，要知道进行反向传播计算所需要的参数基本上都在这里。不妨看一下里面的内容：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">optimizer.param_groups</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">[&#123;&#x27;params&#x27;: [Parameter containing:</span><br><span class="line">   tensor([[[[-0.1824,  0.0391, -0.0919],</span><br><span class="line">             [ 0.1336,  0.0415, -0.0073],</span><br><span class="line">             [ 0.1174,  0.0020, -0.0896]],</span><br><span class="line">   </span><br><span class="line">            [[-0.0493,  0.1663,  0.0991],</span><br><span class="line">             [ 0.1541,  0.0731,  0.0382],</span><br><span class="line">             [ 0.0245, -0.0701,  0.0841]],</span><br><span class="line">   </span><br><span class="line">            [[-0.0188,  0.0573,  0.0740],</span><br><span class="line">             [-0.0024, -0.0112, -0.0193],</span><br><span class="line">             [-0.1160,  0.1549,  0.1194]]]], requires_grad=True),</span><br><span class="line">   Parameter containing:</span><br><span class="line">   tensor([0.0944], requires_grad=True),</span><br><span class="line">   Parameter containing:</span><br><span class="line">   tensor([1.], requires_grad=True),</span><br><span class="line">   Parameter containing:</span><br><span class="line">   tensor([0.], requires_grad=True),</span><br><span class="line">   Parameter containing:</span><br><span class="line">   tensor([[ 0.1952,  0.1926, -0.1615,  0.1012,  0.0987, -0.1303,  0.1945, -0.2085,</span><br><span class="line">            -0.1188,  0.0407, -0.0926,  0.0139,  0.1961,  0.0196,  0.1596,  0.1035],</span><br><span class="line">           [ 0.2256, -0.1728, -0.0649, -0.2252, -0.1049,  0.1704,  0.0607, -0.1786,</span><br><span class="line">            -0.1384,  0.1639,  0.0035, -0.0320,  0.2407, -0.1826, -0.0959,  0.2487],</span><br><span class="line">           [-0.1408,  0.1796, -0.0666,  0.0469, -0.2406,  0.0904,  0.2499, -0.2015,</span><br><span class="line">             0.0664, -0.2087, -0.1013, -0.1080,  0.1512,  0.1545,  0.0384, -0.1783],</span><br><span class="line">           [ 0.2023, -0.1636,  0.1479, -0.1352,  0.1680,  0.0547, -0.0309, -0.0961,</span><br><span class="line">             0.1528,  0.0792,  0.1917, -0.1388,  0.0384, -0.0111,  0.1132, -0.0392]],</span><br><span class="line">          requires_grad=True),</span><br><span class="line">   Parameter containing:</span><br><span class="line">   tensor([-0.1700,  0.2120, -0.0687,  0.0041], requires_grad=True)],</span><br><span class="line">  &#x27;lr&#x27;: 1e-05,</span><br><span class="line">  &#x27;betas&#x27;: (0.9, 0.999),</span><br><span class="line">  &#x27;eps&#x27;: 1e-08,</span><br><span class="line">  &#x27;weight_decay&#x27;: 0,</span><br><span class="line">  &#x27;amsgrad&#x27;: False,</span><br><span class="line">  &#x27;maximize&#x27;: False,</span><br><span class="line">  &#x27;foreach&#x27;: None,</span><br><span class="line">  &#x27;capturable&#x27;: False,</span><br><span class="line">  &#x27;differentiable&#x27;: False,</span><br><span class="line">  &#x27;fused&#x27;: None&#125;]</span><br></pre></td></tr></table></figure>
+
+<p>可以看出该输出类型是一个列表，列表的元素是字典，我们不妨称之为<code>param_group</code>。上面的优化器只有一个<code>param_group</code>，这个<code>param_group</code>中所包含的参数即含有权重又含有偏置还含有一系列其他的参数（在该例子中是含有<code>nn.BatchNorm</code>的参数）。我们可不可以对这些不同类型的参数分门别类放在不同的<code>param_group</code>中以供之后优化的时候我们针对它们使用不同的优化策略，实践上我们通常不对偏置和归一化层的参数进行权重衰减，嵌入层参数可能也需要相较于权重更小的衰减值；而且我们对偏置的学习率可以预设的稍高一些（相较于权重）。</p>
+<p>下面我们根据上面的情况来设计一个更好的优化器。</p>
+<pre><code class="python">
+``def better_optimizer(model, name=&quot;Adam&quot;, lr=0.001, momentum=0.9, decay=1e-5):
+    # g[0]：为包含常规权重的参数组添加权重衰减（decay）
+    # g[1]：为归一化层的权重添加一个权重衰减为 0 的参数组，因为 Norm 层通常不需要权重衰减
+    # g[2]：为偏置项添加一个权重衰减为 0 的参数组，因为偏置通常也不应用权重衰减
+    g = [], [], [] # optimizer parameter groups
+    n = tuple(v for k, v in nn.__dict__.items() if &quot;Norm&quot; in k) # normalization layers, i.e. BatchNorm2d()
+    for v in model.modules():
+        for p_name, p in v.named_parameters(recurse=0):
+            if p_name == &quot;bias&quot;: # bias (no decay)
+                g[2].append(p)
+            elif p_name == &quot;weight&quot; and isinstance(v, n): # weight (no decay)
+                g[1].append(p)
+            else:
+                g[0].append(p) # weight (with decay)
+    
+    if name == &quot;Adam&quot;:
+        optimizer = torch.optim.Adam(g[2], lr=lr, betas=(momentum, 0.999)) # adjust beta1 to momentum
+    elif name == &quot;AdamW&quot;:
+        optimizer = torch.optim.AdamW(g[2], lr=lr, betas=(momentum, 0.999), weight_decay=0.0)
+    elif name == &quot;RMSProp&quot;:
+        optimizer = torch.optim.RMSprop(g[2], lr=lr, momentum=momentum)
+    elif name == &quot;SGD&quot;:
+        optimizer = torch.optim.SGD(g[2], lr=lr, momentum=momentum, nesterov=True)
+    else:
+        raise NotImplementedError(f&quot;Optimizer &#123;name&#125; not implemented.&quot;)
+    
+    optimizer.add_param_group(&#123;&quot;params&quot;: g[0], &quot;weight_decay&quot;: decay&#125;) # add g0 with weight_decay, other keys are default value
+    optimizer.add_param_group(&#123;&quot;params&quot;: g[1], &quot;weight_decay&quot;: 0.0&#125;) # add g1 (Norm weights), other keys are default value
+    return optimizer
+</code></pre>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/DL/" rel="tag"># DL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/03/12/2025-3-12-Command%20Line%20Art2-%E9%87%8D%E5%AE%9A%E5%90%91%E5%92%8C%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86/" rel="prev" title="使用命令行的艺术2 - 重定向和文件管理">
+      <i class="fa fa-chevron-left"></i> 使用命令行的艺术2 - 重定向和文件管理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/03/15/2025-3-15-Command%20Line%20Art3-Shell%20Script%E7%9B%B8%E5%85%B3/" rel="next" title="使用命令行的艺术3 - Shell Script相关">
+      使用命令行的艺术3 - Shell Script相关 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E5%99%A8%EF%BC%88Optimizer%EF%BC%89%E7%B3%BB%E5%88%97"><span class="nav-number">1.</span> <span class="nav-text">优化器（Optimizer）系列</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="delkon"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">delkon</p>
+  <div class="site-description" itemprop="description">Stay hungry, stay foolish</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fordelkon" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fordelkon" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">delkon</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">23k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:23</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

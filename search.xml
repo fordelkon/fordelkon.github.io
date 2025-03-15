@@ -1,6 +1,326 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>使用命令行的艺术1 - Bash Shell相关</title>
+    <url>/2025/03/11/2025-3-11-Command%20Line%20Art1-%20Bash%20Shell%E7%9B%B8%E5%85%B3/</url>
+    <content><![CDATA[<p>熟练使用命令行是一种常常被忽视，或被认为难以掌握的技能，但实际上，它会提高你作为工程师的灵活性以及生产力。本文旨在了解命令行的Shell语言的一些基础概念和有关使用命令行的Shell的一些快捷操作，额外带一些Linux系统中系统文件说明…</p>
+<span id="more"></span>
+
+<h2 id="使用docker拉取Ubuntu容器"><a href="#使用docker拉取Ubuntu容器" class="headerlink" title="使用docker拉取Ubuntu容器"></a>使用docker拉取Ubuntu容器</h2><p>由于本人的笔记本并非Linux操作系统，为了方便命令行的学习而又不想搭建虚拟机双开系统，我们使用Docker来拉取一个Ubuntu镜像来方便我们学习。</p>
+<ul>
+<li><p>拉取Ubuntu镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker pull ubuntu</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行一个交互式的 Ubuntu 容器</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -it ubuntu</span><br></pre></td></tr></table></figure>
+<p>这将拉起一个新的 Ubuntu 容器并进入它的命令行。<code>-it </code>标志表示以交互模式启动，并连接到该容器的终端。进入容器后，你将获得一个完全隔离的 Linux 系统，可以像平常一样使用 Shell。</p>
+</li>
+<li><p>退出容器<br>你可以在Linux系统中运行 exit 命令来退出容器。默认情况下，当你退出容器后，容器也会自动停止。如果你想保持容器在后台运行，可以通过以下方式运行容器：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -d ubuntu</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重新进入容器<br>如果是在Linux系统中运行exit命令后，退出容器后容器自动停止，此时再想打开这个容器的话我们先运行以下命令找到我们的容器ID。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker ps -a</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>我的电脑上输出的结果是：</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED          STATUS         PORTS     NAMES</span><br><span class="line">3a8357da8968   ubuntu    &quot;/bin/bash&quot;   2 minutes ago   Exited (0) About a minute ago             tender_elbakyan</span><br></pre></td></tr></table></figure>
+
+<p>然后再根据容器ID启动一个停止的容器：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker start 3a8357da8968</span><br></pre></td></tr></table></figure>
+
+<p>进入一个已经在运行的容器：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it 3a8357da8968 /bin/bash</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除容器和镜像<br>当我们不在需要容器和镜像的时候，可以删除容器和镜像来节省内存。首先根据容器ID删除容器：<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">rm</span> 3a8357da8968</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>再根据镜像ID删除镜像。先得到镜像ID：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+
+<p>我的电脑的运行结果是：</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">REPOSITORY   TAG       IMAGE ID       CREATED       SIZE</span><br><span class="line">ubuntu       latest    c3d1a3432580   6 weeks ago   101MB</span><br></pre></td></tr></table></figure>
+
+<p>再删除镜像：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker rmi c3d1a3432580</span><br></pre></td></tr></table></figure>
+
+<h2 id="Bash-Shell"><a href="#Bash-Shell" class="headerlink" title="Bash Shell"></a>Bash Shell</h2><h3 id="Linux系统文件中的shell"><a href="#Linux系统文件中的shell" class="headerlink" title="Linux系统文件中的shell"></a>Linux系统文件中的shell</h3><p>Shell（壳程序）可以提供使用者操作应用程序的接口。<code>/bin/bash</code>是Linux默认的shell，Linux可用的shell记录在<code>/etc/shells</code>中，我们可以通过以下命令查看Linux可用的shells：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/shells</span><br></pre></td></tr></table></figure>
+
+<p>得到的输出是：</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># /etc/shells: valid login shells</span><br><span class="line">/bin/sh</span><br><span class="line">/usr/bin/sh</span><br><span class="line">/bin/bash</span><br><span class="line">/usr/bin/bash</span><br><span class="line">/bin/rbash</span><br><span class="line">/usr/bin/rbash</span><br><span class="line">/usr/bin/dash</span><br></pre></td></tr></table></figure>
+
+<p>登陆Linux系统时，系统会给予一个shell，这个登陆取得的shell记录在<code>/etc/passwd</code>中，可以通过以下命令查看：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/passwd</span><br></pre></td></tr></table></figure>
+
+<p>得到的输出是：</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">root@611b47761989:/# cat /etc/passwd</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin</span><br><span class="line">......（下面省略）......</span><br></pre></td></tr></table></figure>
+
+<h3 id="bash-shell的功能"><a href="#bash-shell的功能" class="headerlink" title="bash shell的功能"></a>bash shell的功能</h3><ul>
+<li>记忆使用过的指令（记录的指令在<code>~/.bash_history</code>中）</li>
+<li>命令与文件的补全（使用<code>tab</code>键，两次连按<code>tab</code>键会对匹配的命令或文件进行显示，如果只有一个与之匹配的命令或文件，则一次<code>tab</code>键会自动补全）</li>
+<li>设置命令别名<br>比如要现实目录下面的所有文件 （包含隐藏文件） 及所有的文件属性，我们可以运行以下命令：<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">ls</span> -al</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>但我们又是嫌弃这样写太过麻烦，我们可以对以上命令进行别名命名：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> lm=<span class="string">&#x27;ls -al&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>那么<code>lm</code>的功能就和之前的<code>ls -al</code>功能一致了。</p>
+<ul>
+<li>程序化脚本（shell script）</li>
+<li>万用字符匹配*（正则表达式匹配）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*</td>
+<td>代表“ 0 个到无穷多个”任意字符</td>
+</tr>
+<tr>
+<td>?</td>
+<td>代表“一定有一个”任意字符</td>
+</tr>
+<tr>
+<td>[ ]</td>
+<td>同样代表“一定有一个在括号内”的字符（非任意字符）。例如<code>[abcd]</code> 代表“一定有一个字符， 可能是 a, b, c, d 这四个任何一个”</td>
+</tr>
+<tr>
+<td>[ - ]</td>
+<td>若有减号在中括号内时，代表“在编码顺序内的所有字符”。例如<code>[0-9]</code> 代表 0 到 9 之间的所有数字，因为数字的语系编码是连续的！</td>
+</tr>
+<tr>
+<td>[^ ]</td>
+<td>若中括号内的第一个字符为指数符号 （^） ，那表示“反向选择”，例如 <code>[^abc]</code> 代表 一定有一个字符，只要是非 a, b, c 的其他字符就接受的意思。</td>
+</tr>
+</tbody></table>
+<ul>
+<li>与命令行相关的特殊符号</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>#</td>
+<td>注解符号：这个最常被使用在 script 当中，视为说明！在后的数据均不执行</td>
+</tr>
+<tr>
+<td>\</td>
+<td>跳脱符号：将“特殊字符或万用字符”还原成一般字符</td>
+</tr>
+<tr>
+<td>|</td>
+<td>管道（pipe）：分隔两个管线命令的界定；</td>
+</tr>
+<tr>
+<td>;</td>
+<td>连续指令下达分隔符号：连续性命令的界定 （注意！与管线命令并不相同）</td>
+</tr>
+<tr>
+<td>~</td>
+<td>使用者的主文件夹</td>
+</tr>
+<tr>
+<td>$</td>
+<td>取用变量前置字符：亦即是变量之前需要加的变量取代值</td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>工作控制 （job control）：将指令变成背景下工作</td>
+</tr>
+<tr>
+<td>!</td>
+<td>逻辑运算意义上的“非” not 的意思！</td>
+</tr>
+<tr>
+<td>&#x2F;</td>
+<td>目录符号：路径分隔的符号</td>
+</tr>
+<tr>
+<td>&gt;, &gt;&gt;</td>
+<td>数据流重导向：输出导向，分别是“取代”与“累加”</td>
+</tr>
+<tr>
+<td>&lt;, &lt;&lt;</td>
+<td>数据流重导向：输入导向</td>
+</tr>
+<tr>
+<td>‘ ‘</td>
+<td>单引号，不具有变量置换的功能 （$ 变为纯文本）</td>
+</tr>
+<tr>
+<td>“ “</td>
+<td>具有变量置换的功能！ （$ 可保留相关功能）</td>
+</tr>
+<tr>
+<td></td>
+<td>两个“ &#96; ”中间为可以先执行的指令，亦可使用 $（ ）</td>
+</tr>
+<tr>
+<td>（ ）</td>
+<td>在中间为子 shell 的起始与结束</td>
+</tr>
+<tr>
+<td>{ }</td>
+<td>在中间为命令区块的组合！</td>
+</tr>
+</tbody></table>
+<h3 id="bash-shell的内置命令查询：type"><a href="#bash-shell的内置命令查询：type" class="headerlink" title="bash shell的内置命令查询：type"></a>bash shell的内置命令查询：type</h3><p>通过<code>type</code>指令我们可以知道每个指令是否为 bash 的内置指令，此外利用<code>type</code>搜寻后面的名称时，如果后面接的名称并不能以可执行文件的状态被找到， 那么该名称是不会被显示出来的。因此我们可以也可以直接运行可执行文件来代替原命令。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">type</span> -a <span class="built_in">ls</span></span><br></pre></td></tr></table></figure>
+
+<p>得到的输出为：</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">ls is aliased to `ls --color=auto&#x27;</span><br><span class="line">ls is /usr/bin/ls</span><br><span class="line">ls is /bin/ls</span><br></pre></td></tr></table></figure>
+
+<p>因此我们也可以直接运行<code>/usr/bin/ls</code>或<code>/bin/ls</code>来代替<code>ls</code>。找指令也可以使用<code>which</code>。</p>
+<h3 id="bash-shell中的快速编辑按钮"><a href="#bash-shell中的快速编辑按钮" class="headerlink" title="bash shell中的快速编辑按钮"></a>bash shell中的快速编辑按钮</h3><ul>
+<li><code>ctrl-r</code>搜索命令行历史记录（按下按键之后，输入关键字便可以搜索，重复按下<code>ctrl-r</code>会向后查找匹配项，按下<code>Enter</code>键会执行当前匹配的命令，而按下右方向键会将匹配项放入当前行中，不会直接执行，以便做出修改）。</li>
+<li><code>ctrl-w</code>删除你键入的最后一个单词，<code>ctrl-u</code>可以删除行内光标所在位置之前的内容，<code>alt-b</code>和 <code>alt-f</code>可以以单词为单位移动光标，<code>ctrl-a</code>可以将光标移至行首，<code>ctrl-e</code>可以将光标移至行尾，<code>ctrl-k</code>可以删除光标至行尾的所有内容，<code>ctrl-l</code>可以清屏。键入 <code>man readline</code> 可以查看 Bash 中的默认快捷键。内容有很多，例如 <code>alt-.</code>循环地移向前一个参数，而<code>alt-*</code>可以展开通配符。</li>
+</ul>
+<h3 id="shell的变量"><a href="#shell的变量" class="headerlink" title="shell的变量"></a>shell的变量</h3><p>使用<code>echo</code>命令可以读出变量<br><code>echo $&#123;variable&#125;</code>读出variable的值<br><code>echo $&#123;command&#125;</code>读出command的stdout</p>
+<h3 id="系统自带的环境变量"><a href="#系统自带的环境变量" class="headerlink" title="系统自带的环境变量"></a>系统自带的环境变量</h3><p>利用<code>etc</code>观察系统自带环境变量如下：</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">HOSTNAME=611b47761989 # 这部主机的主机名称</span><br><span class="line">PWD=/ # 当前工作目录</span><br><span class="line">HOME=/root # 当前用户的主目录</span><br><span class="line">LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:</span><br><span class="line">TERM=xterm # 这个终端机使用的环境是什么类型</span><br><span class="line">SHLVL=1 # 当前 shell 会话的深度层级</span><br><span class="line">PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin # 系统搜索可执行文件的路径列表</span><br><span class="line">_=/usr/bin/env # 这是最后一个执行命令的路径</span><br></pre></td></tr></table></figure>
+
+<p>比较重要的除了上面介绍的之外还有一个RANDOM变量，在 BASH 的环境下，这个 RANDOM 变量的内容，介于 0~32767 之间，由<code>/dev/random</code>乱数器产生。</p>
+<h3 id="bash内的自订变量"><a href="#bash内的自订变量" class="headerlink" title="bash内的自订变量"></a>bash内的自订变量</h3><p>利用<code>set</code>命令观察bash内的其他变量如下：</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">BASH=/bin/bash</span><br><span class="line">......</span><br><span class="line">BASH_ALIASES=()</span><br><span class="line">BASH_ARGC=([0]=&quot;0&quot;)</span><br><span class="line">BASH_ARGV=()</span><br><span class="line">BASH_CMDS=()</span><br><span class="line">BASH_LINENO=()</span><br><span class="line">BASH_LOADABLES_PATH=/usr/local/lib/bash:/usr/lib/bash:/opt/local/lib/bash:/usr/pkg/lib/bash:/opt/pkg/lib/bash:.</span><br><span class="line">BASH_SOURCE=()</span><br><span class="line">BASH_VERSINFO=([0]=&quot;5&quot; [1]=&quot;2&quot; [2]=&quot;21&quot; [3]=&quot;1&quot; [4]=&quot;release&quot; [5]=&quot;aarch64-unknown-linux-gnu&quot;)</span><br><span class="line">BASH_VERSION=&#x27;5.2.21(1)-release&#x27;</span><br><span class="line">COLUMNS=80</span><br><span class="line">DIRSTACK=()</span><br><span class="line">EUID=0</span><br><span class="line">GROUPS=()</span><br><span class="line">HISTCONTROL=ignoredups:ignorespace</span><br><span class="line">HISTFILE=/root/.bash_history</span><br><span class="line">HISTFILESIZE=2000</span><br><span class="line">HISTSIZE=1000</span><br><span class="line">HOME=/root</span><br><span class="line">HOSTNAME=611b47761989</span><br><span class="line">HOSTTYPE=aarch64</span><br><span class="line">IFS=$&#x27; \t\n&#x27;</span><br><span class="line">LINES=25</span><br><span class="line">......</span><br><span class="line">MACHTYPE=aarch64-unknown-linux-gnu</span><br><span class="line">MAILCHECK=60</span><br><span class="line">OPTERR=1</span><br><span class="line">OPTIND=1</span><br><span class="line">OSTYPE=linux-gnu</span><br><span class="line">PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin</span><br><span class="line">PIPESTATUS=([0]=&quot;0&quot;)</span><br><span class="line">PPID=0</span><br><span class="line">PS1=&#x27;\[\e]0;\u@\h: \w\a\]$&#123;debian_chroot:+($debian_chroot)&#125;\u@\h:\w\$ &#x27;</span><br><span class="line">PS2=&#x27;&gt; &#x27;</span><br><span class="line">PS4=&#x27;+ &#x27;</span><br><span class="line">PWD=/</span><br><span class="line">SHELL=/bin/bash</span><br><span class="line">SHELLOPTS=braceexpand:emacs:hashall:histexpand:history:interactive-comments:monitor</span><br><span class="line">SHLVL=1</span><br><span class="line">TERM=xterm</span><br><span class="line">UID=0</span><br><span class="line">_=clear</span><br></pre></td></tr></table></figure>
+
+<p>上面的变量有一些比较重要，我们分而述之。</p>
+<ol>
+<li>PS1：（提示字符的设置）<br>当我们每次按下<code>enter</code>键去执行某个指令后，最后要再次出现提示符时就会去读取这个变量值。<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">PS1=<span class="string">&#x27;\[\e]0;\u@\h: \w\a\]$&#123;debian_chroot:+($debian_chroot)&#125;\u@\h:\w\$ &#x27;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>其中<code>\[\e]0;...\a\]</code>: 这是一个 ANSI 转义序列，用于在支持的终端中设置窗口的标题或图标。<code>$&#123;debian_chroot:+($debian_chroot)&#125;</code>是条件表达式，用于在 Debian 或其他带有 chroot 环境时显示当前的 chroot 名称。<code>\u@\h</code>显示格式为 用户名@主机名，<code>\w</code>显示当前的工作目录，最后<code>\$</code>根据当前用户是否是超级用户显示不同的符号。还有一些其他比较有意思的符号，比如</p>
+<ul>
+<li><code>#</code> ： 下达的第几个指令。</li>
+<li><code>\t</code> ：显示时间，为 24 小时格式的“HH:MM:SS”</li>
+<li><code>\T</code> ：显示时间，为 12 小时格式的“HH:MM:SS”</li>
+<li><code>\A</code> ：显示时间，为 24 小时格式的“HH:MM”</li>
+<li><code>\@</code> ：显示时间，为 12 小时格式的“am&#x2F;pm”样式</li>
+</ul>
+<ol start="2">
+<li><p><code>$</code>：本shell的PID<br>我们可以运行<code>echo $&#123;$&#125;</code>来展示本shell的PID号码，结果如下:</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">51</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>?</code>：上个执行指令的回传值<br>如果成功的执行上个指令， 则会回传一个 0 值，如果执行过程发生错误，就会回传非为 0 的数值。具体情形如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> cati</span><br></pre></td></tr></table></figure>
+<p>结果为：</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">bash: cd: cati: No such file or directory</span><br></pre></td></tr></table></figure>
+<p>再运行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;?&#125;</span></span><br></pre></td></tr></table></figure>
+<p>结果为：</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">1</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="自订变量和环境变量的转换"><a href="#自订变量和环境变量的转换" class="headerlink" title="自订变量和环境变量的转换"></a>自订变量和环境变量的转换</h3><ul>
+<li>自订变量转成环境变量<br>采用<code>export</code>命令或<code>declare -x</code>：<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> variable</span><br><span class="line"><span class="built_in">declare</span> -x variable</span><br></pre></td></tr></table></figure></li>
+<li>环境变量（由自订变量转换而成的环境变量）转成自订变量<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">declare</span> [-aixr] variable</span><br><span class="line">选项与参数：</span><br><span class="line">-a  ：将后面名为 variable 的变量定义成为阵列 （array） 类型</span><br><span class="line">-i  ：将后面名为 variable 的变量定义成为整数数字 （<span class="built_in">integer</span>） 类型</span><br><span class="line">-x  ：用法与 <span class="built_in">export</span> 一样，就是将后面的 variable 变成环境变量；</span><br><span class="line">-r  ：将变量设置成为 <span class="built_in">readonly</span> 类型，该变量不可被更改内容，也不能 <span class="built_in">unset</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>采用<code>declare +x</code>:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">declare</span> +x variable</span><br></pre></td></tr></table></figure>
+
+<h3 id="bash中与变量扩展方式"><a href="#bash中与变量扩展方式" class="headerlink" title="bash中与变量扩展方式"></a>bash中与变量扩展方式</h3><ul>
+<li><code>#</code>：从字符串开头删除与pattern匹配的最短部分，并返回剩下的字符串。也可以用来获取变量的字符长度。<br>语法：<code>$&#123;variable#pattern&#125;</code><br>语法：<code>$&#123;#variable&#125;</code></li>
+<li><code>##</code>：从字符串开头删除与pattern匹配的最长部分，并返回剩下的字符串。<br>语法：<code>$&#123;variable##pattern&#125;</code></li>
+</ul>
+<p>具体示例如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">str=abc.defg.hijkl.txt</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;str#*.&#125;</span> <span class="comment"># defg.hijkl.txt</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;str##*.&#125;</span> <span class="comment"># txt</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>%</code>: 从字符串末尾删除与 pattern 匹配的最短部分，并返回剩下的字符串。<br>语法：<code>$&#123;variable%pattern&#125;</code></p>
+</li>
+<li><p><code>%%</code>：从字符串末尾删除与 pattern 匹配的最短部分，并返回剩下的字符串。<br>语法：<code>$&#123;variable%%pattern&#125;</code><br>具体示例如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;str%.*&#125;</span> <span class="comment"># abc.defg.hijkl</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;str%%.*&#125;</span> <span class="comment"># abc</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>/</code>：将变量 variable 中第一个匹配 pattern 的部分替换为 replacement。<br>语法：<code>$&#123;variable/pattern/replacement&#125;</code></p>
+</li>
+<li><p><code>//</code>：将变量 variable 中所有匹配 pattern 的部分替换为 replacement。<br>语法：<code>$&#123;variable//pattern/replacement&#125;</code><br>具体示例如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">fname=delkon-university-works</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;fname/-/_&#125;</span> <span class="comment"># delkon_university-works</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;fname//-/_&#125;</span> <span class="comment"># delkon_university_works</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>:-</code>：如果变量未定义或为空，则返回default值。<br>语法：<code>$&#123;variable:-default&#125;</code></p>
+</li>
+<li><p><code>:=</code>：如果变量未定义或为空，则将其赋值为 default。<br>语法：<code>$&#123;variable:=default&#125;</code></p>
+</li>
+<li><p><code>:+</code>：如果变量已定义且不为空，则返回 replacement，否则返回空字符串。<br>语法：<code>$&#123;variable:+replacement&#125;</code></p>
+</li>
+<li><p><code>:?</code>：如果变量未定义或为空，则输出 error 消息并退出脚本。<br>语法：<code>$&#123;variable:?error&#125;</code></p>
+</li>
+</ul>
+<p>具体一些情况如下表格所示：</p>
+<table>
+<thead>
+<tr>
+<th>变量设置方式</th>
+<th>str 没有设置</th>
+<th>str 为空字串</th>
+<th>str 已设置非为空字串</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>var=$&#123;str-expr&#125;</code></td>
+<td><code>var=expr</code></td>
+<td><code>var=</code></td>
+<td><code>var=$str</code></td>
+</tr>
+<tr>
+<td><code>var=$&#123;str:-expr&#125;</code></td>
+<td><code>var=expr</code></td>
+<td><code>var=expr</code></td>
+<td><code>var=$str</code></td>
+</tr>
+<tr>
+<td><code>var=$&#123;str+expr&#125;</code></td>
+<td><code>var=</code></td>
+<td><code>var=expr</code></td>
+<td><code>var=expr</code></td>
+</tr>
+<tr>
+<td><code>var=$&#123;str:+expr&#125;</code></td>
+<td><code>var=</code></td>
+<td><code>var=</code></td>
+<td><code>var=expr</code></td>
+</tr>
+<tr>
+<td><code>var=$&#123;str=expr&#125;</code></td>
+<td><code>str=expr</code> <code>var=expr</code></td>
+<td><code>str 不变 var=</code></td>
+<td><code>str 不变</code> <code>var=$str</code></td>
+</tr>
+<tr>
+<td><code>var=$&#123;str:=expr&#125;</code></td>
+<td><code>str=expr</code> <code>var=expr</code></td>
+<td><code>str=expr</code> <code>var=expr</code></td>
+<td><code>str 不变</code> <code>var=$str</code></td>
+</tr>
+<tr>
+<td><code>var=$&#123;str?expr&#125;</code></td>
+<td><code>expr 输出至 stderr</code></td>
+<td><code>var=</code></td>
+<td><code>var=$str</code></td>
+</tr>
+<tr>
+<td><code>var=$&#123;str:?expr&#125;</code></td>
+<td><code>expr 输出至 stderr</code></td>
+<td><code>expr 输出至 stderr</code></td>
+<td><code>var=$str</code></td>
+</tr>
+</tbody></table>
+<ul>
+<li><code>$&#123;variable:offset&#125;</code>和<code>$&#123;variable:offset:length&#125;</code>用来从变量中提取子字符串。</li>
+</ul>
+<h3 id="bash配置"><a href="#bash配置" class="headerlink" title="bash配置"></a>bash配置</h3><p><code>source</code>或<code>.</code>后接配置文件会立即使用该配置文件。</p>
+]]></content>
+      <categories>
+        <category>Linux操作系统</category>
+      </categories>
+      <tags>
+        <tag>Shell</tag>
+        <tag>Linux</tag>
+        <tag>Docker</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>使用命令行的艺术2 - 重定向和文件管理</title>
     <url>/2025/03/12/2025-3-12-Command%20Line%20Art2-%E9%87%8D%E5%AE%9A%E5%90%91%E5%92%8C%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<p>熟练使用命令行是一种常常被忽视，或被认为难以掌握的技能，但实际上，它会提高你作为工程师的灵活性以及生产力。本文旨在了解命令行中的重定向功能和文件管理功能。</p>
@@ -20,7 +340,10 @@
 
 <h3 id="管道重定向"><a href="#管道重定向" class="headerlink" title="管道重定向"></a>管道重定向</h3><p><code>|</code>：仅能处理经由前面一个指令传来的正确信息，也就是 stdout 的信息，对于 stderr并没有直接处理的能力；必须要能够接受来自前一个指令的数据成为 standard input 继续处理才行。</p>
 <p>常用的管道命令<code>grep</code>:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">grep [-acinv] [--color=auto] <span class="string">&#x27;pattern&#x27;</span> filename</span><br><span class="line">选项与参数：</span><br><span class="line">-a ：将 binary 文件以 text 文件的方式搜索数据</span><br><span class="line">-c ：计算找到匹配<span class="string">&#x27;pattern&#x27;</span>的字符串的次数</span><br><span class="line">-i ：忽略大小写的不同，所以大小写视为相同</span><br><span class="line">-n ：顺便输出行号</span><br><span class="line">-v ：反向选择，亦即显示出没有匹配<span class="string">&#x27;pattern&#x27;</span>的字符串内容的那些行！</span><br><span class="line">--color=auto ：可以将找到的关键字部分加上颜色的显示喔！</span><br><span class="line"><span class="comment"># 将有出现 root 的那一行就取出来；</span></span><br><span class="line">last | grep <span class="string">&#x27;root&#x27;</span></span><br><span class="line"><span class="comment"># 只要没有 root 的就取出！</span></span><br><span class="line">last | grep -v <span class="string">&#x27;root&#x27;</span></span><br><span class="line"><span class="comment"># </span></span><br><span class="line"><span class="comment"># wtmp begins Tue Mar 11 22:41:15 2025</span></span><br><span class="line"><span class="comment"># 在 last 的输出消息中，只要有 root 就取出，并且仅取第一栏</span></span><br><span class="line">last | grep -v <span class="string">&#x27;root&#x27;</span> | <span class="built_in">cut</span> -d <span class="string">&#x27; &#x27;</span> -f 1</span><br><span class="line"><span class="comment"># </span></span><br><span class="line"><span class="comment"># wtmp</span></span><br><span class="line"><span class="comment"># 在取出 root 之后，利用上个指令 cut 的处理，就能够仅取得第一栏啰！</span></span><br><span class="line"><span class="comment"># 神奇的是，如果加上 --color=auto 的选项，找到的关键字部分会用特殊颜色显示喔！</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">grep [-acinv] [--color=auto] <span class="string">&#x27;pattern&#x27;</span> filename</span><br><span class="line">选项与参数：</span><br><span class="line">-i ：忽略大小写的不同，所以大小写视为相同</span><br><span class="line">-o ：只输出匹配的部分而不是整行</span><br><span class="line">-v ：反向选择，亦即显示出没有匹配<span class="string">&#x27;pattern&#x27;</span>的字符串内容的那些行！</span><br><span class="line">-A ：显示匹配行+匹配行行后的几行(after)</span><br><span class="line">-B ：显示匹配行+匹配行行前的几行(before)</span><br><span class="line">-C ：显示匹配行+匹配行行前后的几行(context)</span><br><span class="line">--color=auto ：可以将找到的关键字部分加上颜色的显示喔！</span><br><span class="line"><span class="comment"># 将有出现 root 的那一行就取出来；</span></span><br><span class="line">last | grep <span class="string">&#x27;root&#x27;</span></span><br><span class="line"><span class="comment"># 只要没有 root 的就取出！</span></span><br><span class="line">last | grep -v <span class="string">&#x27;root&#x27;</span></span><br><span class="line"><span class="comment"># </span></span><br><span class="line"><span class="comment"># wtmp begins Tue Mar 11 22:41:15 2025</span></span><br><span class="line"><span class="comment"># 在 last 的输出消息中，只要有 root 就取出，并且仅取第一栏</span></span><br><span class="line">last | grep -v <span class="string">&#x27;root&#x27;</span> | <span class="built_in">cut</span> -d <span class="string">&#x27; &#x27;</span> -f 1</span><br><span class="line"><span class="comment"># </span></span><br><span class="line"><span class="comment"># wtmp</span></span><br><span class="line"><span class="comment"># 在取出 root 之后，利用上个指令 cut 的处理，就能够仅取得第一栏啰！</span></span><br><span class="line"><span class="comment"># 神奇的是，如果加上 --color=auto 的选项，找到的关键字部分会用特殊颜色显示喔！</span></span><br></pre></td></tr></table></figure>
+
+<p>常用的管道命令<code>awk</code>：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">awk [-F] [delimiter] <span class="string">&#x27;pattern &#123;action&#125;&#x27;</span> filename</span><br><span class="line">选项与参数：</span><br><span class="line">-F ：制定分隔符，默认为空格或制表符</span><br><span class="line"><span class="comment"># 列出当前GPU下所有的python进程号</span></span><br><span class="line">nvidia-smi | grep python | awk <span class="string">&#x27;&#123;print $5&#125;&#x27;</span></span><br><span class="line"><span class="comment"># 18108</span></span><br><span class="line"><span class="comment"># 18737</span></span><br><span class="line"><span class="comment"># 19383</span></span><br><span class="line"><span class="comment"># 19565</span></span><br><span class="line"><span class="comment"># 19725</span></span><br><span class="line"><span class="comment"># 19799</span></span><br><span class="line"><span class="comment"># 19859</span></span><br><span class="line"><span class="comment"># 19977</span></span><br><span class="line"><span class="comment"># 20550</span></span><br><span class="line"><span class="comment"># 20733</span></span><br></pre></td></tr></table></figure>
 
 <p><code>xargs + |</code>：<code>xargs</code>可以读入stdin的数据，并且以空格或换行字符作为分辨，将stdin的数据分隔成为arguments。</p>
 <p><code>xargs</code>搭配<code>｜</code>更加美味😋：</p>
@@ -123,13 +446,640 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">df</span> [-akmhHTi] [目录或文件名]</span><br><span class="line">选项与参数：</span><br><span class="line">-a  ：列出所有的文件系统，包括系统特有的 /proc 等文件系统；</span><br><span class="line">-k  ：以 KBytes 的容量显示各文件系统；</span><br><span class="line">-m  ：以 MBytes 的容量显示各文件系统；</span><br><span class="line">-h  ：以人们较易阅读的 GBytes, MBytes, KBytes 等格式自行显示；</span><br><span class="line">-H  ：以 M=1000K 取代 M=1024K 的进位方式；</span><br><span class="line">-T  ：连同该 partition 的 filesystem 名称 (例如 xfs) 也列出；</span><br><span class="line">-i  ：不用磁盘容量，而以 inode 的数量来显示</span><br><span class="line"><span class="built_in">df</span> -h</span><br><span class="line"><span class="comment"># Filesystem      Size  Used Avail Use% Mounted on</span></span><br><span class="line"><span class="comment"># overlay          59G  1.3G   55G   3% /</span></span><br><span class="line"><span class="comment"># tmpfs            64M     0   64M   0% /dev</span></span><br><span class="line"><span class="comment"># shm              64M     0   64M   0% /dev/shm</span></span><br><span class="line"><span class="comment"># /dev/vda1        59G  1.3G   55G   3% /etc/hosts</span></span><br><span class="line"><span class="comment"># tmpfs           2.0G     0  2.0G   0% /proc/scsi</span></span><br><span class="line"><span class="comment"># tmpfs           2.0G     0  2.0G   0% /sys/firmware</span></span><br></pre></td></tr></table></figure>
 
 <p>du（<strong>disk usage</strong>）用于<strong>查看文件和目录的磁盘使用情况</strong>。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">du</span> [-ahskm] 文件或目录名称</span><br><span class="line">-a  ：列出所有的文件与目录容量，因为缺省仅统计目录底下的文件量而已。</span><br><span class="line">-h  ：以人们较易读的容量格式 (G/M) 显示；</span><br><span class="line">-s  ：列出总量而已，而不列出每个各别的目录占用容量；</span><br><span class="line">-S  ：不包括子目录下的总计，与 -s 有点差别。</span><br><span class="line">-k  ：以 KBytes 列出容量显示；</span><br><span class="line">-m  ：以 MBytes 列出容量显示；</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">du</span> [-ahskm] 文件或目录名称</span><br><span class="line">-a  ：列出所有的文件与目录容量，因为缺省仅统计目录底下的文件量而已。</span><br><span class="line">-h  ：以人们较易读的容量格式 (G/M) 显示；</span><br><span class="line">-s  ：列出总量而已，而不列出每个各别的目录占用容量；</span><br><span class="line">-S  ：不包括子目录下的总计，与 -s 有点差别。</span><br><span class="line">-k  ：以 KBytes 列出容量显示；</span><br><span class="line">-m  ：以 MBytes 列出容量显示；</span><br></pre></td></tr></table></figure>
+
+<h3 id="Linux文件"><a href="#Linux文件" class="headerlink" title="Linux文件"></a>Linux文件</h3><h4 id="文件属性和权限的更改"><a href="#文件属性和权限的更改" class="headerlink" title="文件属性和权限的更改"></a>文件属性和权限的更改</h4><p>• <strong>chown</strong> 用于更改文件或目录的所有者和组。要注意的是， 用户必须是已经存在系统中的帐号，也就是在<code>/etc/passwd</code> 这个文件中有纪录的用户名才能改变。可更改的组名也记录在<code>/etc/group</code>中。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">chown</span> [-R] 用户 文件或目录</span><br><span class="line"><span class="built_in">chown</span> [-R] 用户:组 文件或目录</span><br><span class="line">选项与参数：</span><br><span class="line">-R : 进行递归(recursive)的持续变更，亦即连同次目录下的所有文件都变更</span><br><span class="line">ll </span><br><span class="line"><span class="comment"># total 32</span></span><br><span class="line"><span class="comment"># drwxr-xr-x 2 ubuntu ubuntu 4096 Mar 14 11:24 ./</span></span><br><span class="line"><span class="comment"># drwxr-x--- 1 ubuntu ubuntu 4096 Mar 14 11:24 ../</span></span><br><span class="line"><span class="comment"># -rw-r--r-- 1 ubuntu ubuntu 8733 Mar 13 16:25 dataloaders.py</span></span><br><span class="line"><span class="comment"># -rw-r--r-- 1 ubuntu ubuntu 4231 Mar 13 16:24 lr_scheduler.py</span></span><br><span class="line"><span class="comment"># -rw-r--r-- 1 ubuntu ubuntu 4043 Mar 13 16:24 torch_utils.py</span></span><br><span class="line"><span class="built_in">chown</span> -R root:root ./</span><br><span class="line">ll </span><br><span class="line"><span class="comment"># total 32</span></span><br><span class="line"><span class="comment"># drwxr-xr-x 2 root   root   4096 Mar 14 11:27 ./</span></span><br><span class="line"><span class="comment"># drwxr-x--- 1 ubuntu ubuntu 4096 Mar 14 11:24 ../</span></span><br><span class="line"><span class="comment"># -rw-r--r-- 1 root   root   8748 Mar 14 11:27 dataloaders.py</span></span><br><span class="line"><span class="comment"># -rw-r--r-- 1 root   root   4231 Mar 13 16:24 lr_scheduler.py</span></span><br><span class="line"><span class="comment"># -rw-r--r-- 1 root   root   4043 Mar 13 16:24 torch_utils.py</span></span><br></pre></td></tr></table></figure>
+
+<p>• <strong>chmod</strong> 用于更改文件或目录的权限，控制读、写、执行权限。</p>
+<ol>
+<li>数字<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">chmod</span> [-R] xyz 文件或目录</span><br><span class="line">选项与参数：</span><br><span class="line">xyz : 就是刚刚提到的数字类型的权限属性，为 r(4)w(2)x(1) 属性数值的相加。</span><br><span class="line">-R : 进行递归(recursive)的持续变更，亦即连同次目录下的所有文件都会变更</span><br><span class="line">ll ./dataloader.py</span><br><span class="line"><span class="comment"># -rw-r--r-- 1 root   root   8748 Mar 14 11:27 dataloaders.py</span></span><br><span class="line"><span class="built_in">chmod</span> a+w ./dataloader.py</span><br><span class="line">ll ./dataloader.py</span><br><span class="line"><span class="comment"># -rw-rw-rw- 1 root   root   8748 Mar 14 11:27 dataloaders.py</span></span><br><span class="line"><span class="built_in">chmod</span> u=rw.go=r ./dataloader.py</span><br><span class="line">ll ./dataloader.py</span><br><span class="line"><span class="comment"># -rw-r--r-- 1 root root 8748 Mar 14 11:27 ./dataloaders.py</span></span><br></pre></td></tr></table></figure></li>
+<li>符号</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>chmod</td>
+<td>u  (user)<br>g  (group)<br>o  (others)<br>a  (all)</td>
+<td>+(加入)  <br>-(除去)  <br>&#x3D;(设置)</td>
+<td>r  <br>w  <br>x</td>
+<td>文件或目录</td>
+</tr>
+</tbody></table>
+<h4 id="文件搜索"><a href="#文件搜索" class="headerlink" title="文件搜索"></a>文件搜索</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">find [PATH] [option] [action]</span><br><span class="line">选项与参数：</span><br><span class="line">与文件权限及名称有关的参数：</span><br><span class="line">-name filename：搜索文件名称为 filename 的文件；</span><br><span class="line">-size [+-]SIZE：搜索比 SIZE 还要大(+)或小(-)的文件。这个 SIZE 的规格有：c: 代表 byte， k: 代表 1024bytes。所以，要找比 50KB还要大的文件，就是『 -size +50k 』</span><br><span class="line">-<span class="built_in">type</span> TYPE    ：搜索文件的类型为 TYPE 的，类型主要有：一般正规文件 (f), 设备文件 (b, c), 目录 (d), 链接档 (l), socket (s), 及 FIFO (p) 等属性。</span><br><span class="line">ll /Python</span><br><span class="line"><span class="comment"># total 32</span></span><br><span class="line"><span class="comment"># drwxr-xr-x 2 root   root   4096 Mar 14 11:40 ./</span></span><br><span class="line"><span class="comment"># drwxr-x--- 1 ubuntu ubuntu 4096 Mar 14 12:50 ../</span></span><br><span class="line"><span class="comment"># -rw-r--r-- 1 root   root   8748 Mar 14 11:27 dataloaders.py</span></span><br><span class="line"><span class="comment"># -rw-r--r-- 1 root   root   4231 Mar 13 16:24 lr_scheduler.py</span></span><br><span class="line"><span class="comment"># -rw-r--r-- 1 root   root   4043 Mar 13 16:24 torch_utils.py</span></span><br><span class="line">find Python/ -name <span class="string">&#x27;*.py&#x27;</span></span><br><span class="line"><span class="comment"># Python/torch_utils.py</span></span><br><span class="line"><span class="comment"># Python/lr_scheduler.py</span></span><br><span class="line"><span class="comment"># Python/dataloaders.py</span></span><br><span class="line">find Python/ -size -20k</span><br><span class="line"><span class="comment"># Python/</span></span><br><span class="line"><span class="comment"># Python/torch_utils.py</span></span><br><span class="line"><span class="comment"># Python/lr_scheduler.py</span></span><br><span class="line"><span class="comment"># Python/dataloaders.py</span></span><br><span class="line">find Python/ -<span class="built_in">type</span> f</span><br><span class="line"><span class="comment"># Python/torch_utils.py</span></span><br><span class="line"><span class="comment"># Python/lr_scheduler.py</span></span><br><span class="line"><span class="comment"># Python/dataloaders.py</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
       <categories>
         <category>Linux操作系统</category>
       </categories>
       <tags>
         <tag>Shell</tag>
         <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>PyTorch训练器配置</title>
+    <url>/2025/03/14/2025-3-14-PyTorch%20Trainer%20Config/</url>
+    <content><![CDATA[<p>在使用PyTorch进行深度学习模型搭建的时候，构建我们自己的模型训练器是必不可少的一步。如果你仅仅会使用<code>optimizer.zero_grad()</code>，<code>loss.backward()</code>，<code>optimizer.step()</code>三连来进行反向传播训练（就像之前的我一样），那么现在或许是时候来学习如何做出更加酷炫的训练器了……</p>
+<span id="more"></span>
+
+<h2 id="优化器（Optimizer）系列"><a href="#优化器（Optimizer）系列" class="headerlink" title="优化器（Optimizer）系列"></a>优化器（Optimizer）系列</h2><p>PyTorch的封装使得一个简易优化器的搭建变得十分简单，比如说建立一个Adam优化器，我们可以直接写出如下代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">optimizer = torch.optim.Adam(model.parameters(), lr=<span class="number">1e-5</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这样一个简易的Adam优化器就完成了。这里的model是我自己随便写着作实验所使用的玩具模型，具体实现如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SimpleConv</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>(SimpleConv, <span class="variable language_">self</span>).__init__()</span><br><span class="line">        <span class="variable language_">self</span>.conv = nn.Conv2d(<span class="number">3</span>, <span class="number">1</span>, <span class="number">3</span>, padding=<span class="number">1</span>)</span><br><span class="line">        <span class="variable language_">self</span>.bn = nn.BatchNorm2d(<span class="number">1</span>)</span><br><span class="line">        <span class="variable language_">self</span>.act = nn.ELU()</span><br><span class="line">        <span class="variable language_">self</span>.flatten = nn.Flatten()</span><br><span class="line">        <span class="variable language_">self</span>.fc = nn.Linear(<span class="number">16</span>, <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.fc(<span class="variable language_">self</span>.flatten(<span class="variable language_">self</span>.act(<span class="variable language_">self</span>.bn(<span class="variable language_">self</span>.conv(x)))))</span><br></pre></td></tr></table></figure>
+
+<p>我们需要了解<code>optimizer</code>的一些属性比如<code>optimizer.param_groups</code>，要知道进行反向传播计算所需要的参数基本上都在这里。不妨看一下里面的内容：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">optimizer.param_groups</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">[&#123;&#x27;params&#x27;: [Parameter containing:</span><br><span class="line">   tensor([[[[-0.1824,  0.0391, -0.0919],</span><br><span class="line">             [ 0.1336,  0.0415, -0.0073],</span><br><span class="line">             [ 0.1174,  0.0020, -0.0896]],</span><br><span class="line">   </span><br><span class="line">            [[-0.0493,  0.1663,  0.0991],</span><br><span class="line">             [ 0.1541,  0.0731,  0.0382],</span><br><span class="line">             [ 0.0245, -0.0701,  0.0841]],</span><br><span class="line">   </span><br><span class="line">            [[-0.0188,  0.0573,  0.0740],</span><br><span class="line">             [-0.0024, -0.0112, -0.0193],</span><br><span class="line">             [-0.1160,  0.1549,  0.1194]]]], requires_grad=True),</span><br><span class="line">   Parameter containing:</span><br><span class="line">   tensor([0.0944], requires_grad=True),</span><br><span class="line">   Parameter containing:</span><br><span class="line">   tensor([1.], requires_grad=True),</span><br><span class="line">   Parameter containing:</span><br><span class="line">   tensor([0.], requires_grad=True),</span><br><span class="line">   Parameter containing:</span><br><span class="line">   tensor([[ 0.1952,  0.1926, -0.1615,  0.1012,  0.0987, -0.1303,  0.1945, -0.2085,</span><br><span class="line">            -0.1188,  0.0407, -0.0926,  0.0139,  0.1961,  0.0196,  0.1596,  0.1035],</span><br><span class="line">           [ 0.2256, -0.1728, -0.0649, -0.2252, -0.1049,  0.1704,  0.0607, -0.1786,</span><br><span class="line">            -0.1384,  0.1639,  0.0035, -0.0320,  0.2407, -0.1826, -0.0959,  0.2487],</span><br><span class="line">           [-0.1408,  0.1796, -0.0666,  0.0469, -0.2406,  0.0904,  0.2499, -0.2015,</span><br><span class="line">             0.0664, -0.2087, -0.1013, -0.1080,  0.1512,  0.1545,  0.0384, -0.1783],</span><br><span class="line">           [ 0.2023, -0.1636,  0.1479, -0.1352,  0.1680,  0.0547, -0.0309, -0.0961,</span><br><span class="line">             0.1528,  0.0792,  0.1917, -0.1388,  0.0384, -0.0111,  0.1132, -0.0392]],</span><br><span class="line">          requires_grad=True),</span><br><span class="line">   Parameter containing:</span><br><span class="line">   tensor([-0.1700,  0.2120, -0.0687,  0.0041], requires_grad=True)],</span><br><span class="line">  &#x27;lr&#x27;: 1e-05,</span><br><span class="line">  &#x27;betas&#x27;: (0.9, 0.999),</span><br><span class="line">  &#x27;eps&#x27;: 1e-08,</span><br><span class="line">  &#x27;weight_decay&#x27;: 0,</span><br><span class="line">  &#x27;amsgrad&#x27;: False,</span><br><span class="line">  &#x27;maximize&#x27;: False,</span><br><span class="line">  &#x27;foreach&#x27;: None,</span><br><span class="line">  &#x27;capturable&#x27;: False,</span><br><span class="line">  &#x27;differentiable&#x27;: False,</span><br><span class="line">  &#x27;fused&#x27;: None&#125;]</span><br></pre></td></tr></table></figure>
+
+<p>可以看出该输出类型是一个列表，列表的元素是字典，我们不妨称之为<code>param_group</code>。上面的优化器只有一个<code>param_group</code>，这个<code>param_group</code>中所包含的参数即含有权重又含有偏置还含有一系列其他的参数（在该例子中是含有<code>nn.BatchNorm</code>的参数）。我们可不可以对这些不同类型的参数分门别类放在不同的<code>param_group</code>中以供之后优化的时候我们针对它们使用不同的优化策略，实践上我们通常不对偏置和归一化层的参数进行权重衰减，嵌入层参数可能也需要相较于权重更小的衰减值；而且我们对偏置的学习率可以预设的稍高一些（相较于权重）。</p>
+<p>下面我们根据上面的情况来设计一个更好的优化器。</p>
+<pre><code class="python">
+``def better_optimizer(model, name=&quot;Adam&quot;, lr=0.001, momentum=0.9, decay=1e-5):
+    # g[0]：为包含常规权重的参数组添加权重衰减（decay）
+    # g[1]：为归一化层的权重添加一个权重衰减为 0 的参数组，因为 Norm 层通常不需要权重衰减
+    # g[2]：为偏置项添加一个权重衰减为 0 的参数组，因为偏置通常也不应用权重衰减
+    g = [], [], [] # optimizer parameter groups
+    n = tuple(v for k, v in nn.__dict__.items() if &quot;Norm&quot; in k) # normalization layers, i.e. BatchNorm2d()
+    for v in model.modules():
+        for p_name, p in v.named_parameters(recurse=0):
+            if p_name == &quot;bias&quot;: # bias (no decay)
+                g[2].append(p)
+            elif p_name == &quot;weight&quot; and isinstance(v, n): # weight (no decay)
+                g[1].append(p)
+            else:
+                g[0].append(p) # weight (with decay)
+    
+    if name == &quot;Adam&quot;:
+        optimizer = torch.optim.Adam(g[2], lr=lr, betas=(momentum, 0.999)) # adjust beta1 to momentum
+    elif name == &quot;AdamW&quot;:
+        optimizer = torch.optim.AdamW(g[2], lr=lr, betas=(momentum, 0.999), weight_decay=0.0)
+    elif name == &quot;RMSProp&quot;:
+        optimizer = torch.optim.RMSprop(g[2], lr=lr, momentum=momentum)
+    elif name == &quot;SGD&quot;:
+        optimizer = torch.optim.SGD(g[2], lr=lr, momentum=momentum, nesterov=True)
+    else:
+        raise NotImplementedError(f&quot;Optimizer &#123;name&#125; not implemented.&quot;)
+    
+    optimizer.add_param_group(&#123;&quot;params&quot;: g[0], &quot;weight_decay&quot;: decay&#125;) # add g0 with weight_decay, other keys are default value
+    optimizer.add_param_group(&#123;&quot;params&quot;: g[1], &quot;weight_decay&quot;: 0.0&#125;) # add g1 (Norm weights), other keys are default value
+    return optimizer
+</code></pre>
+]]></content>
+      <categories>
+        <category>Deep Learning Programming</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>DL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用命令行的艺术3 - Shell Script相关</title>
+    <url>/2025/03/15/2025-3-15-Command%20Line%20Art3-Shell%20Script%E7%9B%B8%E5%85%B3/</url>
+    <content><![CDATA[<h2 id="Shell-Script"><a href="#Shell-Script" class="headerlink" title="Shell Script"></a>Shell Script</h2><h3 id="运行方式"><a href="#运行方式" class="headerlink" title="运行方式"></a>运行方式</h3><ul>
+<li>利用bash运行script，在bash的子进程中运行</li>
+<li>利用source运行script，在父进程bash中运行<br>编写<code>showname.sh</code>来对两种运行方法进行测试：<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!bin/bash</span></span><br><span class="line"><span class="comment">#Program:</span></span><br><span class="line"><span class="comment">#       User inputs his first name and last name. Program shows his full name.</span></span><br><span class="line"><span class="comment">#History:</span></span><br><span class="line"><span class="comment">#2025/03/15     delkon  First release as showname.sh</span></span><br><span class="line"></span><br><span class="line">PATH=<span class="variable">$PATH</span>:/home/ubuntu/ShellScript</span><br><span class="line"><span class="built_in">export</span> PATH</span><br><span class="line"><span class="built_in">read</span> -p <span class="string">&quot;Please input your first name:&quot;</span> firstname</span><br><span class="line"><span class="built_in">read</span> -p <span class="string">&quot;Please input your last name:&quot;</span> lastname</span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;Your full name is: <span class="variable">$&#123;firstname&#125;</span> <span class="variable">$&#123;lastname&#125;</span>&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>利用bash和source分别运行<code>showname.sh</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bash showname.sh</span><br><span class="line">Please input your first name:DeLiang</span><br><span class="line">Please input your last name:Kong</span><br><span class="line">Your full name is: DeLiang Kong</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;firstname&#125;</span></span><br><span class="line"><span class="comment"># </span></span><br><span class="line"><span class="built_in">source</span> showname.sh</span><br><span class="line">Please input your first name:DeLiang</span><br><span class="line">Please input your last name:Kong</span><br><span class="line">Your full name is: DeLiang Kong</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;firstname&#125;</span></span><br><span class="line"><span class="comment"># DeLiang</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到使用source运行的脚本中定义的变量依然可以在bash环境中被捕捉到。</p>
+<h3 id="判断"><a href="#判断" class="headerlink" title="判断"></a>判断</h3><ul>
+<li>利用<code>test</code>命令搭配<code>&amp;&amp;</code>和<code>||</code>字符进行选择<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">ls</span></span><br><span class="line"><span class="comment"># hello.sh  showname.sh</span></span><br><span class="line"><span class="built_in">test</span> -e hello.sh &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;exist&quot;</span> || <span class="built_in">echo</span> <span class="string">&quot;Not exist&quot;</span></span><br><span class="line"><span class="comment"># exist</span></span><br><span class="line"><span class="built_in">test</span> -e file.sh &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;exist&quot;</span> || <span class="built_in">echo</span> <span class="string">&quot;Not exist&quot;</span></span><br><span class="line"><span class="comment"># Not exist</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><code>test</code>命令详解：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>测试的标志</td>
+<td>代表意义</td>
+</tr>
+<tr>
+<td>1. 关于某个文件名的『文件类型』判断，如 test -e filename 表示存在否</td>
+<td></td>
+</tr>
+<tr>
+<td>-e</td>
+<td>该『文件名』是否存在(exist)？(常用)</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>该『文件名』是否存在且为文件(file)？(常用)</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>该『文件名』是否存在且为目录(directory)？(常用)</td>
+</tr>
+<tr>
+<td>-b</td>
+<td>该『文件名』是否存在且为一个 block device 设备？</td>
+</tr>
+<tr>
+<td>-c</td>
+<td>该『文件名』是否存在且为一个 character device 设备？</td>
+</tr>
+<tr>
+<td>-S</td>
+<td>该『文件名』是否存在且为一个 Socket 文件？</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>该『文件名』是否存在且为一个 FIFO (pipe) 文件？</td>
+</tr>
+<tr>
+<td>-L</td>
+<td>该『文件名』是否存在且为一个链接档？</td>
+</tr>
+<tr>
+<td>2. 关于文件的权限侦测，如 test -r filename 表示可读否 (但 root 权限常有例外)</td>
+<td></td>
+</tr>
+<tr>
+<td>-r</td>
+<td>侦测该文件名是否存在且具有『可读』的权限？</td>
+</tr>
+<tr>
+<td>-w</td>
+<td>侦测该文件名是否存在且具有『可写』的权限？</td>
+</tr>
+<tr>
+<td>-x</td>
+<td>侦测该文件名是否存在且具有『可运行』的权限？</td>
+</tr>
+<tr>
+<td>-u</td>
+<td>侦测该文件名是否存在且具有『SUID』的属性？</td>
+</tr>
+<tr>
+<td>-g</td>
+<td>侦测该文件名是否存在且具有『SGID』的属性？</td>
+</tr>
+<tr>
+<td>-k</td>
+<td>侦测该文件名是否存在且具有『Sticky bit』的属性？</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>侦测该文件名是否存在且为『非空白文件』？</td>
+</tr>
+<tr>
+<td>3. 两个文件之间的比较，如： test file1 -nt file2</td>
+<td></td>
+</tr>
+<tr>
+<td>-nt</td>
+<td>(newer than)判断 file1 是否比 file2 新</td>
+</tr>
+<tr>
+<td>-ot</td>
+<td>(older than)判断 file1 是否比 file2 旧</td>
+</tr>
+<tr>
+<td>-ef</td>
+<td>判断 file1 与 file2 是否为同一文件，可用在判断 hard link 的判定上。 主要意义在判定，两个文件是否均指向同一个 inode 哩！</td>
+</tr>
+<tr>
+<td>4. 关于两个整数之间的判定，例如 test n1 -eq n2</td>
+<td></td>
+</tr>
+<tr>
+<td>-eq</td>
+<td>两数值相等 (equal)</td>
+</tr>
+<tr>
+<td>-ne</td>
+<td>两数值不等 (not equal)</td>
+</tr>
+<tr>
+<td>-gt</td>
+<td>n1 大于 n2 (greater than)</td>
+</tr>
+<tr>
+<td>-lt</td>
+<td>n1 小于 n2 (less than)</td>
+</tr>
+<tr>
+<td>-ge</td>
+<td>n1 大于等于 n2 (greater than or equal)</td>
+</tr>
+<tr>
+<td>-le</td>
+<td>n1 小于等于 n2 (less than or equal)</td>
+</tr>
+<tr>
+<td>5. 判定字符串的数据</td>
+<td></td>
+</tr>
+<tr>
+<td>test -z string</td>
+<td>判定字符串是否为 0 ？若 string 为空字符串，则为 true</td>
+</tr>
+<tr>
+<td>test -n string</td>
+<td>判定字符串是否非为 0 ？若 string 为空字符串，则为 false。  <br>注： -n 亦可省略</td>
+</tr>
+<tr>
+<td>test str1 &#x3D;&#x3D; str2</td>
+<td>判定 str1 是否等于 str2 ，若相等，则回传 true</td>
+</tr>
+<tr>
+<td>test str1 !&#x3D; str2</td>
+<td>判定 str1 是否不等于 str2 ，若相等，则回传 false</td>
+</tr>
+<tr>
+<td>6. 多重条件判定，例如： test -r filename -a -x filename</td>
+<td></td>
+</tr>
+<tr>
+<td>-a</td>
+<td>(and)两状况同时成立！例如 test -r file -a -x file，则 file 同时具有 r 与 x 权限时，才回传 true。</td>
+</tr>
+<tr>
+<td>-o</td>
+<td>(or)两状况任何一个成立！例如 test -r file -o -x file，则 file 具有 r 或 x 权限时，就可回传 true。</td>
+</tr>
+<tr>
+<td>!</td>
+<td>反相状态，如 test ! -x file ，当 file 不具有 x 时，回传 true</td>
+</tr>
+</tbody></table>
+<ul>
+<li>利用判断符号<code>[]</code>搭配<code>if</code>关键字<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">ls</span></span><br><span class="line"><span class="comment"># hello.sh  showname.sh</span></span><br><span class="line">[ -e hello.sh ] &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;exist&quot;</span> || <span class="built_in">echo</span> <span class="string">&quot;Not exist&quot;</span></span><br><span class="line"><span class="comment"># exist</span></span><br><span class="line">[ -e file.sh ] &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;exist&quot;</span> || <span class="built_in">echo</span> <span class="string">&quot;Not exist&quot;</span></span><br><span class="line"><span class="comment"># Not exist</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="缺省变量"><a href="#缺省变量" class="headerlink" title="缺省变量"></a>缺省变量</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">script  opt1  opt2  opt3  opt4      </span><br><span class="line"><span class="variable">$0</span>      <span class="variable">$1</span>    <span class="variable">$2</span>    <span class="variable">$3</span>    <span class="variable">$4</span></span><br></pre></td></tr></table></figure>
+
+<p>运行的脚本文件名为 $0 这个变量，第一个接的参数就是 $1 ，以此类推。 所以，只要我们在 script 里面善用 $1 的话，就可以很简单的立即下达某些指令功能了！除了这些数字的变量之外， 我们还有一些较为特殊的变量可以在 script 内使用来调用这些参数：</p>
+<ul>
+<li>$# ：代表后接的参数『个数』，以上表为例这里显示为『 4 』；</li>
+<li>$@ ：代表『 “$1” “$2” “$3” “$4” 』之意，每个变量是独立的(用双引号括起来)；</li>
+<li>$* ：代表『 “$1c$2c$3c$4” 』，其中 c 为分隔字符，缺省为空白键， 所以本例中代表『 “$1 $2 $3 $4” 』之意。</li>
+</ul>
+<h3 id="条件判断式"><a href="#条件判断式" class="headerlink" title="条件判断式"></a>条件判断式</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 多个条件判断 (if ... elif ... elif ... else) 分多种不同情况运行</span></span><br><span class="line"><span class="keyword">if</span> [ 条件判断式一 ]; <span class="keyword">then</span></span><br><span class="line">	当条件判断式一成立时，可以进行的指令工作内容；</span><br><span class="line"><span class="keyword">elif</span> [ 条件判断式二 ]; <span class="keyword">then</span></span><br><span class="line">	当条件判断式二成立时，可以进行的指令工作内容；</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	当条件判断式一与二均不成立时，可以进行的指令工作内容；</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="不定循环"><a href="#不定循环" class="headerlink" title="不定循环"></a>不定循环</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> [ condition ]  &lt;==中括号内的状态就是判断式</span><br><span class="line"><span class="keyword">do</span>            &lt;==<span class="keyword">do</span> 是循环的开始！</span><br><span class="line">	程序段落</span><br><span class="line"><span class="keyword">done</span>          &lt;==<span class="keyword">done</span> 是循环的结束</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">until</span> [ condition ]</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">	程序段落</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="固定循环"><a href="#固定循环" class="headerlink" title="固定循环"></a>固定循环</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> var <span class="keyword">in</span> con1 con2 con3 ...</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">	程序段</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Vim编辑"><a href="#Vim编辑" class="headerlink" title="Vim编辑"></a>Vim编辑</h2><p>通常我们使用vim编辑器来编辑shell script脚本，下面对vim操作的一些快捷键进行叙述。</p>
+<ul>
+<li>第一部份：一般指令模式可用的按钮说明，光标移动、复制粘贴、搜索取代等</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>移动光标的方法</td>
+<td></td>
+</tr>
+<tr>
+<td>h 或 向左方向键(←)</td>
+<td>光标向左移动一个字符</td>
+</tr>
+<tr>
+<td>j 或 向下方向键(↓)</td>
+<td>光标向下移动一个字符</td>
+</tr>
+<tr>
+<td>k 或 向上方向键(↑)</td>
+<td>光标向上移动一个字符</td>
+</tr>
+<tr>
+<td>l 或 向右方向键(→)</td>
+<td>光标向右移动一个字符</td>
+</tr>
+<tr>
+<td>如果你将右手放在键盘上的话，你会发现 hjkl 是排列在一起的，因此可以使用这四个按钮来移动光标。 如果想要进行多次移动的话，例如向下移动 30 列，可以使用 “30j” 或 “30↓” 的组合按键， 亦即加上想要进行的次数(数字)后，按下动作即可！</td>
+<td></td>
+</tr>
+<tr>
+<td><font color="#c00000">[Ctrl] + [f]</font></td>
+<td>屏幕『向下』移动一页，相当于 [Page Down]按键 (常用)</td>
+</tr>
+<tr>
+<td><font color="#c00000">[Ctrl] + [b]</font></td>
+<td>屏幕『向上』移动一页，相当于 [Page Up] 按键 (常用)</td>
+</tr>
+<tr>
+<td>[Ctrl] + [d]</td>
+<td>屏幕『向下』移动半页</td>
+</tr>
+<tr>
+<td>[Ctrl] + [u]</td>
+<td>屏幕『向上』移动半页</td>
+</tr>
+<tr>
+<td>+</td>
+<td>光标移动到非空白字符的下一列</td>
+</tr>
+<tr>
+<td>-</td>
+<td>光标移动到非空白字符的上一列</td>
+</tr>
+<tr>
+<td>n<space></td>
+<td>那个 n 表示『数字』，例如 20 。按下数字后再按空白键，光标会向右移动这一列的 n 个字符。例如 20<space> 则光标会向后面移动 20 个字符距离。</td>
+</tr>
+<tr>
+<td><font color="#c00000">0 或功能键[Home]</font></td>
+<td>这是数字『 0 』：移动到这一列的最前面字符处 (常用)</td>
+</tr>
+<tr>
+<td><font color="#c00000">$ 或功能键[End]</font></td>
+<td>移动到这一列的最后面字符处(常用)</td>
+</tr>
+<tr>
+<td>H</td>
+<td>光标移动到这个屏幕的最上方那一列的第一个字符</td>
+</tr>
+<tr>
+<td>M</td>
+<td>光标移动到这个屏幕的中央那一列的第一个字符</td>
+</tr>
+<tr>
+<td>L</td>
+<td>光标移动到这个屏幕的最下方那一列的第一个字符</td>
+</tr>
+<tr>
+<td><font color="#c00000">G</font></td>
+<td>移动到这个文件的最后一列(常用)</td>
+</tr>
+<tr>
+<td>nG</td>
+<td>n 为数字。移动到这个文件的第 n 列。例如 20G 则会移动到这个文件的第 20 列(可配合 :set nu)</td>
+</tr>
+<tr>
+<td><font color="#c00000">gg</font></td>
+<td>移动到这个文件的第一列，相当于 1G 啊！ (常用)</td>
+</tr>
+<tr>
+<td><font color="#c00000">n<code>&lt;Enter&gt;</code></font></td>
+<td>n 为数字。光标向下移动 n 列(常用)</td>
+</tr>
+<tr>
+<td>搜索与取代</td>
+<td></td>
+</tr>
+<tr>
+<td><font color="#c00000">&#x2F;word</font></td>
+<td>向光标之下寻找一个名称为 word 的字符串。例如要在文件内搜索 vbird 这个字符串，就输入 &#x2F;vbird 即可！ (常用)</td>
+</tr>
+<tr>
+<td>?word</td>
+<td>向光标之上寻找一个字符串名称为 word 的字符串。</td>
+</tr>
+<tr>
+<td>n</td>
+<td>这个 n 是英文按键。代表『重复前一个搜索的动作』。举例来说， 如果刚刚我们运行 &#x2F;vbird 去向下搜索 vbird 这个字符串，则按下 n 后，会向下继续搜索下一个名称为 vbird 的字符串。如果是运行 ?vbird 的话，那么按下 n 则会向上继续搜索名称为 vbird 的字符串！</td>
+</tr>
+<tr>
+<td>N</td>
+<td>这个 N 是英文按键。与 n 刚好相反，为『反向』进行前一个搜索动作。 例如 &#x2F;vbird 后，按下 N 则表示『向上』搜索 vbird 。</td>
+</tr>
+<tr>
+<td>使用 &#x2F;word 配合 n 及 N 是非常有帮助的！可以让你重复的找到一些你搜索的关键字！</td>
+<td></td>
+</tr>
+<tr>
+<td><font color="#c00000">:n1,n2s&#x2F;word1&#x2F;word2&#x2F;g</font></td>
+<td>n1 与 n2 为数字。在第 n1 与 n2 列之间寻找 word1 这个字符串，并将该字符串取代为 word2 ！举例来说，在 100 到 200 列之间搜索 vbird 并取代为 VBIRD 则：  <br>『:100,200s&#x2F;vbird&#x2F;VBIRD&#x2F;g』。(常用)</td>
+</tr>
+<tr>
+<td><font color="#c00000">:1,$s&#x2F;word1&#x2F;word2&#x2F;g</font></td>
+<td>从第一列到最后一列寻找 word1 字符串，并将该字符串取代为 word2 ！(常用)</td>
+</tr>
+<tr>
+<td><font color="#c00000">:1,$s&#x2F;word1&#x2F;word2&#x2F;gc</font></td>
+<td>从第一列到最后一列寻找 word1 字符串，并将该字符串取代为 word2 ！且在取代前显示提示字符给用户确认 (confirm) 是否需要取代！(常用)</td>
+</tr>
+<tr>
+<td>删除、复制与粘贴</td>
+<td></td>
+</tr>
+<tr>
+<td><font color="#c00000">x, X</font></td>
+<td>在一列字当中，x 为向后删除一个字符 (相当于 [del] 按键)， X 为向前删除一个字符(相当于 [backspace] 亦即是倒退键) (常用)</td>
+</tr>
+<tr>
+<td>nx</td>
+<td>n 为数字，连续向后删除 n 个字符。举例来说，我要连续删除 10 个字符， 『10x』。</td>
+</tr>
+<tr>
+<td><font color="#c00000">dd</font></td>
+<td>删除光标所在的那一整列(常用)</td>
+</tr>
+<tr>
+<td><font color="#c00000">ndd</font></td>
+<td>n 为数字。删除光标所在的向下 n 列，例如 20dd 则是删除 20 列 (常用)</td>
+</tr>
+<tr>
+<td>d1G</td>
+<td>删除光标所在到第一列的所有数据</td>
+</tr>
+<tr>
+<td>dG</td>
+<td>删除光标所在到最后一列的所有数据</td>
+</tr>
+<tr>
+<td>d$</td>
+<td>删除光标所在处，到该列的最后一个字符</td>
+</tr>
+<tr>
+<td>d0</td>
+<td>那个是数字的 0 ，删除光标所在处，到该列的最前面一个字符</td>
+</tr>
+<tr>
+<td><font color="#c00000">yy</font></td>
+<td>复制光标所在的那一列(常用)</td>
+</tr>
+<tr>
+<td><font color="#c00000">nyy</font></td>
+<td>n 为数字。复制光标所在的向下 n 列，例如 20yy 则是复制 20 列(常用)</td>
+</tr>
+<tr>
+<td>y1G</td>
+<td>复制光标所在列到第一列的所有数据</td>
+</tr>
+<tr>
+<td>yG</td>
+<td>复制光标所在列到最后一列的所有数据</td>
+</tr>
+<tr>
+<td>y0</td>
+<td>复制光标所在的那个字符到该列行首的所有数据</td>
+</tr>
+<tr>
+<td>y$</td>
+<td>复制光标所在的那个字符到该列行尾的所有数据</td>
+</tr>
+<tr>
+<td><font color="#c00000">p, P</font></td>
+<td>p 为将已复制的数据在光标下一列粘贴，P 则为贴在光标上一列！ 举例来说，我目前光标在第 20 列，且已经复制了 10 列数据。则按下 p 后， 那 10 列数据会贴在原本的 20 列之后，亦即由 21 列开始贴。但如果是按下 P 呢？ 那么原本的第 20 列会被推到变成 30 列。 (常用)</td>
+</tr>
+<tr>
+<td>J</td>
+<td>将光标所在列与下一列的数据结合成同一列</td>
+</tr>
+<tr>
+<td>c</td>
+<td>重复删除多个数据，例如向下删除 10 列，[ 10cj ]</td>
+</tr>
+<tr>
+<td>u</td>
+<td>复原前一个动作。(常用)</td>
+</tr>
+<tr>
+<td><font color="#c00000">[Ctrl]+r</font></td>
+<td>重做上一个动作。(常用)</td>
+</tr>
+<tr>
+<td>这个 u 与 [Ctrl]+r 是很常用的指令！一个是复原，另一个则是重做一次～ 利用这两个功能按键，你的编辑，嘿嘿！很快乐的啦！</td>
+<td></td>
+</tr>
+<tr>
+<td><font color="#c00000">.</font></td>
+<td>不要怀疑！这就是小数点！意思是重复前一个动作的意思。 如果你想要重复删除、重复粘贴等等动作，按下小数点『.』就好了！ (常用)</td>
+</tr>
+</tbody></table>
+<ul>
+<li>第二部份：一般指令模式切换到编辑模式的可用的按钮说明</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>进入插入或取代的编辑模式</td>
+<td></td>
+</tr>
+<tr>
+<td>i, I</td>
+<td>进入插入模式(Insert mode)：  <br>i 为『从目前光标所在处插入』， I 为『在目前所在列的第一个非空白字符处开始插入』。 (常用)</td>
+</tr>
+<tr>
+<td>a, A</td>
+<td>进入插入模式(Insert mode)：  <br>a 为『从目前光标所在的下一个字符处开始插入』， A 为『从光标所在列的最后一个字符处开始插入』。(常用)</td>
+</tr>
+<tr>
+<td>o, O</td>
+<td>进入插入模式(Insert mode)：  <br>这是英文本母 o 的大小写。o 为『在目前光标所在的下一列处插入新的一列』； O 为在目前光标所在处的上一列插入新的一列！(常用)</td>
+</tr>
+<tr>
+<td>r, R</td>
+<td>进入取代模式(Replace mode)：  <br>r 只会取代光标所在的那一个字符一次；R会一直取代光标所在的文本，直到按下 ESC 为止；(常用)</td>
+</tr>
+<tr>
+<td>上面这些按键中，在 vi 画面的左下角处会出现『–INSERT–』或『–REPLACE–』的字样。 由名称就知道该动作了吧！！特别注意的是，我们上面也提过了，你想要在文件里面输入字符时， 一定要在左下角处看到 INSERT 或 REPLACE 才能输入喔！</td>
+<td></td>
+</tr>
+<tr>
+<td>[Esc]</td>
+<td>退出编辑模式，回到一般指令模式中(常用)</td>
+</tr>
+</tbody></table>
+<ul>
+<li>第三部份：一般指令模式切换到指令列模式的可用按钮说明</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>指令列模式的保存、离开等指令</td>
+<td></td>
+</tr>
+<tr>
+<td>:w</td>
+<td>将编辑的数据写入硬盘文件中(常用)</td>
+</tr>
+<tr>
+<td>:w!</td>
+<td>若文件属性为『唯读』时，强制写入该文件。不过，到底能不能写入， 还是跟你对该文件的文件权限有关啊！</td>
+</tr>
+<tr>
+<td>:q</td>
+<td>离开 vi (常用)</td>
+</tr>
+<tr>
+<td>:q!</td>
+<td>若曾修改过文件，又不想保存，使用 ! 为强制离开不保存文件。</td>
+</tr>
+<tr>
+<td>注意一下啊，那个惊叹号 (!) 在 vi 当中，常常具有『强制』的意思～</td>
+<td></td>
+</tr>
+<tr>
+<td>:wq</td>
+<td>保存后离开，若为 :wq! 则为强制保存后离开 (常用)</td>
+</tr>
+<tr>
+<td>ZZ</td>
+<td>这是大写的 Z 喔！若文件没有更动，则不保存离开，若文件已经被更动过，则保存后离开！</td>
+</tr>
+<tr>
+<td>:w [filename]</td>
+<td>将编辑的数据保存成另一个文件（类似另存新档）</td>
+</tr>
+<tr>
+<td>:r [filename]</td>
+<td>在编辑的数据中，读入另一个文件的数据。亦即将 『filename』 这个文件内容加到光标所在列后面</td>
+</tr>
+<tr>
+<td>:n1,n2 w [filename]</td>
+<td>将 n1 到 n2 的内容保存成 filename 这个文件。</td>
+</tr>
+<tr>
+<td>:! command</td>
+<td>暂时离开 vi 到指令列模式下运行 command 的显示结果！例如  <br>『:! ls &#x2F;home』即可在 vi 当中察看 &#x2F;home 底下以 ls 输出的文件信息！</td>
+</tr>
+<tr>
+<td>vim 环境的变更</td>
+<td></td>
+</tr>
+<tr>
+<td>:set nu</td>
+<td>显示行号，设置之后，会在每一列的前缀显示该列的行号</td>
+</tr>
+<tr>
+<td>:set nonu</td>
+<td>与 set nu 相反，为取消行号！</td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>Linux操作系统</category>
+      </categories>
+      <tags>
+        <tag>Shell</tag>
+        <tag>Linux</tag>
+        <tag>vim</tag>
       </tags>
   </entry>
   <entry>
@@ -375,328 +1325,8 @@
         <category>Linux操作系统</category>
       </categories>
       <tags>
-        <tag>Git</tag>
         <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用命令行的艺术1 - Bash Shell相关</title>
-    <url>/2025/03/11/2025-3-11-Command%20Line%20Art1-%20Bash%20Shell%E7%9B%B8%E5%85%B3/</url>
-    <content><![CDATA[<p>熟练使用命令行是一种常常被忽视，或被认为难以掌握的技能，但实际上，它会提高你作为工程师的灵活性以及生产力。本文旨在了解命令行的Shell语言的一些基础概念和有关使用命令行的Shell的一些快捷操作，额外带一些Linux系统中系统文件说明…</p>
-<span id="more"></span>
-
-<h2 id="使用docker拉取Ubuntu容器"><a href="#使用docker拉取Ubuntu容器" class="headerlink" title="使用docker拉取Ubuntu容器"></a>使用docker拉取Ubuntu容器</h2><p>由于本人的笔记本并非Linux操作系统，为了方便命令行的学习而又不想搭建虚拟机双开系统，我们使用Docker来拉取一个Ubuntu镜像来方便我们学习。</p>
-<ul>
-<li><p>拉取Ubuntu镜像</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker pull ubuntu</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>运行一个交互式的 Ubuntu 容器</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -it ubuntu</span><br></pre></td></tr></table></figure>
-<p>这将拉起一个新的 Ubuntu 容器并进入它的命令行。<code>-it </code>标志表示以交互模式启动，并连接到该容器的终端。进入容器后，你将获得一个完全隔离的 Linux 系统，可以像平常一样使用 Shell。</p>
-</li>
-<li><p>退出容器<br>你可以在Linux系统中运行 exit 命令来退出容器。默认情况下，当你退出容器后，容器也会自动停止。如果你想保持容器在后台运行，可以通过以下方式运行容器：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -d ubuntu</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>重新进入容器<br>如果是在Linux系统中运行exit命令后，退出容器后容器自动停止，此时再想打开这个容器的话我们先运行以下命令找到我们的容器ID。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker ps -a</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>我的电脑上输出的结果是：</p>
-<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">CONTAINER ID   IMAGE     COMMAND       CREATED          STATUS         PORTS     NAMES</span><br><span class="line">3a8357da8968   ubuntu    &quot;/bin/bash&quot;   2 minutes ago   Exited (0) About a minute ago             tender_elbakyan</span><br></pre></td></tr></table></figure>
-
-<p>然后再根据容器ID启动一个停止的容器：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker start 3a8357da8968</span><br></pre></td></tr></table></figure>
-
-<p>进入一个已经在运行的容器：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it 3a8357da8968 /bin/bash</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>删除容器和镜像<br>当我们不在需要容器和镜像的时候，可以删除容器和镜像来节省内存。首先根据容器ID删除容器：<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">rm</span> 3a8357da8968</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>再根据镜像ID删除镜像。先得到镜像ID：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
-
-<p>我的电脑的运行结果是：</p>
-<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">REPOSITORY   TAG       IMAGE ID       CREATED       SIZE</span><br><span class="line">ubuntu       latest    c3d1a3432580   6 weeks ago   101MB</span><br></pre></td></tr></table></figure>
-
-<p>再删除镜像：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker rmi c3d1a3432580</span><br></pre></td></tr></table></figure>
-
-<h2 id="Bash-Shell"><a href="#Bash-Shell" class="headerlink" title="Bash Shell"></a>Bash Shell</h2><h3 id="Linux系统文件中的shell"><a href="#Linux系统文件中的shell" class="headerlink" title="Linux系统文件中的shell"></a>Linux系统文件中的shell</h3><p>Shell（壳程序）可以提供使用者操作应用程序的接口。<code>/bin/bash</code>是Linux默认的shell，Linux可用的shell记录在<code>/etc/shells</code>中，我们可以通过以下命令查看Linux可用的shells：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/shells</span><br></pre></td></tr></table></figure>
-
-<p>得到的输出是：</p>
-<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line"># /etc/shells: valid login shells</span><br><span class="line">/bin/sh</span><br><span class="line">/usr/bin/sh</span><br><span class="line">/bin/bash</span><br><span class="line">/usr/bin/bash</span><br><span class="line">/bin/rbash</span><br><span class="line">/usr/bin/rbash</span><br><span class="line">/usr/bin/dash</span><br></pre></td></tr></table></figure>
-
-<p>登陆Linux系统时，系统会给予一个shell，这个登陆取得的shell记录在<code>/etc/passwd</code>中，可以通过以下命令查看：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/passwd</span><br></pre></td></tr></table></figure>
-
-<p>得到的输出是：</p>
-<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">root@611b47761989:/# cat /etc/passwd</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin</span><br><span class="line">......（下面省略）......</span><br></pre></td></tr></table></figure>
-
-<h3 id="bash-shell的功能"><a href="#bash-shell的功能" class="headerlink" title="bash shell的功能"></a>bash shell的功能</h3><ul>
-<li>记忆使用过的指令（记录的指令在<code>~/.bash_history</code>中）</li>
-<li>命令与文件的补全（使用<code>tab</code>键，两次连按<code>tab</code>键会对匹配的命令或文件进行显示，如果只有一个与之匹配的命令或文件，则一次<code>tab</code>键会自动补全）</li>
-<li>设置命令别名<br>比如要现实目录下面的所有文件 （包含隐藏文件） 及所有的文件属性，我们可以运行以下命令：<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">ls</span> -al</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>但我们又是嫌弃这样写太过麻烦，我们可以对以上命令进行别名命名：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> lm=<span class="string">&#x27;ls -al&#x27;</span></span><br></pre></td></tr></table></figure>
-<p>那么<code>lm</code>的功能就和之前的<code>ls -al</code>功能一致了。</p>
-<ul>
-<li>程序化脚本（shell script）</li>
-<li>万用字符匹配*（正则表达式匹配）</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>符号</th>
-<th>意义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>*</td>
-<td>代表“ 0 个到无穷多个”任意字符</td>
-</tr>
-<tr>
-<td>?</td>
-<td>代表“一定有一个”任意字符</td>
-</tr>
-<tr>
-<td>[ ]</td>
-<td>同样代表“一定有一个在括号内”的字符（非任意字符）。例如<code>[abcd]</code> 代表“一定有一个字符， 可能是 a, b, c, d 这四个任何一个”</td>
-</tr>
-<tr>
-<td>[ - ]</td>
-<td>若有减号在中括号内时，代表“在编码顺序内的所有字符”。例如<code>[0-9]</code> 代表 0 到 9 之间的所有数字，因为数字的语系编码是连续的！</td>
-</tr>
-<tr>
-<td>[^ ]</td>
-<td>若中括号内的第一个字符为指数符号 （^） ，那表示“反向选择”，例如 <code>[^abc]</code> 代表 一定有一个字符，只要是非 a, b, c 的其他字符就接受的意思。</td>
-</tr>
-</tbody></table>
-<ul>
-<li>与命令行相关的特殊符号</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>#</td>
-<td>注解符号：这个最常被使用在 script 当中，视为说明！在后的数据均不执行</td>
-</tr>
-<tr>
-<td>\</td>
-<td>跳脱符号：将“特殊字符或万用字符”还原成一般字符</td>
-</tr>
-<tr>
-<td>|</td>
-<td>管道（pipe）：分隔两个管线命令的界定；</td>
-</tr>
-<tr>
-<td>;</td>
-<td>连续指令下达分隔符号：连续性命令的界定 （注意！与管线命令并不相同）</td>
-</tr>
-<tr>
-<td>~</td>
-<td>使用者的主文件夹</td>
-</tr>
-<tr>
-<td>$</td>
-<td>取用变量前置字符：亦即是变量之前需要加的变量取代值</td>
-</tr>
-<tr>
-<td>&amp;</td>
-<td>工作控制 （job control）：将指令变成背景下工作</td>
-</tr>
-<tr>
-<td>!</td>
-<td>逻辑运算意义上的“非” not 的意思！</td>
-</tr>
-<tr>
-<td>&#x2F;</td>
-<td>目录符号：路径分隔的符号</td>
-</tr>
-<tr>
-<td>&gt;, &gt;&gt;</td>
-<td>数据流重导向：输出导向，分别是“取代”与“累加”</td>
-</tr>
-<tr>
-<td>&lt;, &lt;&lt;</td>
-<td>数据流重导向：输入导向</td>
-</tr>
-<tr>
-<td>‘ ‘</td>
-<td>单引号，不具有变量置换的功能 （$ 变为纯文本）</td>
-</tr>
-<tr>
-<td>“ “</td>
-<td>具有变量置换的功能！ （$ 可保留相关功能）</td>
-</tr>
-<tr>
-<td></td>
-<td>两个“ &#96; ”中间为可以先执行的指令，亦可使用 $（ ）</td>
-</tr>
-<tr>
-<td>（ ）</td>
-<td>在中间为子 shell 的起始与结束</td>
-</tr>
-<tr>
-<td>{ }</td>
-<td>在中间为命令区块的组合！</td>
-</tr>
-</tbody></table>
-<h3 id="bash-shell的内置命令查询：type"><a href="#bash-shell的内置命令查询：type" class="headerlink" title="bash shell的内置命令查询：type"></a>bash shell的内置命令查询：type</h3><p>通过<code>type</code>指令我们可以知道每个指令是否为 bash 的内置指令，此外利用<code>type</code>搜寻后面的名称时，如果后面接的名称并不能以可执行文件的状态被找到， 那么该名称是不会被显示出来的。因此我们可以也可以直接运行可执行文件来代替原命令。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">type</span> -a <span class="built_in">ls</span></span><br></pre></td></tr></table></figure>
-
-<p>得到的输出为：</p>
-<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">ls is aliased to `ls --color=auto&#x27;</span><br><span class="line">ls is /usr/bin/ls</span><br><span class="line">ls is /bin/ls</span><br></pre></td></tr></table></figure>
-
-<p>因此我们也可以直接运行<code>/usr/bin/ls</code>或<code>/bin/ls</code>来代替<code>ls</code>。找指令也可以使用<code>which</code>。</p>
-<h3 id="bash-shell中的快速编辑按钮"><a href="#bash-shell中的快速编辑按钮" class="headerlink" title="bash shell中的快速编辑按钮"></a>bash shell中的快速编辑按钮</h3><ul>
-<li><code>ctrl-r</code>搜索命令行历史记录（按下按键之后，输入关键字便可以搜索，重复按下<code>ctrl-r</code>会向后查找匹配项，按下<code>Enter</code>键会执行当前匹配的命令，而按下右方向键会将匹配项放入当前行中，不会直接执行，以便做出修改）。</li>
-<li><code>ctrl-w</code>删除你键入的最后一个单词，<code>ctrl-u</code>可以删除行内光标所在位置之前的内容，<code>alt-b</code>和 <code>alt-f</code>可以以单词为单位移动光标，<code>ctrl-a</code>可以将光标移至行首，<code>ctrl-e</code>可以将光标移至行尾，<code>ctrl-k</code>可以删除光标至行尾的所有内容，<code>ctrl-l</code>可以清屏。键入 <code>man readline</code> 可以查看 Bash 中的默认快捷键。内容有很多，例如 <code>alt-.</code>循环地移向前一个参数，而<code>alt-*</code>可以展开通配符。</li>
-</ul>
-<h3 id="shell的变量"><a href="#shell的变量" class="headerlink" title="shell的变量"></a>shell的变量</h3><p>使用<code>echo</code>命令可以读出变量<br><code>echo $&#123;variable&#125;</code>读出variable的值<br><code>echo $&#123;command&#125;</code>读出command的stdout</p>
-<h3 id="系统自带的环境变量"><a href="#系统自带的环境变量" class="headerlink" title="系统自带的环境变量"></a>系统自带的环境变量</h3><p>利用<code>etc</code>观察系统自带环境变量如下：</p>
-<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">HOSTNAME=611b47761989 # 这部主机的主机名称</span><br><span class="line">PWD=/ # 当前工作目录</span><br><span class="line">HOME=/root # 当前用户的主目录</span><br><span class="line">LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:</span><br><span class="line">TERM=xterm # 这个终端机使用的环境是什么类型</span><br><span class="line">SHLVL=1 # 当前 shell 会话的深度层级</span><br><span class="line">PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin # 系统搜索可执行文件的路径列表</span><br><span class="line">_=/usr/bin/env # 这是最后一个执行命令的路径</span><br></pre></td></tr></table></figure>
-
-<p>比较重要的除了上面介绍的之外还有一个RANDOM变量，在 BASH 的环境下，这个 RANDOM 变量的内容，介于 0~32767 之间，由<code>/dev/random</code>乱数器产生。</p>
-<h3 id="bash内的自订变量"><a href="#bash内的自订变量" class="headerlink" title="bash内的自订变量"></a>bash内的自订变量</h3><p>利用<code>set</code>命令观察bash内的其他变量如下：</p>
-<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">BASH=/bin/bash</span><br><span class="line">......</span><br><span class="line">BASH_ALIASES=()</span><br><span class="line">BASH_ARGC=([0]=&quot;0&quot;)</span><br><span class="line">BASH_ARGV=()</span><br><span class="line">BASH_CMDS=()</span><br><span class="line">BASH_LINENO=()</span><br><span class="line">BASH_LOADABLES_PATH=/usr/local/lib/bash:/usr/lib/bash:/opt/local/lib/bash:/usr/pkg/lib/bash:/opt/pkg/lib/bash:.</span><br><span class="line">BASH_SOURCE=()</span><br><span class="line">BASH_VERSINFO=([0]=&quot;5&quot; [1]=&quot;2&quot; [2]=&quot;21&quot; [3]=&quot;1&quot; [4]=&quot;release&quot; [5]=&quot;aarch64-unknown-linux-gnu&quot;)</span><br><span class="line">BASH_VERSION=&#x27;5.2.21(1)-release&#x27;</span><br><span class="line">COLUMNS=80</span><br><span class="line">DIRSTACK=()</span><br><span class="line">EUID=0</span><br><span class="line">GROUPS=()</span><br><span class="line">HISTCONTROL=ignoredups:ignorespace</span><br><span class="line">HISTFILE=/root/.bash_history</span><br><span class="line">HISTFILESIZE=2000</span><br><span class="line">HISTSIZE=1000</span><br><span class="line">HOME=/root</span><br><span class="line">HOSTNAME=611b47761989</span><br><span class="line">HOSTTYPE=aarch64</span><br><span class="line">IFS=$&#x27; \t\n&#x27;</span><br><span class="line">LINES=25</span><br><span class="line">......</span><br><span class="line">MACHTYPE=aarch64-unknown-linux-gnu</span><br><span class="line">MAILCHECK=60</span><br><span class="line">OPTERR=1</span><br><span class="line">OPTIND=1</span><br><span class="line">OSTYPE=linux-gnu</span><br><span class="line">PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin</span><br><span class="line">PIPESTATUS=([0]=&quot;0&quot;)</span><br><span class="line">PPID=0</span><br><span class="line">PS1=&#x27;\[\e]0;\u@\h: \w\a\]$&#123;debian_chroot:+($debian_chroot)&#125;\u@\h:\w\$ &#x27;</span><br><span class="line">PS2=&#x27;&gt; &#x27;</span><br><span class="line">PS4=&#x27;+ &#x27;</span><br><span class="line">PWD=/</span><br><span class="line">SHELL=/bin/bash</span><br><span class="line">SHELLOPTS=braceexpand:emacs:hashall:histexpand:history:interactive-comments:monitor</span><br><span class="line">SHLVL=1</span><br><span class="line">TERM=xterm</span><br><span class="line">UID=0</span><br><span class="line">_=clear</span><br></pre></td></tr></table></figure>
-
-<p>上面的变量有一些比较重要，我们分而述之。</p>
-<ol>
-<li>PS1：（提示字符的设置）<br>当我们每次按下<code>enter</code>键去执行某个指令后，最后要再次出现提示符时就会去读取这个变量值。<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">PS1=<span class="string">&#x27;\[\e]0;\u@\h: \w\a\]$&#123;debian_chroot:+($debian_chroot)&#125;\u@\h:\w\$ &#x27;</span></span><br></pre></td></tr></table></figure></li>
-</ol>
-<p>其中<code>\[\e]0;...\a\]</code>: 这是一个 ANSI 转义序列，用于在支持的终端中设置窗口的标题或图标。<code>$&#123;debian_chroot:+($debian_chroot)&#125;</code>是条件表达式，用于在 Debian 或其他带有 chroot 环境时显示当前的 chroot 名称。<code>\u@\h</code>显示格式为 用户名@主机名，<code>\w</code>显示当前的工作目录，最后<code>\$</code>根据当前用户是否是超级用户显示不同的符号。还有一些其他比较有意思的符号，比如</p>
-<ul>
-<li><code>#</code> ： 下达的第几个指令。</li>
-<li><code>\t</code> ：显示时间，为 24 小时格式的“HH:MM:SS”</li>
-<li><code>\T</code> ：显示时间，为 12 小时格式的“HH:MM:SS”</li>
-<li><code>\A</code> ：显示时间，为 24 小时格式的“HH:MM”</li>
-<li><code>\@</code> ：显示时间，为 12 小时格式的“am&#x2F;pm”样式</li>
-</ul>
-<ol start="2">
-<li><p><code>$</code>：本shell的PID<br>我们可以运行<code>echo $&#123;$&#125;</code>来展示本shell的PID号码，结果如下:</p>
-<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">51</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>?</code>：上个执行指令的回传值<br>如果成功的执行上个指令， 则会回传一个 0 值，如果执行过程发生错误，就会回传非为 0 的数值。具体情形如下所示：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> cati</span><br></pre></td></tr></table></figure>
-<p>结果为：</p>
-<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">bash: cd: cati: No such file or directory</span><br></pre></td></tr></table></figure>
-<p>再运行：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;?&#125;</span></span><br></pre></td></tr></table></figure>
-<p>结果为：</p>
-<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">1</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h3 id="自订变量和环境变量的转换"><a href="#自订变量和环境变量的转换" class="headerlink" title="自订变量和环境变量的转换"></a>自订变量和环境变量的转换</h3><ul>
-<li>自订变量转成环境变量<br>采用<code>export</code>命令或<code>declare -x</code>：<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> variable</span><br><span class="line"><span class="built_in">declare</span> -x variable</span><br></pre></td></tr></table></figure></li>
-<li>环境变量（由自订变量转换而成的环境变量）转成自订变量<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">declare</span> [-aixr] variable</span><br><span class="line">选项与参数：</span><br><span class="line">-a  ：将后面名为 variable 的变量定义成为阵列 （array） 类型</span><br><span class="line">-i  ：将后面名为 variable 的变量定义成为整数数字 （<span class="built_in">integer</span>） 类型</span><br><span class="line">-x  ：用法与 <span class="built_in">export</span> 一样，就是将后面的 variable 变成环境变量；</span><br><span class="line">-r  ：将变量设置成为 <span class="built_in">readonly</span> 类型，该变量不可被更改内容，也不能 <span class="built_in">unset</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>采用<code>declare +x</code>:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">declare</span> +x variable</span><br></pre></td></tr></table></figure>
-
-<h3 id="bash中与变量相关的一些特殊的符号"><a href="#bash中与变量相关的一些特殊的符号" class="headerlink" title="bash中与变量相关的一些特殊的符号"></a>bash中与变量相关的一些特殊的符号</h3><ul>
-<li><code>#</code>：从字符串开头删除与pattern匹配的最短部分，并返回剩下的字符串。也可以用来获取变量的字符长度。<br>语法：<code>$&#123;variable#pattern&#125;</code><br>语法：<code>$&#123;#variable&#125;</code></li>
-<li><code>##</code>：从字符串开头删除与pattern匹配的最长部分，并返回剩下的字符串。<br>语法：<code>$&#123;variable##pattern&#125;</code></li>
-</ul>
-<p>具体示例如下：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">str=abc.defg.hijkl.txt</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;str#*.&#125;</span> <span class="comment"># defg.hijkl.txt</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;str##*.&#125;</span> <span class="comment"># txt</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p><code>%</code>: 从字符串末尾删除与 pattern 匹配的最短部分，并返回剩下的字符串。<br>语法：<code>$&#123;variable%pattern&#125;</code></p>
-</li>
-<li><p><code>%%</code>：从字符串末尾删除与 pattern 匹配的最短部分，并返回剩下的字符串。<br>语法：<code>$&#123;variable%%pattern&#125;</code><br>具体示例如下：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;str%.*&#125;</span> <span class="comment"># abc.defg.hijkl</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;str%%.*&#125;</span> <span class="comment"># abc</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>/</code>：将变量 variable 中第一个匹配 pattern 的部分替换为 replacement。<br>语法：<code>$&#123;variable/pattern/replacement&#125;</code></p>
-</li>
-<li><p><code>//</code>：将变量 variable 中所有匹配 pattern 的部分替换为 replacement。<br>语法：<code>$&#123;variable//pattern/replacement&#125;</code><br>具体示例如下：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">fname=delkon-university-works</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;fname/-/_&#125;</span> <span class="comment"># delkon_university-works</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;fname//-/_&#125;</span> <span class="comment"># delkon_university_works</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>:-</code>：如果变量未定义或为空，则返回default值。<br>语法：<code>$&#123;variable:-default&#125;</code></p>
-</li>
-<li><p><code>:=</code>：如果变量未定义或为空，则将其赋值为 default。<br>语法：<code>$&#123;variable:=default&#125;</code></p>
-</li>
-<li><p><code>:+</code>：如果变量已定义且不为空，则返回 replacement，否则返回空字符串。<br>语法：<code>$&#123;variable:+replacement&#125;</code></p>
-</li>
-<li><p><code>:?</code>：如果变量未定义或为空，则输出 error 消息并退出脚本。<br>语法：<code>$&#123;variable:?error&#125;</code></p>
-</li>
-</ul>
-<p>具体一些情况如下表格所示：</p>
-<table>
-<thead>
-<tr>
-<th>变量设置方式</th>
-<th>str 没有设置</th>
-<th>str 为空字串</th>
-<th>str 已设置非为空字串</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>var=$&#123;str-expr&#125;</code></td>
-<td><code>var=expr</code></td>
-<td><code>var=</code></td>
-<td><code>var=$str</code></td>
-</tr>
-<tr>
-<td><code>var=$&#123;str:-expr&#125;</code></td>
-<td><code>var=expr</code></td>
-<td><code>var=expr</code></td>
-<td><code>var=$str</code></td>
-</tr>
-<tr>
-<td><code>var=$&#123;str+expr&#125;</code></td>
-<td><code>var=</code></td>
-<td><code>var=expr</code></td>
-<td><code>var=expr</code></td>
-</tr>
-<tr>
-<td><code>var=$&#123;str:+expr&#125;</code></td>
-<td><code>var=</code></td>
-<td><code>var=</code></td>
-<td><code>var=expr</code></td>
-</tr>
-<tr>
-<td><code>var=$&#123;str=expr&#125;</code></td>
-<td><code>str=expr</code> <code>var=expr</code></td>
-<td><code>str 不变 var=</code></td>
-<td><code>str 不变</code> <code>var=$str</code></td>
-</tr>
-<tr>
-<td><code>var=$&#123;str:=expr&#125;</code></td>
-<td><code>str=expr</code> <code>var=expr</code></td>
-<td><code>str=expr</code> <code>var=expr</code></td>
-<td><code>str 不变</code> <code>var=$str</code></td>
-</tr>
-<tr>
-<td><code>var=$&#123;str?expr&#125;</code></td>
-<td><code>expr 输出至 stderr</code></td>
-<td><code>var=</code></td>
-<td><code>var=$str</code></td>
-</tr>
-<tr>
-<td><code>var=$&#123;str:?expr&#125;</code></td>
-<td><code>expr 输出至 stderr</code></td>
-<td><code>expr 输出至 stderr</code></td>
-<td><code>var=$str</code></td>
-</tr>
-</tbody></table>
-<ul>
-<li><code>$&#123;variable:offset&#125;</code>和<code>$&#123;variable:offset:length&#125;</code>用来从变量中提取子字符串。</li>
-</ul>
-<h3 id="bash配置"><a href="#bash配置" class="headerlink" title="bash配置"></a>bash配置</h3><p><code>source</code>或<code>.</code>后接配置文件会立即使用该配置文件。</p>
-]]></content>
-      <categories>
-        <category>Linux操作系统</category>
-      </categories>
-      <tags>
-        <tag>Shell</tag>
-        <tag>Linux</tag>
-        <tag>docker</tag>
+        <tag>Git</tag>
       </tags>
   </entry>
   <entry>
@@ -760,7 +1390,7 @@
 <p>输出为:</p>
 <figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">161 events found on stim channel Status</span><br><span class="line">Event IDs: [  1   2   3   4   5   6   7   8 111]</span><br></pre></td></tr></table></figure>
 
-<p>其中事件 ID 111表示事件开始。<code>events</code>是一个$n_events\times 3$的数组类型，纵向第一列表示事件发生的时刻，第三列表示事件发生的类型，第二列为全零：表示表示事件通道在该事件发生前的值。</p>
+<p>其中事件 ID 111表示事件开始。<code>events</code>是一个$n_{events}\times 3$的数组类型，纵向第一列表示事件发生的时刻，第三列表示事件发生的类型，第二列为全零：表示表示事件通道在该事件发生前的值。</p>
 <p><code>event[:9]</code>的示例。</p>
 <figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">array([[ 2596,     0,   111],</span><br><span class="line">       [15698,     0,     8],</span><br><span class="line">       [19117,     0,     2],</span><br><span class="line">       [22758,     0,     7],</span><br><span class="line">       [26381,     0,     4],</span><br><span class="line">       [29834,     0,     6],</span><br><span class="line">       [33664,     0,     3],</span><br><span class="line">       [37378,     0,     1],</span><br><span class="line">       [40793,     0,     5]])</span><br></pre></td></tr></table></figure>
 
@@ -771,7 +1401,7 @@
 <p>然后我们可以根据<code>epochs</code>得到批量化的数据，使用如下方法：</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">batched_data = epochs.get_data()[:, :, :-<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
 
-<p>批量化数据的形状为$bs\times n_channels \times n_times$，Epoch化后的EEG原始数据截取部分通道和部分事件后的可视化如图3所示。</p>
+<p>批量化数据的形状为$bs\times n_{channels} \times n_{times}$，Epoch化后的EEG原始数据截取部分通道和部分事件后的可视化如图3所示。</p>
 <p><img data-src="/../../codes/eeg-data/epoch.png" alt="我的图片"></p>
 <center>
 <strong>图3：Epoch化后EEG数据截取部分事件和部分通道后的可视化</strong>
