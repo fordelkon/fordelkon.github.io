@@ -6,7 +6,7 @@
   <link href="http://fordelkon.github.io/atom.xml" rel="self"/>
   
   <link href="http://fordelkon.github.io/"/>
-  <updated>2025-03-15T15:45:45.303Z</updated>
+  <updated>2025-03-16T09:51:36.273Z</updated>
   <id>http://fordelkon.github.io/</id>
   
   <author>
@@ -17,11 +17,24 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title></title>
+    <link href="http://fordelkon.github.io/2025/03/16/2025-3-16-Make%20and%20CMake/"/>
+    <id>http://fordelkon.github.io/2025/03/16/2025-3-16-Make%20and%20CMake/</id>
+    <published>2025-03-16T09:51:36.273Z</published>
+    <updated>2025-03-16T09:51:36.273Z</updated>
+    
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>使用命令行的艺术3 - Shell Script相关</title>
     <link href="http://fordelkon.github.io/2025/03/15/2025-3-15-Command%20Line%20Art3-Shell%20Script%E7%9B%B8%E5%85%B3/"/>
     <id>http://fordelkon.github.io/2025/03/15/2025-3-15-Command%20Line%20Art3-Shell%20Script%E7%9B%B8%E5%85%B3/</id>
     <published>2025-03-15T03:40:32.185Z</published>
-    <updated>2025-03-15T15:45:45.303Z</updated>
+    <updated>2025-03-16T09:35:46.754Z</updated>
     
     
     <summary type="html">&lt;p&gt;学会如何编写shell script对于编程能力是很大的提升，尤其是在进行大型项目是使用命令行来控制多个文件分别运行的时候，直接bash一下.&lt;code&gt;sh&lt;/code&gt;文件可以省下多少重复的操作！往小处说，一些复杂的功能可以由shell script很简单的实现，所以了解shell script还是很有必要的……&lt;/p&gt;</summary>
@@ -44,7 +57,7 @@
     <link href="http://fordelkon.github.io/2025/03/14/2025-3-14-PyTorch%20Trainer%20Config/"/>
     <id>http://fordelkon.github.io/2025/03/14/2025-3-14-PyTorch%20Trainer%20Config/</id>
     <published>2025-03-14T07:02:19.141Z</published>
-    <updated>2025-03-14T11:27:47.136Z</updated>
+    <updated>2025-03-16T08:27:14.007Z</updated>
     
     
     <summary type="html">&lt;p&gt;在使用PyTorch进行深度学习模型搭建的时候，构建我们自己的模型训练器是必不可少的一步。如果你仅仅会使用&lt;code&gt;optimizer.zero_grad()&lt;/code&gt;，&lt;code&gt;loss.backward()&lt;/code&gt;，&lt;code&gt;optimizer.step()&lt;/code&gt;三连来进行反向传播训练（就像之前的我一样），那么现在或许是时候来学习如何做出更加酷炫的训练器了……&lt;/p&gt;</summary>
@@ -86,7 +99,7 @@
     <link href="http://fordelkon.github.io/2025/03/11/2025-3-11-Command%20Line%20Art1-%20Bash%20Shell%E7%9B%B8%E5%85%B3/"/>
     <id>http://fordelkon.github.io/2025/03/11/2025-3-11-Command%20Line%20Art1-%20Bash%20Shell%E7%9B%B8%E5%85%B3/</id>
     <published>2025-03-11T08:41:31.290Z</published>
-    <updated>2025-03-15T09:29:09.689Z</updated>
+    <updated>2025-03-16T13:38:28.637Z</updated>
     
     
     <summary type="html">&lt;p&gt;熟练使用命令行是一种常常被忽视，或被认为难以掌握的技能，但实际上，它会提高你作为工程师的灵活性以及生产力。本文旨在了解命令行的Shell语言的一些基础概念和有关使用命令行的Shell的一些快捷操作，额外带一些Linux系统中系统文件说明…&lt;/p&gt;</summary>
