@@ -6,7 +6,7 @@
   <link href="http://fordelkon.github.io/atom.xml" rel="self"/>
   
   <link href="http://fordelkon.github.io/"/>
-  <updated>2025-03-16T09:51:36.273Z</updated>
+  <updated>2025-03-17T07:43:26.005Z</updated>
   <id>http://fordelkon.github.io/</id>
   
   <author>
@@ -17,15 +17,25 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title></title>
-    <link href="http://fordelkon.github.io/2025/03/16/2025-3-16-Make%20and%20CMake/"/>
-    <id>http://fordelkon.github.io/2025/03/16/2025-3-16-Make%20and%20CMake/</id>
+    <title>CMake的艺术</title>
+    <link href="http://fordelkon.github.io/2025/03/16/2025-3-16-The%20Art%20of%20CMake/"/>
+    <id>http://fordelkon.github.io/2025/03/16/2025-3-16-The%20Art%20of%20CMake/</id>
     <published>2025-03-16T09:51:36.273Z</published>
-    <updated>2025-03-16T09:51:36.273Z</updated>
+    <updated>2025-03-17T07:43:26.005Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;还在使用&lt;code&gt;vs code&lt;/code&gt;进行C++的环境的配置吗？想想对那些&lt;code&gt;.vscode&lt;/code&gt;文件夹下的一系列文件进行单独配置就感到头大😭，那么是时候来使用CMake来进行自动化编译了，妈妈再也不用担心我的一个&lt;code&gt;.cxx&lt;/code&gt;文件一个&lt;code&gt;.vscode&lt;/code&gt;文件夹了。当然CMake的作用远不止此，举例来说，为了充分利用每种编程语言的特性，许多大型项目是需要针对不同的功能辅以不同的编程语言实现，这时候就要靠CMake来定制整个编译流程了…&lt;/p&gt;</summary>
     
     
     
+    <category term="Build Configuration Tools" scheme="http://fordelkon.github.io/categories/Build-Configuration-Tools/"/>
     
+    
+    <category term="C" scheme="http://fordelkon.github.io/tags/C/"/>
+    
+    <category term="C-Plus-Plus" scheme="http://fordelkon.github.io/tags/C-Plus-Plus/"/>
+    
+    <category term="CMake" scheme="http://fordelkon.github.io/tags/CMake/"/>
     
   </entry>
   
@@ -37,7 +47,7 @@
     <updated>2025-03-16T09:35:46.754Z</updated>
     
     
-    <summary type="html">&lt;p&gt;学会如何编写shell script对于编程能力是很大的提升，尤其是在进行大型项目是使用命令行来控制多个文件分别运行的时候，直接bash一下.&lt;code&gt;sh&lt;/code&gt;文件可以省下多少重复的操作！往小处说，一些复杂的功能可以由shell script很简单的实现，所以了解shell script还是很有必要的…&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;学会如何编写shell script对于编程能力是很大的提升，尤其是在进行大型项目是使用命令行来控制多个文件分别运行的时候，直接bash一下.&lt;code&gt;sh&lt;/code&gt;文件可以省下多少重复的操作！往小处说，一些复杂的功能可以由shell script很简单的实现，所以了解shell script还是很有必要的……&lt;/p&gt;</summary>
     
     
     
@@ -57,10 +67,10 @@
     <link href="http://fordelkon.github.io/2025/03/14/2025-3-14-PyTorch%20Trainer%20Config/"/>
     <id>http://fordelkon.github.io/2025/03/14/2025-3-14-PyTorch%20Trainer%20Config/</id>
     <published>2025-03-14T07:02:19.141Z</published>
-    <updated>2025-03-16T13:43:19.101Z</updated>
+    <updated>2025-03-17T08:08:17.294Z</updated>
     
     
-    <summary type="html">&lt;p&gt;在使用PyTorch进行深度学习模型搭建的时候，构建我们自己的模型训练器是必不可少的一步。如果你仅仅会使用&lt;code&gt;optimizer.zero_grad()&lt;/code&gt;，&lt;code&gt;loss.backward()&lt;/code&gt;，&lt;code&gt;optimizer.step()&lt;/code&gt;三连来进行反向传播训练（就像之前的我一样），那么现在或许是时候来学习如何做出更加酷炫的训练器了…&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;在使用PyTorch进行深度学习模型搭建的时候，构建我们自己的模型训练器是必不可少的一步。如果你仅仅会使用&lt;code&gt;optimizer.zero_grad()&lt;/code&gt;，&lt;code&gt;loss.backward()&lt;/code&gt;，&lt;code&gt;optimizer.step()&lt;/code&gt;三连来进行反向传播训练（就像之前的我一样），那么现在或许是时候来学习如何做出更加酷炫的训练器了……&lt;/p&gt;</summary>
     
     
     
@@ -122,7 +132,7 @@
     <link href="http://fordelkon.github.io/2025/03/09/2025-3-9-eeg-data/"/>
     <id>http://fordelkon.github.io/2025/03/09/2025-3-9-eeg-data/</id>
     <published>2025-03-09T06:44:23.398Z</published>
-    <updated>2025-03-14T13:53:33.582Z</updated>
+    <updated>2025-03-17T08:08:07.006Z</updated>
     
     
     <summary type="html">&lt;p&gt;最近在学习EEG数据的处理，发现网上的有关EEG数据的讲解较少，尤其是使用&lt;code&gt;mne-python&lt;/code&gt;库来对EEG数据进行处理，现在来对EEG数据和该库的整体进行大致的窥探。&lt;/p&gt;</summary>
@@ -143,7 +153,7 @@
     <link href="http://fordelkon.github.io/2025/03/07/2025-3-7-git/"/>
     <id>http://fordelkon.github.io/2025/03/07/2025-3-7-git/</id>
     <published>2025-03-07T08:08:40.614Z</published>
-    <updated>2025-03-10T13:20:26.431Z</updated>
+    <updated>2025-03-17T08:07:51.082Z</updated>
     
     
     <summary type="html">&lt;p&gt;这篇博客主要自底向上地介绍Git命令行，有时甚至会使用一些&lt;code&gt;python&lt;/code&gt;代码来对一些Git的功能进行更加详细的分析。我一直认为基础一旦打好，那么一些更高级的用法也可以循序渐进地了解，而且是更加透彻的了解。不是像博主一开始那样以为只要死记硬背&lt;code&gt;git add&lt;/code&gt;，&lt;code&gt;git commit&lt;/code&gt;,&lt;code&gt;git pull&lt;/code&gt;，&lt;code&gt;git clone&lt;/code&gt;等常见命令的一些用法就可以了😭（实际上网上大多数教程就是这样教的…），在这上面走了不少弯路，所以从头开始打地基写作此文留以警示⚠️。&lt;/p&gt;</summary>

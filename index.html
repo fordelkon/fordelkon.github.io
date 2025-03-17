@@ -190,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fordelkon.github.io/2025/03/16/2025-3-16-Make%20and%20CMake/">
+    <link itemprop="mainEntityOfPage" href="http://fordelkon.github.io/2025/03/16/2025-3-16-The%20Art%20of%20CMake/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -204,7 +204,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2025/03/16/2025-3-16-Make%20and%20CMake/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2025/03/16/2025-3-16-The%20Art%20of%20CMake/" class="post-title-link" itemprop="url">CMake的艺术</a>
         </h2>
 
         <div class="post-meta">
@@ -216,6 +216,22 @@
 
               <time title="创建时间：2025-03-16 17:51:36" itemprop="dateCreated datePublished" datetime="2025-03-16T17:51:36+08:00">2025-03-16</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-03-17 15:43:26" itemprop="dateModified" datetime="2025-03-17T15:43:26+08:00">2025-03-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Build-Configuration-Tools/" itemprop="url" rel="index"><span itemprop="name">Build Configuration Tools</span></a>
+                </span>
+            </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -223,7 +239,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>0</span>
+              <span>244</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -242,7 +258,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <p>还在使用<code>vs code</code>进行C++的环境的配置吗？想想对那些<code>.vscode</code>文件夹下的一系列文件进行单独配置就感到头大😭，那么是时候来使用CMake来进行自动化编译了，妈妈再也不用担心我的一个<code>.cxx</code>文件一个<code>.vscode</code>文件夹了。当然CMake的作用远不止此，举例来说，为了充分利用每种编程语言的特性，许多大型项目是需要针对不同的功能辅以不同的编程语言实现，这时候就要靠CMake来定制整个编译流程了…</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/03/16/2025-3-16-The%20Art%20of%20CMake/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -329,7 +353,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>学会如何编写shell script对于编程能力是很大的提升，尤其是在进行大型项目是使用命令行来控制多个文件分别运行的时候，直接bash一下.<code>sh</code>文件可以省下多少重复的操作！往小处说，一些复杂的功能可以由shell script很简单的实现，所以了解shell script还是很有必要的…</p>
+          <p>学会如何编写shell script对于编程能力是很大的提升，尤其是在进行大型项目是使用命令行来控制多个文件分别运行的时候，直接bash一下.<code>sh</code>文件可以省下多少重复的操作！往小处说，一些复杂的功能可以由shell script很简单的实现，所以了解shell script还是很有必要的……</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2025/03/15/2025-3-15-Command%20Line%20Art3-Shell%20Script%E7%9B%B8%E5%85%B3/#more" rel="contents">
@@ -387,7 +411,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-03-16 21:43:19" itemprop="dateModified" datetime="2025-03-16T21:43:19+08:00">2025-03-16</time>
+                <time title="修改时间：2025-03-17 16:08:17" itemprop="dateModified" datetime="2025-03-17T16:08:17+08:00">2025-03-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -424,7 +448,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>在使用PyTorch进行深度学习模型搭建的时候，构建我们自己的模型训练器是必不可少的一步。如果你仅仅会使用<code>optimizer.zero_grad()</code>，<code>loss.backward()</code>，<code>optimizer.step()</code>三连来进行反向传播训练（就像之前的我一样），那么现在或许是时候来学习如何做出更加酷炫的训练器了…</p>
+          <p>在使用PyTorch进行深度学习模型搭建的时候，构建我们自己的模型训练器是必不可少的一步。如果你仅仅会使用<code>optimizer.zero_grad()</code>，<code>loss.backward()</code>，<code>optimizer.step()</code>三连来进行反向传播训练（就像之前的我一样），那么现在或许是时候来学习如何做出更加酷炫的训练器了……</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2025/03/14/2025-3-14-PyTorch%20Trainer%20Config/#more" rel="contents">
@@ -672,7 +696,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-03-14 21:53:33" itemprop="dateModified" datetime="2025-03-14T21:53:33+08:00">2025-03-14</time>
+                <time title="修改时间：2025-03-17 16:08:07" itemprop="dateModified" datetime="2025-03-17T16:08:07+08:00">2025-03-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -767,7 +791,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-03-10 21:20:26" itemprop="dateModified" datetime="2025-03-10T21:20:26+08:00">2025-03-10</time>
+                <time title="修改时间：2025-03-17 16:07:51" itemprop="dateModified" datetime="2025-03-17T16:07:51+08:00">2025-03-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -902,13 +926,13 @@
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -953,12 +977,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">25k</span>
+    <span title="站点总字数">26k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:32</span>
+    <span title="站点阅读时长">1:33</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
