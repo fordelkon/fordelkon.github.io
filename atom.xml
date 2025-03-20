@@ -6,7 +6,7 @@
   <link href="http://fordelkon.github.io/atom.xml" rel="self"/>
   
   <link href="http://fordelkon.github.io/"/>
-  <updated>2025-03-20T04:14:58.439Z</updated>
+  <updated>2025-03-20T04:18:49.369Z</updated>
   <id>http://fordelkon.github.io/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>CMake的艺术1-CMake进阶编写</title>
+    <title>CMake的艺术2-CMake进阶编写</title>
     <link href="http://fordelkon.github.io/2025/03/18/2025-3-18-The%20Art%20of%20CMake2-CMake%E8%BF%9B%E9%98%B6%E7%BC%96%E5%86%99/"/>
     <id>http://fordelkon.github.io/2025/03/18/2025-3-18-The%20Art%20of%20CMake2-CMake%E8%BF%9B%E9%98%B6%E7%BC%96%E5%86%99/</id>
     <published>2025-03-18T12:54:31.945Z</published>
-    <updated>2025-03-20T04:14:58.439Z</updated>
+    <updated>2025-03-20T04:18:49.369Z</updated>
     
     
     <summary type="html">&lt;p&gt;上面我们实现了CMake的一套简要搭建流程，基本上简单的编译配置就靠上面的几个CMake命令就可以完成了。但一些大型项目的cmake的配置光靠上面的几个CMake命令是远远不够的，简单来说如何导入第三方库，嗯这就属于CMake进阶的内容了…&lt;/p&gt;</summary>
@@ -31,11 +31,11 @@
     <category term="Build Configuration Tools" scheme="http://fordelkon.github.io/categories/Build-Configuration-Tools/"/>
     
     
-    <category term="C" scheme="http://fordelkon.github.io/tags/C/"/>
+    <category term="CMake" scheme="http://fordelkon.github.io/tags/CMake/"/>
     
     <category term="C-Plus-Plus" scheme="http://fordelkon.github.io/tags/C-Plus-Plus/"/>
     
-    <category term="CMake" scheme="http://fordelkon.github.io/tags/CMake/"/>
+    <category term="C" scheme="http://fordelkon.github.io/tags/C/"/>
     
   </entry>
   
@@ -54,11 +54,11 @@
     <category term="Build Configuration Tools" scheme="http://fordelkon.github.io/categories/Build-Configuration-Tools/"/>
     
     
-    <category term="C" scheme="http://fordelkon.github.io/tags/C/"/>
+    <category term="CMake" scheme="http://fordelkon.github.io/tags/CMake/"/>
     
     <category term="C-Plus-Plus" scheme="http://fordelkon.github.io/tags/C-Plus-Plus/"/>
     
-    <category term="CMake" scheme="http://fordelkon.github.io/tags/CMake/"/>
+    <category term="C" scheme="http://fordelkon.github.io/tags/C/"/>
     
   </entry>
   
