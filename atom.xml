@@ -6,7 +6,7 @@
   <link href="http://fordelkon.github.io/atom.xml" rel="self"/>
   
   <link href="http://fordelkon.github.io/"/>
-  <updated>2025-03-17T07:43:26.005Z</updated>
+  <updated>2025-03-20T04:14:58.439Z</updated>
   <id>http://fordelkon.github.io/</id>
   
   <author>
@@ -17,11 +17,34 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>CMake的艺术</title>
-    <link href="http://fordelkon.github.io/2025/03/16/2025-3-16-The%20Art%20of%20CMake/"/>
-    <id>http://fordelkon.github.io/2025/03/16/2025-3-16-The%20Art%20of%20CMake/</id>
+    <title>CMake的艺术1-CMake进阶编写</title>
+    <link href="http://fordelkon.github.io/2025/03/18/2025-3-18-The%20Art%20of%20CMake2-CMake%E8%BF%9B%E9%98%B6%E7%BC%96%E5%86%99/"/>
+    <id>http://fordelkon.github.io/2025/03/18/2025-3-18-The%20Art%20of%20CMake2-CMake%E8%BF%9B%E9%98%B6%E7%BC%96%E5%86%99/</id>
+    <published>2025-03-18T12:54:31.945Z</published>
+    <updated>2025-03-20T04:14:58.439Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;上面我们实现了CMake的一套简要搭建流程，基本上简单的编译配置就靠上面的几个CMake命令就可以完成了。但一些大型项目的cmake的配置光靠上面的几个CMake命令是远远不够的，简单来说如何导入第三方库，嗯这就属于CMake进阶的内容了…&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Build Configuration Tools" scheme="http://fordelkon.github.io/categories/Build-Configuration-Tools/"/>
+    
+    
+    <category term="C" scheme="http://fordelkon.github.io/tags/C/"/>
+    
+    <category term="C-Plus-Plus" scheme="http://fordelkon.github.io/tags/C-Plus-Plus/"/>
+    
+    <category term="CMake" scheme="http://fordelkon.github.io/tags/CMake/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CMake的艺术1-CMake简要编写流程</title>
+    <link href="http://fordelkon.github.io/2025/03/16/2025-3-16-The%20Art%20of%20CMake1-CMake%E7%AE%80%E8%A6%81%E7%BC%96%E5%86%99%E6%B5%81%E7%A8%8B/"/>
+    <id>http://fordelkon.github.io/2025/03/16/2025-3-16-The%20Art%20of%20CMake1-CMake%E7%AE%80%E8%A6%81%E7%BC%96%E5%86%99%E6%B5%81%E7%A8%8B/</id>
     <published>2025-03-16T09:51:36.273Z</published>
-    <updated>2025-03-17T07:43:26.005Z</updated>
+    <updated>2025-03-20T04:10:21.581Z</updated>
     
     
     <summary type="html">&lt;p&gt;还在使用&lt;code&gt;vs code&lt;/code&gt;进行C++的环境的配置吗？想想对那些&lt;code&gt;.vscode&lt;/code&gt;文件夹下的一系列文件进行单独配置就感到头大😭，那么是时候来使用CMake来进行自动化编译了，妈妈再也不用担心我的一个&lt;code&gt;.cxx&lt;/code&gt;文件一个&lt;code&gt;.vscode&lt;/code&gt;文件夹了。当然CMake的作用远不止此，举例来说，为了充分利用每种编程语言的特性，许多大型项目是需要针对不同的功能辅以不同的编程语言实现，这时候就要靠CMake来定制整个编译流程了…&lt;/p&gt;</summary>
