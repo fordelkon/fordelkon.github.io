@@ -70,7 +70,7 @@
     <updated>2025-03-20T06:52:34.565Z</updated>
     
     
-    <summary type="html">&lt;p&gt;学会如何编写shell script对于编程能力是很大的提升，尤其是在进行大型项目是使用命令行来控制多个文件分别运行的时候，直接bash一下.&lt;code&gt;sh&lt;/code&gt;文件可以省下多少重复的操作！往小处说，一些复杂的功能可以由shell script很简单的实现，所以了解shell script还是很有必要的…&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;学会如何编写shell script对于编程能力是很大的提升，尤其是在进行大型项目是使用命令行来控制多个文件分别运行的时候，直接bash一下.&lt;code&gt;sh&lt;/code&gt;文件可以省下多少重复的操作！往小处说，一些复杂的功能可以由shell script很简单的实现，所以了解shell script还是很有必要的……&lt;/p&gt;</summary>
     
     
     
@@ -93,7 +93,7 @@
     <updated>2025-03-20T06:52:30.700Z</updated>
     
     
-    <summary type="html">&lt;p&gt;在使用PyTorch进行深度学习模型搭建的时候，构建我们自己的模型训练器是必不可少的一步。如果你仅仅会使用&lt;code&gt;optimizer.zero_grad()&lt;/code&gt;，&lt;code&gt;loss.backward()&lt;/code&gt;，&lt;code&gt;optimizer.step()&lt;/code&gt;三连来进行反向传播训练（就像之前的我一样），那么现在或许是时候来学习如何做出更加酷炫的训练器了…&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;在使用PyTorch进行深度学习模型搭建的时候，构建我们自己的模型训练器是必不可少的一步。如果你仅仅会使用&lt;code&gt;optimizer.zero_grad()&lt;/code&gt;，&lt;code&gt;loss.backward()&lt;/code&gt;，&lt;code&gt;optimizer.step()&lt;/code&gt;三连来进行反向传播训练（就像之前的我一样），那么现在或许是时候来学习如何做出更加酷炫的训练器了……&lt;/p&gt;</summary>
     
     
     
@@ -176,7 +176,7 @@
     <link href="http://fordelkon.github.io/2025/03/07/2025-3-7-git/"/>
     <id>http://fordelkon.github.io/2025/03/07/2025-3-7-git/</id>
     <published>2025-03-07T08:08:40.614Z</published>
-    <updated>2025-03-20T06:51:56.728Z</updated>
+    <updated>2025-03-20T14:28:29.819Z</updated>
     
     
     <summary type="html">&lt;p&gt;这篇博客主要自底向上地介绍Git命令行，有时甚至会使用一些&lt;code&gt;python&lt;/code&gt;代码来对一些Git的功能进行更加详细的分析。我一直认为基础一旦打好，那么一些更高级的用法也可以循序渐进地了解，而且是更加透彻的了解。不是像博主一开始那样以为只要死记硬背&lt;code&gt;git add&lt;/code&gt;，&lt;code&gt;git commit&lt;/code&gt;,&lt;code&gt;git pull&lt;/code&gt;，&lt;code&gt;git clone&lt;/code&gt;等常见命令的一些用法就可以了😭（实际上网上大多数教程就是这样教的…），在这上面走了不少弯路，所以从头开始打地基写作此文留以警示⚠️。&lt;/p&gt;</summary>
