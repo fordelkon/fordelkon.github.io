@@ -6,7 +6,7 @@
   <link href="http://fordelkon.github.io/atom.xml" rel="self"/>
   
   <link href="http://fordelkon.github.io/"/>
-  <updated>2025-03-24T15:10:25.692Z</updated>
+  <updated>2025-03-26T14:53:52.380Z</updated>
   <id>http://fordelkon.github.io/</id>
   
   <author>
@@ -21,14 +21,14 @@
     <link href="http://fordelkon.github.io/2025/03/23/2025-3-23-The%20Art%20of%20Docker/"/>
     <id>http://fordelkon.github.io/2025/03/23/2025-3-23-The%20Art%20of%20Docker/</id>
     <published>2025-03-23T14:21:41.792Z</published>
-    <updated>2025-03-24T15:10:25.692Z</updated>
+    <updated>2025-03-26T14:53:52.380Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h2 id=&quot;Docker基本概念&quot;&gt;&lt;a href=&quot;#Docker基本概念&quot; class=&quot;headerlink&quot;</summary>
+    <summary type="html">&lt;h2 id=&quot;docker基本概念&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#docker基本概念&quot;&gt;&lt;/a&gt;</summary>
         
       
     
@@ -116,7 +116,7 @@
     <updated>2025-03-16T09:35:46.754Z</updated>
     
     
-    <summary type="html">&lt;p&gt;学会如何编写shell script对于编程能力是很大的提升，尤其是在进行大型项目是使用命令行来控制多个文件分别运行的时候，直接bash一下.&lt;code&gt;sh&lt;/code&gt;文件可以省下多少重复的操作！往小处说，一些复杂的功能可以由shell script很简单的实现，所以了解shell script还是很有必要的……&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;学会如何编写shell script对于编程能力是很大的提升，尤其是在进行大型项目是使用命令行来控制多个文件分别运行的时候，直接bash一下.&lt;code&gt;sh&lt;/code&gt;文件可以省下多少重复的操作！往小处说，一些复杂的功能可以由shell script很简单的实现，所以了解shell script还是很有必要的…&lt;/p&gt;</summary>
     
     
     
@@ -136,10 +136,10 @@
     <link href="http://fordelkon.github.io/2025/03/14/2025-3-14-PyTorch%20Trainer%20Config/"/>
     <id>http://fordelkon.github.io/2025/03/14/2025-3-14-PyTorch%20Trainer%20Config/</id>
     <published>2025-03-14T07:02:19.141Z</published>
-    <updated>2025-03-16T13:42:57.245Z</updated>
+    <updated>2025-03-26T14:53:45.276Z</updated>
     
     
-    <summary type="html">&lt;p&gt;在使用PyTorch进行深度学习模型搭建的时候，构建我们自己的模型训练器是必不可少的一步。如果你仅仅会使用&lt;code&gt;optimizer.zero_grad()&lt;/code&gt;，&lt;code&gt;loss.backward()&lt;/code&gt;，&lt;code&gt;optimizer.step()&lt;/code&gt;三连来进行反向传播训练（就像之前的我一样），那么现在或许是时候来学习如何做出更加酷炫的训练器了……&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;在使用PyTorch进行深度学习模型搭建的时候，构建我们自己的模型训练器是必不可少的一步。如果你仅仅会使用&lt;code&gt;optimizer.zero_grad()&lt;/code&gt;，&lt;code&gt;loss.backward()&lt;/code&gt;，&lt;code&gt;optimizer.step()&lt;/code&gt;三连来进行反向传播训练（就像之前的我一样），那么现在或许是时候来学习如何做出更加酷炫的训练器了…&lt;/p&gt;</summary>
     
     
     
@@ -197,14 +197,14 @@
   </entry>
   
   <entry>
-    <title>EEG数据初探</title>
+    <title>EEG介绍与数据初探</title>
     <link href="http://fordelkon.github.io/2025/03/09/2025-3-9-eeg-data/"/>
     <id>http://fordelkon.github.io/2025/03/09/2025-3-9-eeg-data/</id>
     <published>2025-03-09T06:44:23.398Z</published>
-    <updated>2025-03-24T15:10:13.943Z</updated>
+    <updated>2025-03-26T14:53:32.165Z</updated>
     
     
-    <summary type="html">&lt;p&gt;最近在学习EEG数据的处理，发现网上的有关EEG数据的讲解较少，尤其是使用&lt;code&gt;mne-python&lt;/code&gt;库来对EEG数据进行处理，现在来对EEG数据和该库的整体进行大致的窥探。&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;最近在学习EEG数据的处理，发现网上的有关EEG数据的讲解较少，尤其是使用&lt;code&gt;mne-python&lt;/code&gt;库来对EEG数据进行处理，本博客的主要内容是来对EEG数据和该库的整体进行大致的窥探，不过深入分析EEG数据之前我们先对EEG进行简介。&lt;/p&gt;</summary>
     
     
     
@@ -222,7 +222,7 @@
     <link href="http://fordelkon.github.io/2025/03/07/2025-3-7-git/"/>
     <id>http://fordelkon.github.io/2025/03/07/2025-3-7-git/</id>
     <published>2025-03-07T08:08:40.614Z</published>
-    <updated>2025-03-24T15:10:07.911Z</updated>
+    <updated>2025-03-26T14:53:26.904Z</updated>
     
     
     <summary type="html">&lt;p&gt;这篇博客主要自底向上地介绍Git命令行，有时甚至会使用一些&lt;code&gt;python&lt;/code&gt;代码来对一些Git的功能进行更加详细的分析。我一直认为基础一旦打好，那么一些更高级的用法也可以循序渐进地了解，而且是更加透彻的了解。不是像博主一开始那样以为只要死记硬背&lt;code&gt;git add&lt;/code&gt;，&lt;code&gt;git commit&lt;/code&gt;,&lt;code&gt;git pull&lt;/code&gt;，&lt;code&gt;git clone&lt;/code&gt;等常见命令的一些用法就可以了😭（实际上网上大多数教程就是这样教的…），在这上面走了不少弯路，所以从头开始打地基写作此文留以警示⚠️。&lt;/p&gt;</summary>
