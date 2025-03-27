@@ -6,7 +6,7 @@
   <link href="http://fordelkon.github.io/atom.xml" rel="self"/>
   
   <link href="http://fordelkon.github.io/"/>
-  <updated>2025-03-26T14:53:52.380Z</updated>
+  <updated>2025-03-27T03:29:47.019Z</updated>
   <id>http://fordelkon.github.io/</id>
   
   <author>
@@ -21,16 +21,10 @@
     <link href="http://fordelkon.github.io/2025/03/23/2025-3-23-The%20Art%20of%20Docker/"/>
     <id>http://fordelkon.github.io/2025/03/23/2025-3-23-The%20Art%20of%20Docker/</id>
     <published>2025-03-23T14:21:41.792Z</published>
-    <updated>2025-03-26T14:53:52.380Z</updated>
+    <updated>2025-03-27T03:29:47.019Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;Docker基本概念&quot;&gt;&lt;a href=&quot;#Docker基本概念&quot; class=&quot;headerlink&quot;</summary>
-        
-      
+    <summary type="html">&lt;p&gt;发现了一个新的GitHub的项目，发现要使用conda库来创建新的虚拟环境装一大堆python库才能运行起来这个项目…心中的激情之火已经浇灭了一大半😒；这时候又突然发现该项目支持Docker环境部署，可以直接拉取Docker镜像来运行该项目，好了，心中再次燃起激情之火😊。总之，Docker可以帮助我么省下配环境的时间，而且你拉取别人已经发布的镜像一般是别人已经在宿主机上已经跑通的镜像，那么不管你的平台是什么你也一定能跑通。下面让我们进一步看看Docker吧…&lt;/p&gt;</summary>
     
     
     
@@ -178,7 +172,7 @@
     <link href="http://fordelkon.github.io/2025/03/11/2025-3-11-Command%20Line%20Art1-%20Bash%20Shell%E7%9B%B8%E5%85%B3/"/>
     <id>http://fordelkon.github.io/2025/03/11/2025-3-11-Command%20Line%20Art1-%20Bash%20Shell%E7%9B%B8%E5%85%B3/</id>
     <published>2025-03-11T08:41:31.290Z</published>
-    <updated>2025-03-24T14:36:47.430Z</updated>
+    <updated>2025-03-27T03:31:36.362Z</updated>
     
     
     <summary type="html">&lt;p&gt;熟练使用命令行是一种常常被忽视，或被认为难以掌握的技能，但实际上，它会提高你作为工程师的灵活性以及生产力。本文旨在了解命令行的Shell语言的一些基础概念和有关使用命令行的Shell的一些快捷操作，额外带一些Linux系统中系统文件说明…&lt;/p&gt;</summary>
