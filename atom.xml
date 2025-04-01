@@ -6,7 +6,7 @@
   <link href="http://fordelkon.github.io/atom.xml" rel="self"/>
   
   <link href="http://fordelkon.github.io/"/>
-  <updated>2025-03-27T03:29:47.019Z</updated>
+  <updated>2025-04-01T06:25:44.230Z</updated>
   <id>http://fordelkon.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>PyTorch隐晦的反向传播机制</title>
+    <link href="http://fordelkon.github.io/2025/03/28/2025-3-28-The%20hidden%20backprop%20method%20in%20PyTorch/"/>
+    <id>http://fordelkon.github.io/2025/03/28/2025-3-28-The%20hidden%20backprop%20method%20in%20PyTorch/</id>
+    <published>2025-03-28T08:48:26.317Z</published>
+    <updated>2025-04-01T06:25:44.230Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;PyTorch使用基于动态图的自动微分（Autograd）机制实时记录前向操作的梯度路径，使得反向传播过程中能够按需计算梯度。这个实时记录梯度路径以及反向传播中按需计算梯度的过程被PyTorch的设计者们很好的封装隐藏起来，使得使用者们只需要搭建好前向传播模型针对模型参数设计好优化器&lt;code&gt;optimizer&lt;/code&gt;之后再调用&lt;code&gt;optimizer.zero_grad()&lt;/code&gt;，&lt;code&gt;loss.backward()&lt;/code&gt;，&lt;code&gt;optimizer.step()&lt;/code&gt;就完事了。但是只会上面的’三板斧‘还是稍微有点不足，现在让我们稍微深入了解一下PyTorch的反向传播过程。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Deep Learning Programming" scheme="http://fordelkon.github.io/categories/Deep-Learning-Programming/"/>
+    
+    
+    <category term="Python" scheme="http://fordelkon.github.io/tags/Python/"/>
+    
+    <category term="DL" scheme="http://fordelkon.github.io/tags/DL/"/>
+    
+  </entry>
   
   <entry>
     <title>使用Docker的艺术</title>
@@ -71,11 +92,11 @@
     <category term="Build Configuration Tools" scheme="http://fordelkon.github.io/categories/Build-Configuration-Tools/"/>
     
     
-    <category term="C" scheme="http://fordelkon.github.io/tags/C/"/>
+    <category term="CMake" scheme="http://fordelkon.github.io/tags/CMake/"/>
     
     <category term="C-Plus-Plus" scheme="http://fordelkon.github.io/tags/C-Plus-Plus/"/>
     
-    <category term="CMake" scheme="http://fordelkon.github.io/tags/CMake/"/>
+    <category term="C" scheme="http://fordelkon.github.io/tags/C/"/>
     
   </entry>
   
@@ -94,11 +115,11 @@
     <category term="Build Configuration Tools" scheme="http://fordelkon.github.io/categories/Build-Configuration-Tools/"/>
     
     
-    <category term="C" scheme="http://fordelkon.github.io/tags/C/"/>
+    <category term="CMake" scheme="http://fordelkon.github.io/tags/CMake/"/>
     
     <category term="C-Plus-Plus" scheme="http://fordelkon.github.io/tags/C-Plus-Plus/"/>
     
-    <category term="CMake" scheme="http://fordelkon.github.io/tags/CMake/"/>
+    <category term="C" scheme="http://fordelkon.github.io/tags/C/"/>
     
   </entry>
   
@@ -130,7 +151,7 @@
     <link href="http://fordelkon.github.io/2025/03/14/2025-3-14-PyTorch%20Trainer%20Config/"/>
     <id>http://fordelkon.github.io/2025/03/14/2025-3-14-PyTorch%20Trainer%20Config/</id>
     <published>2025-03-14T07:02:19.141Z</published>
-    <updated>2025-03-26T14:53:45.276Z</updated>
+    <updated>2025-04-01T06:36:25.105Z</updated>
     
     
     <summary type="html">&lt;p&gt;在使用PyTorch进行深度学习模型搭建的时候，构建我们自己的模型训练器是必不可少的一步。如果你仅仅会使用&lt;code&gt;optimizer.zero_grad()&lt;/code&gt;，&lt;code&gt;loss.backward()&lt;/code&gt;，&lt;code&gt;optimizer.step()&lt;/code&gt;三连来进行反向传播训练（就像之前的我一样），那么现在或许是时候来学习如何做出更加酷炫的训练器了……&lt;/p&gt;</summary>

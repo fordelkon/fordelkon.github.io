@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fordelkon.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="PyTorch使用基于动态图的自动微分（Autograd）机制实时记录前向操作的梯度路径，使得反向传播过程中能够按需计算梯度。这个实时记录梯度路径以及反向传播中按需计算梯度的过程被PyTorch的设计者们很好的封装隐藏起来，使得使用者们只需要搭建好前向传播模型针对模型参数设计好优化器optimizer之后再调用optimizer.zero_grad()，loss.backward()，optimi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PyTorch隐晦的反向传播机制">
+<meta property="og:url" content="http://fordelkon.github.io/2025/03/28/2025-3-28-The%20hidden%20backprop%20method%20in%20PyTorch/index.html">
+<meta property="og:site_name" content="delkon&#39;s blog">
+<meta property="og:description" content="PyTorch使用基于动态图的自动微分（Autograd）机制实时记录前向操作的梯度路径，使得反向传播过程中能够按需计算梯度。这个实时记录梯度路径以及反向传播中按需计算梯度的过程被PyTorch的设计者们很好的封装隐藏起来，使得使用者们只需要搭建好前向传播模型针对模型参数设计好优化器optimizer之后再调用optimizer.zero_grad()，loss.backward()，optimi">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-03-28T08:48:26.317Z">
+<meta property="article:modified_time" content="2025-04-01T06:25:44.230Z">
+<meta property="article:author" content="delkon">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="DL">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://fordelkon.github.io/2025/03/28/2025-3-28-The%20hidden%20backprop%20method%20in%20PyTorch/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>PyTorch隐晦的反向传播机制 | delkon's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="delkon's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+      <a target="_blank" rel="noopener" href="https://github.com/fordelkon" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">delkon's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life is short, I use Python</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fordelkon.github.io/2025/03/28/2025-3-28-The%20hidden%20backprop%20method%20in%20PyTorch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="delkon">
+      <meta itemprop="description" content="Stay hungry, stay foolish">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="delkon's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PyTorch隐晦的反向传播机制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-03-28 16:48:26" itemprop="dateCreated datePublished" datetime="2025-03-28T16:48:26+08:00">2025-03-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-01 14:25:44" itemprop="dateModified" datetime="2025-04-01T14:25:44+08:00">2025-04-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Deep-Learning-Programming/" itemprop="url" rel="index"><span itemprop="name">Deep Learning Programming</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>PyTorch使用基于动态图的自动微分（Autograd）机制实时记录前向操作的梯度路径，使得反向传播过程中能够按需计算梯度。这个实时记录梯度路径以及反向传播中按需计算梯度的过程被PyTorch的设计者们很好的封装隐藏起来，使得使用者们只需要搭建好前向传播模型针对模型参数设计好优化器<code>optimizer</code>之后再调用<code>optimizer.zero_grad()</code>，<code>loss.backward()</code>，<code>optimizer.step()</code>就完事了。但是只会上面的’三板斧‘还是稍微有点不足，现在让我们稍微深入了解一下PyTorch的反向传播过程。</p>
+<span id="more"></span>
+
+<h2 id="PyTorch中的计算图"><a href="#PyTorch中的计算图" class="headerlink" title="PyTorch中的计算图"></a>PyTorch中的计算图</h2><p>PyTorch的动态图优化使得图的构建和代码的执行同步进行也就是说每次前向传播实时生成计算图。现在我们来详细剖析一下PyTorch计算图的设计理念：该计算图的节点是操作（<code>Function</code>），边是张量（<code>Tensor</code>）。比如说我在前向传播的过程中使用了<code>z = torch.add(x, y)</code>，那么其对应的<code>Function</code>子类<code>AddBackward~</code>在计算图中记录<code>torch.add</code>的输入<code>Tensor</code>和反向传播所需要的信息。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line">x = torch.tensor([<span class="number">2.0</span>, <span class="number">3.0</span>], requires_grad=<span class="literal">True</span>)</span><br><span class="line">y = torch.ones(<span class="number">2</span>, requires_grad=<span class="literal">True</span>)</span><br><span class="line">z = torch.mul(x, y).<span class="built_in">sum</span>()</span><br><span class="line"><span class="comment"># 此时只有前向传播，未进行反向传播</span></span><br><span class="line">z.grad_fn.__class__.__name__</span><br><span class="line"><span class="comment"># &#x27;SumBackward0&#x27;</span></span><br><span class="line"><span class="comment"># 表明前向传播之后已经构建好了计算图</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 初略展示图结构</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">trace_grad_fn</span>(<span class="params">grad_fn, indent=<span class="number">0</span></span>):</span><br><span class="line">    <span class="keyword">if</span> grad_fn <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;    &quot;</span> * indent + <span class="string">f&quot;└─ <span class="subst">&#123;grad_fn.__class__.__name__&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> next_fn, _ <span class="keyword">in</span> grad_fn.next_functions:</span><br><span class="line">        <span class="keyword">if</span> next_fn <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            trace_grad_fn(next_fn, indent+<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">trace_grad_fn(z.grad_fn)</span><br><span class="line"><span class="comment"># └─ SumBackward0</span></span><br><span class="line"><span class="comment">#    └─ MulBackward0</span></span><br><span class="line"><span class="comment">#        └─ AccumulateGrad</span></span><br><span class="line"><span class="comment">#        └─ AccumulateGrad</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">isinstance</span>(z.grad_fn, torch.autograd.graph.Node)</span><br><span class="line"><span class="comment"># True</span></span><br><span class="line"><span class="comment"># 表明PyTorch中的计算图的节点是操作(Funciton)</span></span><br><span class="line">x.grad <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">and</span> y.grad <span class="keyword">is</span> <span class="literal">None</span></span><br><span class="line"><span class="comment"># True</span></span><br><span class="line"><span class="comment"># 由于还没有进行反向传播所以每个输入张量的梯度都是None</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开始了反向传播, retain_graph保证了在反向传播之后该计算图不会被自动销毁，方便我们之后在该计算图上继续进行操作</span></span><br><span class="line">z.backward(retain_graph=<span class="literal">True</span>)</span><br><span class="line"><span class="comment"># 这个时候就可以计算输入张量的梯度</span></span><br><span class="line">x.grad, y.grad</span><br><span class="line"><span class="comment"># (tensor([1., 1.]), tensor([2., 3.]))</span></span><br><span class="line"></span><br><span class="line">z.backward(retain_graph=<span class="literal">True</span>)</span><br><span class="line"><span class="comment"># 梯度开始累积</span></span><br><span class="line">x.grad, y.grad</span><br><span class="line"><span class="comment"># (tensor([2., 2.]), tensor([4., 6.]))</span></span><br><span class="line"></span><br><span class="line">z.backward(retain_graph=<span class="literal">True</span>)</span><br><span class="line"><span class="comment"># 梯度再次累积</span></span><br><span class="line">x.grad, y.grad</span><br><span class="line"><span class="comment"># (tensor([3., 3.]), tensor([6., 9.]))</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 再次反向传播前清除累积的梯度</span></span><br><span class="line">x.grad.zero_()</span><br><span class="line">y.grad.zero_()</span><br><span class="line">z.backward()</span><br><span class="line">x.grad, y.grad</span><br><span class="line"><span class="comment"># (tensor([1., 1.]), tensor([2., 3.]))</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的计算图构建过程中会出现<code>AccumulateGrad</code>对象，该对象对应于叶子张量的反向传播节点，就如它的命名含义那样，该对象是用于处理叶子节点的梯度累积的，通常在PyTorch中所有模型参数（<code>model.parameters()</code>）都是叶子张量（还记得优化器构建的过程中的<code>torch.optim.Adam(model.parameters(), ...)</code>和每次反向传播的时候优化器的清除梯度的操作<code>optimizer.zero_grad()</code>吗？😊），因为它们是手动创建的张量且它的下游没有操作（<code>Function</code>）节点。</p>
+<h2 id="计算图中插入hooks"><a href="#计算图中插入hooks" class="headerlink" title="计算图中插入hooks"></a>计算图中插入<code>hooks</code></h2><p>计算图中插入<code>hooks</code>有什么优势呢，我们之前提及PyTorch在前向传播的过程中就已经构建好了计算图，在反向传播的过程中根据已经构建好的计算图自动计算好了模型中各个叶子张量的梯度。但是我有时候想在反向传播的过程中访问或修改梯度，那么这种自动化的过程就显得不太方便了，比如可视化热力图的<code>Grad-CAM算法</code>就需要访问反向传播过程中的梯度。至于修改梯度的话也有很多应用比如说我们常用的<code>梯度裁剪</code>操作，这种时候<code>hooks</code>就登场了，具体来说，<strong>它允许用户在前向传播，反向传播或梯度计算的过程中插入自定义的逻辑</strong>，可以满足我们操作或访问模型的中间输出或内部梯度的要求。</p>
+<h3 id="Tensor-Hooks"><a href="#Tensor-Hooks" class="headerlink" title="Tensor Hooks"></a><code>Tensor Hooks</code></h3><p>直接注册在<code>torch.Tensor</code>上的钩子，用于监控或修改该张量的梯度。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># hook(grad) -&gt; Tensor or None</span></span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line">a = torch.zeros(<span class="number">3</span>, requires_grad=<span class="literal">True</span>)</span><br><span class="line">b = a.clone()</span><br><span class="line">c = b.<span class="built_in">sum</span>()</span><br><span class="line"></span><br><span class="line">c.backward(retain_graph=<span class="literal">True</span>)</span><br><span class="line">a.grad</span><br><span class="line"><span class="comment"># tensor([1., 1., 1.])</span></span><br><span class="line"></span><br><span class="line">a.grad.zero_()</span><br><span class="line">a.register_hook(<span class="keyword">lambda</span> grad: grad * <span class="number">2</span>) <span class="comment"># 钩子操作对a的梯度翻倍</span></span><br><span class="line">c.backward()</span><br><span class="line">a.grad</span><br><span class="line"><span class="comment"># tensor([2., 2., 2.])</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Node-Hooks"><a href="#Node-Hooks" class="headerlink" title="Node Hooks"></a><code>Node Hooks</code></h3><p>注册在 <code>Node</code>对象上的钩子，用于干预操作节点的梯度计算逻辑。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># hook(grad_inputs: Tuple[Tensor], grad_outputs: Tuple[Tensor]) -&gt; Tuple[Tensor] or None</span></span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line">a = torch.ones(<span class="number">3</span>, requires_grad=<span class="literal">True</span>)</span><br><span class="line">b = a * <span class="number">2</span></span><br><span class="line">c = b.<span class="built_in">sum</span>()</span><br><span class="line"></span><br><span class="line"><span class="built_in">isinstance</span>(b.grad_fn, torch.autograd.graph.Node) <span class="comment"># b.grad是Node类</span></span><br><span class="line"><span class="comment"># True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># hook中的grad_outputs是指反向传播传递到该节点的输出梯度 dc/db</span></span><br><span class="line"><span class="comment"># hook中的grad_inputs是指反向传播中该节点计算出输入的梯度 dc/da, dc/d2</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">hook</span>(<span class="params">grad_inputs, grad_outputs</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;grad_outputs (dc/db,): <span class="subst">&#123;grad_outputs&#125;</span>&quot;</span>)  <span class="comment"># 输出梯度（来自下游）</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;grad_inputs (dc/da, dc/d2): <span class="subst">&#123;grad_inputs&#125;</span>&quot;</span>)  <span class="comment"># 输入梯度（当前节点计算的值）</span></span><br><span class="line">    <span class="keyword">return</span> grad_inputs</span><br><span class="line"></span><br><span class="line">handle = b.grad_fn.register_hook(hook)</span><br><span class="line">c.backward()</span><br><span class="line">handle.remove()</span><br><span class="line"><span class="comment"># grad_outputs (dc/db): (tensor([1., 1., 1.]),)</span></span><br><span class="line"><span class="comment"># grad_inputs (dc/da, dc/d2): (tensor([2., 2., 2.]), None)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Forward-Hooks"><a href="#Forward-Hooks" class="headerlink" title="Forward Hooks"></a><code>Forward Hooks</code></h3><p>注册在 <code>nn.Module</code> 上的钩子，用于监控或修改模块的前向传播输出。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># hook(module, args, output) -&gt; None or modified output</span></span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn</span><br><span class="line"></span><br><span class="line">x = torch.randn(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Net</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.fc = nn.Linear(<span class="number">2</span>, <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.fc(x)</span><br><span class="line"></span><br><span class="line">net = Net()</span><br><span class="line">out = net(x) </span><br><span class="line">out</span><br><span class="line"><span class="comment"># tensor([[-0.4755,  0.0959]], grad_fn=&lt;AddmmBackward0&gt;)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">forward_hook</span>(<span class="params">module, args, output</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Layer <span class="subst">&#123;module.__class__.__name__&#125;</span> output:\n&quot;</span>, output)</span><br><span class="line">    <span class="keyword">return</span> output * <span class="number">2</span>  <span class="comment"># 输出放大</span></span><br><span class="line"></span><br><span class="line">handle = net.fc.register_forward_hook(forward_hook)</span><br><span class="line">out = net(x)</span><br><span class="line">handle.remove()</span><br><span class="line">out</span><br><span class="line"><span class="comment"># Layer Linear output:</span></span><br><span class="line"><span class="comment"># tensor([[-0.4755,  0.0959]], grad_fn=&lt;AddmmBackward0&gt;)</span></span><br><span class="line"><span class="comment"># tensor([[-0.9510,  0.1918]], grad_fn=&lt;MulBackward0&gt;)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Backward-Hooks"><a href="#Backward-Hooks" class="headerlink" title="Backward Hooks"></a><code>Backward Hooks</code></h3><p>注册在 <code>nn.Module</code> 上的钩子，用于监控或修改反向传播中模块的梯度。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># hook(module, grad_input, grad_output) -&gt; tuple(Tensor) or None</span></span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn</span><br><span class="line"></span><br><span class="line">x = torch.randn(<span class="number">1</span>, <span class="number">2</span>, requires_grad=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Net</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.fc = nn.Linear(<span class="number">2</span>, <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.fc(x)</span><br><span class="line"></span><br><span class="line">net = Net()</span><br><span class="line">out = net(x) </span><br><span class="line">loss = out.<span class="built_in">sum</span>()</span><br><span class="line">loss.backward()</span><br><span class="line">x.grad</span><br><span class="line"><span class="comment"># tensor([[0.8805, 0.7177]])</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># hook中的grad_outputs是指反向传播传递到该模块的输出梯度</span></span><br><span class="line"><span class="comment"># hook中的grad_inputs是指反向传播中该模块计算出输入的梯度</span></span><br><span class="line"><span class="comment"># 定义完整反向钩子</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">full_backward_hook</span>(<span class="params">module, grad_inputs, grad_outputs</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\n--- Full Backward Hook Triggered ---&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Module: <span class="subst">&#123;module.__class__.__name__&#125;</span>&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 打印输入梯度（包含所有输入类型的位置）</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Grad Inputs (Tuple):&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> i, grad <span class="keyword">in</span> <span class="built_in">enumerate</span>(grad_inputs):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;  Input <span class="subst">&#123;i&#125;</span>: <span class="subst">&#123;grad <span class="keyword">if</span> grad <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">else</span> <span class="string">&#x27;No gradient&#x27;</span>&#125;</span>&quot;</span>)  <span class="comment"># 非 Tensor 输入的梯度为 None</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 打印输出梯度</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Grad Outputs (Tuple):&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> i, grad <span class="keyword">in</span> <span class="built_in">enumerate</span>(grad_outputs):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;  Output <span class="subst">&#123;i&#125;</span>: <span class="subst">&#123;grad&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">tuple</span>(grad.clamp(-<span class="number">0.1</span>, <span class="number">0.1</span>) <span class="keyword">for</span> grad <span class="keyword">in</span> grad_inputs)</span><br><span class="line"></span><br><span class="line">handle = net.register_full_backward_hook(full_backward_hook)</span><br><span class="line">out = net(x)</span><br><span class="line">loss = out.<span class="built_in">sum</span>()</span><br><span class="line">x.grad.zero_()</span><br><span class="line">loss.backward()</span><br><span class="line">handle.remove()</span><br><span class="line">x.grad</span><br><span class="line"><span class="comment"># --- Full Backward Hook Triggered ---</span></span><br><span class="line"><span class="comment"># Module: Net</span></span><br><span class="line"><span class="comment"># Grad Inputs (Tuple):</span></span><br><span class="line"><span class="comment">#   Input 0: tensor([[0.8805, 0.7177]])</span></span><br><span class="line"><span class="comment"># Grad Outputs (Tuple):</span></span><br><span class="line"><span class="comment">#   Output 0: tensor([[1., 1.]])</span></span><br><span class="line"><span class="comment"># tensor([[0.1000, 0.1000]])</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="自定义操作（Function）"><a href="#自定义操作（Function）" class="headerlink" title="自定义操作（Function）"></a>自定义操作（<code>Function</code>）</h2><p>上面我们所说的都是PyTorch中的一系列已经封装好的算子在前向传播的使用过程中就在计算图中自动生成了其对应的<code>Function</code>子类记录一些反向传播过程中必要的东西。那为什么还要自定义操作（<code>Function</code>）呢？我们要明白PyTorch封装好的算子的不断拼接组合有时候并不能满足我们的需求，有些时候我们甚至要修改最底层的算子操作，比如说设计一种全新的卷积操作。这个内容难度较高，我们之后另开一篇博文来说明。<br>$$<br>X \rightarrow f_{\theta <em>{1}}^1(X) \rightarrow f</em>{\theta <em>{2}}^2(f</em>{\theta <em>{1}}^1(X)) \rightarrow \dots \rightarrow f</em>{\theta <em>{n}}^n(\dots f</em>{\theta <em>{2}}^2(f</em>{\theta <em>{1}}^1(X)))\tag{1}<br>$$<br>典型前向传播过程如式$(1)$所示，其中$f</em>{\theta <em>{i}}^i(\cdot), i&#x3D;1\dots n$表示可学习参数为$\theta</em>{i}$的映射，一个映射中往往包含了远远多于一个操作（<code>Function</code>）。</p>
+<h2 id="常见前向传播无误反向传播错误的情况"><a href="#常见前向传播无误反向传播错误的情况" class="headerlink" title="常见前向传播无误反向传播错误的情况"></a>常见前向传播无误反向传播错误的情况</h2><p>在了解完计算图之后我们可以先了解一下<code>backward()</code>方法中的一些可选参数。因为前向传播无误而反向传播出现错误往往与该方法相关。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">tensor.backward(</span><br><span class="line">	gradient: <span class="type">Any</span> | <span class="literal">None</span> = <span class="literal">None</span>,</span><br><span class="line">    retain_graph: <span class="type">Any</span> | <span class="literal">None</span> = <span class="literal">None</span>,</span><br><span class="line">    create_graph: <span class="built_in">bool</span> = <span class="literal">False</span>,</span><br><span class="line">    inputs: <span class="type">Any</span> | <span class="literal">None</span> = <span class="literal">None</span></span><br><span class="line">) -&gt; (<span class="type">Any</span> | <span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line">方法参数</span><br><span class="line">- gradient ：与tensor同形状的张量，它代表的是损失函数对当前张量的梯度。通常情况下，当我们执行反向传播时，gradient 默认为 <span class="literal">None</span>，表示我们对标量值（如损失值）进行反向传播。对于非标量张量（例如矩阵、向量等），我们需要通过 gradient 参数传递与输出张量形状相同的梯度。</span><br><span class="line">- retain_graph ：该参数控制是否保留计算图。当你调用 backward() 时，PyTorch 会计算梯度并销毁计算图来释放内存。如果你打算在同一个计算图上调用多次 backward()，你需要将 retain_graph 设置为 <span class="literal">True</span>，以便保留计算图供后续反向传播使用。</span><br><span class="line">- create_graph ：该参数控制是否创建计算图来计算梯度的梯度（即二阶梯度）。当你需要计算二阶导数（例如用于优化算法或高级任务时）时，可以设置 create_graph=<span class="literal">True</span>。</span><br><span class="line">- inputs ：这个参数允许你传入需要计算梯度的张量。它通常在自定义操作（Function）时使用，以指定哪些张量会参与梯度计算。</span><br></pre></td></tr></table></figure>
+
+<h3 id="原地操作（in-place-operation）"><a href="#原地操作（in-place-operation）" class="headerlink" title="原地操作（in-place operation）"></a>原地操作（in-place operation）</h3><p>原地操作是指直接修改张量内容而不创建新的张量。一般进行原地操作的算子会带有<code>_</code>，比如说<code>.add_()</code>，<code>.mul_()</code>，还有python风格的<code>+=</code>，<code>*=</code>等操作。原地操作在前向传播的过程中不会出现什么问题，但在反向传播过程中有时会出现<code>RuntimeError: a leaf Variable that requires grad is being used in an in-place operation.</code>错误，由于叶子张量内容被篡改，导致在反向传播的时候不知道起初的叶子张量的内容来计算该张量的梯度。</p>
+<h3 id="梯度累积（gradient-accumulation）"><a href="#梯度累积（gradient-accumulation）" class="headerlink" title="梯度累积（gradient accumulation）"></a>梯度累积（gradient accumulation）</h3><p>PyTorch的反向传播机制使得梯度在叶子张量处的梯度会随着每一次的<code>loss.backward()</code>而进行累积，如果不在每一次<code>loss.backward()</code>的之前或之后进行梯度清零的话很容易在循环的过程中发生梯度爆炸。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/DL/" rel="tag"># DL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/03/23/2025-3-23-The%20Art%20of%20Docker/" rel="prev" title="使用Docker的艺术">
+      <i class="fa fa-chevron-left"></i> 使用Docker的艺术
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#PyTorch%E4%B8%AD%E7%9A%84%E8%AE%A1%E7%AE%97%E5%9B%BE"><span class="nav-number">1.</span> <span class="nav-text">PyTorch中的计算图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E5%9B%BE%E4%B8%AD%E6%8F%92%E5%85%A5hooks"><span class="nav-number">2.</span> <span class="nav-text">计算图中插入hooks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tensor-Hooks"><span class="nav-number">2.1.</span> <span class="nav-text">Tensor Hooks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Node-Hooks"><span class="nav-number">2.2.</span> <span class="nav-text">Node Hooks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Forward-Hooks"><span class="nav-number">2.3.</span> <span class="nav-text">Forward Hooks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Backward-Hooks"><span class="nav-number">2.4.</span> <span class="nav-text">Backward Hooks</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%93%8D%E4%BD%9C%EF%BC%88Function%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">自定义操作（Function）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E6%97%A0%E8%AF%AF%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD%E9%94%99%E8%AF%AF%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-number">4.</span> <span class="nav-text">常见前向传播无误反向传播错误的情况</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%9C%B0%E6%93%8D%E4%BD%9C%EF%BC%88in-place-operation%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">原地操作（in-place operation）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A2%AF%E5%BA%A6%E7%B4%AF%E7%A7%AF%EF%BC%88gradient-accumulation%EF%BC%89"><span class="nav-number">4.2.</span> <span class="nav-text">梯度累积（gradient accumulation）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="delkon"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">delkon</p>
+  <div class="site-description" itemprop="description">Stay hungry, stay foolish</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fordelkon" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fordelkon" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">delkon</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">40k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:25</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
