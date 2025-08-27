@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Python on DL Kong</title>
+    <link>https://fordelkon.github.io/tags/python/</link>
+    <description>Recent content in Python on DL Kong</description>
+    <image>
+      <title>DL Kong</title>
+      <url>https://fordelkon.github.io/logo_outlined_6.png</url>
+      <link>https://fordelkon.github.io/logo_outlined_6.png</link>
+    </image>
+    <generator>Hugo -- 0.148.2</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 24 Aug 2025 23:09:00 +0900</lastBuildDate>
+    <atom:link href="https://fordelkon.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Git详解</title>
+      <link>https://fordelkon.github.io/posts/git_intro/</link>
+      <pubDate>Sun, 24 Aug 2025 23:09:00 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/git_intro/</guid>
+      <description>&lt;p&gt;这篇博客主要自底向上地介绍Git命令行，有时甚至会使用一些&lt;code&gt;python&lt;/code&gt;代码来对一些Git的功能进行更加详细的分析。我一直认为基础一旦打好，那么一些更高级的用法也可以循序渐进地了解，而且是更加透彻的了解。不是像博主一开始那样以为只要死记硬背&lt;code&gt;git add&lt;/code&gt;，&lt;code&gt;git commit&lt;/code&gt;,&lt;code&gt;git pull&lt;/code&gt;，&lt;code&gt;git clone&lt;/code&gt;等常见命令的一些用法就可以了😭（实际上网上大多数教程就是这样教的&amp;hellip;），在这上面走了不少弯路，所以从头开始打地基写作此文留以警示⚠️。&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;h2 id=&#34;git仓库git-repository&#34;&gt;Git仓库（Git Repository）&lt;/h2&gt;
+&lt;p&gt;要学习Git，首先我们要知道我们运行Git命令是对什么对象进行操作的，在Git的相关术语中，我们把这个对象叫做Git仓库（Git Repository），Git仓库实际上就是一个文件夹，在这个文件夹里我们通过.git文件夹（隐藏文件夹）对Git仓库中的工作区中的文件（非隐藏文件夹）内容的改变进行记录，当然并不是所有非隐藏文件夹中文件的改变都会被记录，被.gitingore文件所标识的文件被改变后.git文件夹不会对其进行记录。根据我上面所说，&lt;font color=&#34;#c00000&#34;&gt;Git操作最隐晦的地方就在于对于.git文件夹中内容的修改来保证对于Git仓库非隐藏文件夹中文件内容修改的记录&lt;/font&gt;。&lt;/p&gt;
+&lt;p&gt;根据上面的描述，我们可以得到一下简略的公式：&lt;/p&gt;
+&lt;div&gt;
+$$\mathrm{Git}\ \mathrm{Repository} = \mathrm{.git}\ \mathrm{folder} + \mathrm{worktree}\ \mathrm{folder}\tag{1}$$
+&lt;/div&gt;
+&lt;p&gt;更加详尽的来说以&lt;code&gt;python&lt;/code&gt;来构建Git仓库类：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;GitRepository&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;A git repository&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;worktree&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;None&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;gitdir&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;None&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__init__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;worktree&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;gitdir&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;.git&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;git文件夹内部结构探究&#34;&gt;.git文件夹内部结构探究&lt;/h2&gt;
+&lt;p&gt;前面我们已经知道了&lt;font color=&#34;#ff0000&#34;&gt;Git操作最隐晦的地方就在于对于.git文件夹中内容的修改来保证对于Git仓库非隐藏文件夹中文件内容修改的记录&lt;/font&gt;，那接下来我们就要对此进行脱贫攻坚了。由于.git是隐藏文件夹，所以我们要先对.git文件夹中的文件分布有一定的了解，&lt;code&gt;git init&lt;/code&gt;初始化后的.git文件夹中的文件分布如图1所示，此时Git仓库内除了.git文件夹之外一片荒芜。&lt;/p&gt;
+&lt;center&gt;
+  &lt;img src=&#34;./img/gitinit.png&#34; alt=&#34;图片1&#34; width=&#34;400&#34;&gt;
+&lt;/center&gt;
+&lt;center&gt;
+&lt;strong&gt;图1：运行git init之后.git文件夹的文件分布结构&lt;/strong&gt;
+&lt;/center&gt;
+&lt;p&gt;然后我们再本地Git仓库中添加可见文件，添加后的结果如图2所示。&lt;/p&gt;
+&lt;center&gt;
+  &lt;img src=&#34;./img/add.png&#34; alt=&#34;图片1&#34; width=&#34;400&#34;&gt;
+&lt;/center&gt;
+&lt;center&gt;
+&lt;strong&gt;图2：Git仓库添加文件后的文件分布&lt;/strong&gt;
+&lt;/center&gt;
+&lt;p&gt;将上述所有文件运行&lt;code&gt;git add&lt;/code&gt;之后在进行&lt;code&gt;git commit&lt;/code&gt;观察.git文件夹中的文件分布，如图3所示。可以看到相较于最初的.git文件，我们在&lt;code&gt;git add&lt;/code&gt;和&lt;code&gt;git commit&lt;/code&gt;之后文件夹中多出了&lt;code&gt;index&lt;/code&gt;文件，&lt;code&gt;log&lt;/code&gt;文件夹，&lt;code&gt;objects&lt;/code&gt;文件夹中的8个文件以及&lt;code&gt;refs/heads&lt;/code&gt;下的&lt;code&gt;main&lt;/code&gt;文件，其他的一些变化我们不做考虑。&lt;font color=&#34;#ff0000&#34;&gt;有果导因我们可以知道.git文件夹内部的这些变化中有对于Git仓库非隐藏文件夹文件修改的记录。&lt;/font&gt;&lt;/p&gt;
+&lt;center&gt;
+  &lt;img src=&#34;./img/gitaddcommit.png&#34; alt=&#34;图片1&#34; width=&#34;400&#34;&gt;
+&lt;/center&gt;
+&lt;center&gt;
+&lt;strong&gt;图3：运行git add和git commit之后.git文件夹的文件分布结构&lt;/strong&gt;
+&lt;/center&gt;
+&lt;h2 id=&#34;git对象git-object&#34;&gt;Git对象（Git Object）&lt;/h2&gt;
+&lt;p&gt;上面的变化究竟是如何实现的呢？要知道Git中的几乎一切都被存储为Git对象！也就是说我们可以通过Git对象进行操作来完成上面的变化。说了这么多，让我们来为Git对象下一个比较官方的定义：&lt;font color=&#34;#ff0000&#34;&gt;Git对象就是在 Git 仓库中的文件，它们的路径由它们的内容决定。&lt;/font&gt;&lt;/p&gt;
+&lt;p&gt;Git对象范性可以借由&lt;code&gt;python&lt;/code&gt;来实现：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;GitObject&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__init__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;deserialize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;init&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;serialize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;将对象转变为zip文件解压缩后的byte格式&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;raise&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;Exception&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Unimplemented!&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;deserialize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;data通常为zip文件解压缩后的byte格式，根据类型解码&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;raise&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;Exception&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Unimplemented!&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;init&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;pass&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# Just do nothing. This is a reasonable default!&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Git对象又细分为以下四种类型：GitBlob（Binary Large Object）对象， GitCommit对象， GitTree对象， GitTag对象，以下分别进行介绍。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
