@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Probability on DL Kong</title>
+    <link>https://fordelkon.github.io/tags/probability/</link>
+    <description>Recent content in Probability on DL Kong</description>
+    <image>
+      <title>DL Kong</title>
+      <url>https://fordelkon.github.io/logo_outlined_6.png</url>
+      <link>https://fordelkon.github.io/logo_outlined_6.png</link>
+    </image>
+    <generator>Hugo -- 0.148.2</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 24 Aug 2025 18:13:33 +0900</lastBuildDate>
+    <atom:link href="https://fordelkon.github.io/tags/probability/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>深度学习中常用的概率分布总结</title>
+      <link>https://fordelkon.github.io/teaching/probdis/</link>
+      <pubDate>Sun, 24 Aug 2025 18:13:33 +0900</pubDate>
+      <guid>https://fordelkon.github.io/teaching/probdis/</guid>
+      <description>&lt;p&gt;在深度学习中我们通常使用具有良好数学性质的概率分布对已有数据分布进行建模，以便得到优美的损失函数形式方便模型进行反向传播，同时赋予模型实际的概率含义。在该章节中我们介绍深度学习中常用的概率分布以及不同概率分布之间的距离度量方法。假设我们已有数据集&lt;code&gt;$ \mathcal{D}=\lbrace(\mathbf{x}_{i}, y_{i})\rbrace_{i=1}^{N} $&lt;/code&gt;或&lt;code&gt;$ \mathcal{D}=\lbrace\mathbf{x}_{i}\rbrace_{i=1}^{N} $&lt;/code&gt;，主要区分于有标签和无标签的情况，&lt;code&gt;$ z $&lt;/code&gt;或&lt;code&gt;$ \mathbf{z}$ &lt;/code&gt;主要表示深度学习模型未经处理的输出。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>概率视角中的深度学习</title>
+      <link>https://fordelkon.github.io/posts/prob_dl/</link>
+      <pubDate>Sat, 23 Aug 2025 10:36:33 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/prob_dl/</guid>
+      <description>&lt;p&gt;我们可以从概率的角度去探讨深度学习任务，假设我们已有数据集&lt;code&gt;$ \mathcal{D}=\lbrace(\mathbf{x}_{i}, y_{i})\rbrace_{i=1}^{N} $&lt;/code&gt;或&lt;code&gt;$ \mathcal{D}=\lbrace\mathbf{x}_{i}\rbrace_{i=1}^{N} $&lt;/code&gt;，主要区分于有标签和无标签的情况。那么我们可以将常见深度学习任务中模型要建模的概率进行如下区分&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;有监督判别：模型根据输入预测真实标签的概率分布&lt;code&gt;$ p_{\boldsymbol{\theta}}(y\mid\mathbf{x}) $&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;自监督判别：模型根据输入预测伪标签的概率分布&lt;code&gt;$ p_{\boldsymbol{\theta}}(\hat{y}\mid\mathbf{x}) $&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;有监督生成：模型根据真实标签预测与标签对应的数据集的空间分布&lt;code&gt;$ p_{\boldsymbol{\theta}}(\mathbf{x}\mid y) $&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;无监督生成：模型预测数据集的空间分布&lt;code&gt;$ p_{\boldsymbol{\theta}}(\mathbf{x}) $&lt;/code&gt;
+其中&lt;code&gt;$ \mathbf{x} $&lt;/code&gt;和&lt;code&gt;$ y $&lt;/code&gt;分别表示输入和标签的随机张量，&lt;code&gt;$ \boldsymbol{\theta} $&lt;/code&gt;表示模型中可学习的参数。从概率角度探讨深度学习任务之前，我们应当明确如下假设：&lt;font color=&#34;#c00000&#34;&gt;输入到模型的数据满足独立同分布(independent and identically distributed)&lt;/font&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;center&gt;
+  &lt;img src=&#34;./img/prob_dl_summary.png&#34; alt=&#34;图片1&#34; width=&#34;400&#34;&gt;
+&lt;/center&gt;
+&lt;center&gt;&lt;strong&gt;不同深度学习任务所学习的概率分布总结&lt;/strong&gt;&lt;/center&gt;</description>
+    </item>
+  </channel>
+</rss>

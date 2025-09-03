@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Posts on DL Kong</title>
+    <link>https://fordelkon.github.io/posts/</link>
+    <description>Recent content in Posts on DL Kong</description>
+    <image>
+      <title>DL Kong</title>
+      <url>https://fordelkon.github.io/logo_outlined_6.png</url>
+      <link>https://fordelkon.github.io/logo_outlined_6.png</link>
+    </image>
+    <generator>Hugo -- 0.148.2</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 01 Sep 2025 10:36:33 +0900</lastBuildDate>
+    <atom:link href="https://fordelkon.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>深度学习训练技巧</title>
+      <link>https://fordelkon.github.io/posts/train_trick/</link>
+      <pubDate>Mon, 01 Sep 2025 10:36:33 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/train_trick/</guid>
+      <description>&lt;p&gt;进行深度学习实践的过程中我们所需要做的不仅仅只是搭建好模型，如何通过一系列的技巧来训练出一个较为优秀的模型也是至关重要的。没有训练好的模型作为证明就算模型架构再好也无法说明提出的模型的优越性，这一篇博客主要介绍我们可以从哪些方面来优化模型的训练过程。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>使用Docker的艺术</title>
+      <link>https://fordelkon.github.io/posts/docker_intro/</link>
+      <pubDate>Mon, 25 Aug 2025 14:13:00 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/docker_intro/</guid>
+      <description>&lt;p&gt;发现了一个新的GitHub的项目，发现要使用conda库来创建新的虚拟环境装一大堆python库才能运行起来这个项目&amp;hellip;心中的激情之火已经浇灭了一大半😒；这时候又突然发现该项目支持Docker环境部署，可以直接拉取Docker镜像来运行该项目，好了，心中再次燃起激情之火😊。总之，Docker可以帮助我么省下配环境的时间，而且你拉取别人已经发布的镜像一般是别人已经在宿主机上已经跑通的镜像，那么不管你的平台是什么你也一定能跑通。下面让我们进一步看看Docker吧&amp;hellip;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>使用命令行的艺术2</title>
+      <link>https://fordelkon.github.io/posts/cmd_intro_2/</link>
+      <pubDate>Mon, 25 Aug 2025 13:50:00 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/cmd_intro_2/</guid>
+      <description>&lt;p&gt;熟练使用命令行是一种常常被忽视，或被认为难以掌握的技能，但实际上，它会提高你作为工程师的灵活性以及生产力。本文旨在了解命令行中的重定向功能和文件管理功能。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>使用命令行的艺术1</title>
+      <link>https://fordelkon.github.io/posts/cmd_intro_1/</link>
+      <pubDate>Mon, 25 Aug 2025 13:40:00 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/cmd_intro_1/</guid>
+      <description>&lt;p&gt;熟练使用命令行是一种常常被忽视，或被认为难以掌握的技能，但实际上，它会提高你作为工程师的灵活性以及生产力。本文旨在了解命令行的Shell语言的一些基础概念和有关使用命令行的Shell的一些快捷操作，额外带一些Linux系统中系统文件说明&amp;hellip;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Git详解</title>
+      <link>https://fordelkon.github.io/posts/git_intro/</link>
+      <pubDate>Sun, 24 Aug 2025 23:09:00 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/git_intro/</guid>
+      <description>&lt;p&gt;这篇博客主要自底向上地介绍Git命令行，有时甚至会使用一些&lt;code&gt;python&lt;/code&gt;代码来对一些Git的功能进行更加详细的分析。我一直认为基础一旦打好，那么一些更高级的用法也可以循序渐进地了解，而且是更加透彻的了解。不是像博主一开始那样以为只要死记硬背&lt;code&gt;git add&lt;/code&gt;，&lt;code&gt;git commit&lt;/code&gt;,&lt;code&gt;git pull&lt;/code&gt;，&lt;code&gt;git clone&lt;/code&gt;等常见命令的一些用法就可以了😭（实际上网上大多数教程就是这样教的&amp;hellip;），在这上面走了不少弯路，所以从头开始打地基写作此文留以警示⚠️。&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;h2 id=&#34;git仓库git-repository&#34;&gt;Git仓库（Git Repository）&lt;/h2&gt;
+&lt;p&gt;要学习Git，首先我们要知道我们运行Git命令是对什么对象进行操作的，在Git的相关术语中，我们把这个对象叫做Git仓库（Git Repository），Git仓库实际上就是一个文件夹，在这个文件夹里我们通过.git文件夹（隐藏文件夹）对Git仓库中的工作区中的文件（非隐藏文件夹）内容的改变进行记录，当然并不是所有非隐藏文件夹中文件的改变都会被记录，被.gitingore文件所标识的文件被改变后.git文件夹不会对其进行记录。根据我上面所说，&lt;font color=&#34;#c00000&#34;&gt;Git操作最隐晦的地方就在于对于.git文件夹中内容的修改来保证对于Git仓库非隐藏文件夹中文件内容修改的记录&lt;/font&gt;。&lt;/p&gt;
+&lt;p&gt;根据上面的描述，我们可以得到一下简略的公式：&lt;/p&gt;
+&lt;div&gt;
+$$\mathrm{Git}\ \mathrm{Repository} = \mathrm{.git}\ \mathrm{folder} + \mathrm{worktree}\ \mathrm{folder}\tag{1}$$
+&lt;/div&gt;
+&lt;p&gt;更加详尽的来说以&lt;code&gt;python&lt;/code&gt;来构建Git仓库类：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;GitRepository&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;A git repository&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;worktree&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;None&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;gitdir&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;None&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__init__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;worktree&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;gitdir&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;.git&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;git文件夹内部结构探究&#34;&gt;.git文件夹内部结构探究&lt;/h2&gt;
+&lt;p&gt;前面我们已经知道了&lt;font color=&#34;#ff0000&#34;&gt;Git操作最隐晦的地方就在于对于.git文件夹中内容的修改来保证对于Git仓库非隐藏文件夹中文件内容修改的记录&lt;/font&gt;，那接下来我们就要对此进行脱贫攻坚了。由于.git是隐藏文件夹，所以我们要先对.git文件夹中的文件分布有一定的了解，&lt;code&gt;git init&lt;/code&gt;初始化后的.git文件夹中的文件分布如图1所示，此时Git仓库内除了.git文件夹之外一片荒芜。&lt;/p&gt;
+&lt;center&gt;
+  &lt;img src=&#34;./img/gitinit.png&#34; alt=&#34;图片1&#34; width=&#34;400&#34;&gt;
+&lt;/center&gt;
+&lt;center&gt;
+&lt;strong&gt;图1：运行git init之后.git文件夹的文件分布结构&lt;/strong&gt;
+&lt;/center&gt;
+&lt;p&gt;然后我们再本地Git仓库中添加可见文件，添加后的结果如图2所示。&lt;/p&gt;
+&lt;center&gt;
+  &lt;img src=&#34;./img/add.png&#34; alt=&#34;图片1&#34; width=&#34;400&#34;&gt;
+&lt;/center&gt;
+&lt;center&gt;
+&lt;strong&gt;图2：Git仓库添加文件后的文件分布&lt;/strong&gt;
+&lt;/center&gt;
+&lt;p&gt;将上述所有文件运行&lt;code&gt;git add&lt;/code&gt;之后在进行&lt;code&gt;git commit&lt;/code&gt;观察.git文件夹中的文件分布，如图3所示。可以看到相较于最初的.git文件，我们在&lt;code&gt;git add&lt;/code&gt;和&lt;code&gt;git commit&lt;/code&gt;之后文件夹中多出了&lt;code&gt;index&lt;/code&gt;文件，&lt;code&gt;log&lt;/code&gt;文件夹，&lt;code&gt;objects&lt;/code&gt;文件夹中的8个文件以及&lt;code&gt;refs/heads&lt;/code&gt;下的&lt;code&gt;main&lt;/code&gt;文件，其他的一些变化我们不做考虑。&lt;font color=&#34;#ff0000&#34;&gt;有果导因我们可以知道.git文件夹内部的这些变化中有对于Git仓库非隐藏文件夹文件修改的记录。&lt;/font&gt;&lt;/p&gt;
+&lt;center&gt;
+  &lt;img src=&#34;./img/gitaddcommit.png&#34; alt=&#34;图片1&#34; width=&#34;400&#34;&gt;
+&lt;/center&gt;
+&lt;center&gt;
+&lt;strong&gt;图3：运行git add和git commit之后.git文件夹的文件分布结构&lt;/strong&gt;
+&lt;/center&gt;
+&lt;h2 id=&#34;git对象git-object&#34;&gt;Git对象（Git Object）&lt;/h2&gt;
+&lt;p&gt;上面的变化究竟是如何实现的呢？要知道Git中的几乎一切都被存储为Git对象！也就是说我们可以通过Git对象进行操作来完成上面的变化。说了这么多，让我们来为Git对象下一个比较官方的定义：&lt;font color=&#34;#ff0000&#34;&gt;Git对象就是在 Git 仓库中的文件，它们的路径由它们的内容决定。&lt;/font&gt;&lt;/p&gt;
+&lt;p&gt;Git对象范性可以借由&lt;code&gt;python&lt;/code&gt;来实现：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;GitObject&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__init__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;kc&#34;&gt;None&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;deserialize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;init&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;serialize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;将对象转变为zip文件解压缩后的byte格式&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;raise&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;Exception&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Unimplemented!&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;deserialize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;data通常为zip文件解压缩后的byte格式，根据类型解码&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;raise&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;Exception&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Unimplemented!&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;init&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;pass&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# Just do nothing. This is a reasonable default!&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Git对象又细分为以下四种类型：GitBlob（Binary Large Object）对象， GitCommit对象， GitTree对象， GitTag对象，以下分别进行介绍。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>使用CMake的艺术2</title>
+      <link>https://fordelkon.github.io/posts/cmake_intro_2/</link>
+      <pubDate>Sun, 24 Aug 2025 17:30:00 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/cmake_intro_2/</guid>
+      <description>&lt;p&gt;上面我们实现了CMake的一套简要搭建流程，基本上简单的编译配置就靠上面的几个CMake命令就可以完成了。但一些大型项目的cmake的配置光靠上面的几个CMake命令是远远不够的，简单来说如何导入第三方库，嗯这就属于CMake进阶的内容了&amp;hellip;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>使用CMake的艺术1</title>
+      <link>https://fordelkon.github.io/posts/cmake_intro_1/</link>
+      <pubDate>Sun, 24 Aug 2025 15:18:00 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/cmake_intro_1/</guid>
+      <description>&lt;p&gt;还在使用&lt;code&gt;vs code&lt;/code&gt;进行C++的环境的配置吗？想想对那些&lt;code&gt;.vscode&lt;/code&gt;文件夹下的一系列文件进行单独配置就感到头大😭，那么是时候来使用CMake来进行自动化编译了，妈妈再也不用担心我的一个&lt;code&gt;.cxx&lt;/code&gt;文件一个&lt;code&gt;.vscode&lt;/code&gt;文件夹了。当然CMake的作用远不止此，举例来说，为了充分利用每种编程语言的特性，许多大型项目是需要针对不同的功能辅以不同的编程语言实现，这时候就要靠CMake来定制整个编译流程了&amp;hellip;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>概率视角中的深度学习</title>
+      <link>https://fordelkon.github.io/posts/prob_dl/</link>
+      <pubDate>Sat, 23 Aug 2025 10:36:33 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/prob_dl/</guid>
+      <description>&lt;p&gt;我们可以从概率的角度去探讨深度学习任务，假设我们已有数据集&lt;code&gt;$ \mathcal{D}=\lbrace(\mathbf{x}_{i}, y_{i})\rbrace_{i=1}^{N} $&lt;/code&gt;或&lt;code&gt;$ \mathcal{D}=\lbrace\mathbf{x}_{i}\rbrace_{i=1}^{N} $&lt;/code&gt;，主要区分于有标签和无标签的情况。那么我们可以将常见深度学习任务中模型要建模的概率进行如下区分&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;有监督判别：模型根据输入预测真实标签的概率分布&lt;code&gt;$ p_{\boldsymbol{\theta}}(y\mid\mathbf{x}) $&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;自监督判别：模型根据输入预测伪标签的概率分布&lt;code&gt;$ p_{\boldsymbol{\theta}}(\hat{y}\mid\mathbf{x}) $&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;有监督生成：模型根据真实标签预测与标签对应的数据集的空间分布&lt;code&gt;$ p_{\boldsymbol{\theta}}(\mathbf{x}\mid y) $&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;无监督生成：模型预测数据集的空间分布&lt;code&gt;$ p_{\boldsymbol{\theta}}(\mathbf{x}) $&lt;/code&gt;
+其中&lt;code&gt;$ \mathbf{x} $&lt;/code&gt;和&lt;code&gt;$ y $&lt;/code&gt;分别表示输入和标签的随机张量，&lt;code&gt;$ \boldsymbol{\theta} $&lt;/code&gt;表示模型中可学习的参数。从概率角度探讨深度学习任务之前，我们应当明确如下假设：&lt;font color=&#34;#c00000&#34;&gt;输入到模型的数据满足独立同分布(independent and identically distributed)&lt;/font&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;center&gt;
+  &lt;img src=&#34;./img/prob_dl_summary.png&#34; alt=&#34;图片1&#34; width=&#34;400&#34;&gt;
+&lt;/center&gt;
+&lt;center&gt;&lt;strong&gt;不同深度学习任务所学习的概率分布总结&lt;/strong&gt;&lt;/center&gt;</description>
+    </item>
+  </channel>
+</rss>
