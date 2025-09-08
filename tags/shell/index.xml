@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Shell on DL Kong</title>
+    <link>https://fordelkon.github.io/tags/shell/</link>
+    <description>Recent content in Shell on DL Kong</description>
+    <image>
+      <title>DL Kong</title>
+      <url>https://fordelkon.github.io/logo_outlined_6.png</url>
+      <link>https://fordelkon.github.io/logo_outlined_6.png</link>
+    </image>
+    <generator>Hugo -- 0.148.2</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 25 Aug 2025 13:50:00 +0900</lastBuildDate>
+    <atom:link href="https://fordelkon.github.io/tags/shell/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用命令行的艺术2</title>
+      <link>https://fordelkon.github.io/posts/cmd_intro_2/</link>
+      <pubDate>Mon, 25 Aug 2025 13:50:00 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/cmd_intro_2/</guid>
+      <description>&lt;p&gt;熟练使用命令行是一种常常被忽视，或被认为难以掌握的技能，但实际上，它会提高你作为工程师的灵活性以及生产力。本文旨在了解命令行中的重定向功能和文件管理功能。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>使用命令行的艺术1</title>
+      <link>https://fordelkon.github.io/posts/cmd_intro_1/</link>
+      <pubDate>Mon, 25 Aug 2025 13:40:00 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/cmd_intro_1/</guid>
+      <description>&lt;p&gt;熟练使用命令行是一种常常被忽视，或被认为难以掌握的技能，但实际上，它会提高你作为工程师的灵活性以及生产力。本文旨在了解命令行的Shell语言的一些基础概念和有关使用命令行的Shell的一些快捷操作，额外带一些Linux系统中系统文件说明&amp;hellip;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

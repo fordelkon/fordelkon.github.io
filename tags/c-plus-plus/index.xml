@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>C-Plus-Plus on DL Kong</title>
+    <link>https://fordelkon.github.io/tags/c-plus-plus/</link>
+    <description>Recent content in C-Plus-Plus on DL Kong</description>
+    <image>
+      <title>DL Kong</title>
+      <url>https://fordelkon.github.io/logo_outlined_6.png</url>
+      <link>https://fordelkon.github.io/logo_outlined_6.png</link>
+    </image>
+    <generator>Hugo -- 0.148.2</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 24 Aug 2025 17:30:00 +0900</lastBuildDate>
+    <atom:link href="https://fordelkon.github.io/tags/c-plus-plus/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用CMake的艺术2</title>
+      <link>https://fordelkon.github.io/posts/cmake_intro_2/</link>
+      <pubDate>Sun, 24 Aug 2025 17:30:00 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/cmake_intro_2/</guid>
+      <description>&lt;p&gt;上面我们实现了CMake的一套简要搭建流程，基本上简单的编译配置就靠上面的几个CMake命令就可以完成了。但一些大型项目的cmake的配置光靠上面的几个CMake命令是远远不够的，简单来说如何导入第三方库，嗯这就属于CMake进阶的内容了&amp;hellip;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>使用CMake的艺术1</title>
+      <link>https://fordelkon.github.io/posts/cmake_intro_1/</link>
+      <pubDate>Sun, 24 Aug 2025 15:18:00 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/cmake_intro_1/</guid>
+      <description>&lt;p&gt;还在使用&lt;code&gt;vs code&lt;/code&gt;进行C++的环境的配置吗？想想对那些&lt;code&gt;.vscode&lt;/code&gt;文件夹下的一系列文件进行单独配置就感到头大😭，那么是时候来使用CMake来进行自动化编译了，妈妈再也不用担心我的一个&lt;code&gt;.cxx&lt;/code&gt;文件一个&lt;code&gt;.vscode&lt;/code&gt;文件夹了。当然CMake的作用远不止此，举例来说，为了充分利用每种编程语言的特性，许多大型项目是需要针对不同的功能辅以不同的编程语言实现，这时候就要靠CMake来定制整个编译流程了&amp;hellip;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

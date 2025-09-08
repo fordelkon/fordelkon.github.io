@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>DL on DL Kong</title>
+    <link>https://fordelkon.github.io/tags/dl/</link>
+    <description>Recent content in DL on DL Kong</description>
+    <image>
+      <title>DL Kong</title>
+      <url>https://fordelkon.github.io/logo_outlined_6.png</url>
+      <link>https://fordelkon.github.io/logo_outlined_6.png</link>
+    </image>
+    <generator>Hugo -- 0.148.2</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 01 Sep 2025 10:36:33 +0900</lastBuildDate>
+    <atom:link href="https://fordelkon.github.io/tags/dl/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>深度学习训练技巧</title>
+      <link>https://fordelkon.github.io/posts/train_trick/</link>
+      <pubDate>Mon, 01 Sep 2025 10:36:33 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/train_trick/</guid>
+      <description>&lt;p&gt;进行深度学习实践的过程中我们所需要做的不仅仅只是搭建好模型，如何通过一系列的技巧来训练出一个较为优秀的模型也是至关重要的。没有训练好的模型作为证明就算模型架构再好也无法说明提出的模型的优越性，这一篇博客主要介绍我们可以从哪些方面来优化模型的训练过程。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>概率视角中的深度学习</title>
+      <link>https://fordelkon.github.io/posts/prob_dl/</link>
+      <pubDate>Sat, 23 Aug 2025 10:36:33 +0900</pubDate>
+      <guid>https://fordelkon.github.io/posts/prob_dl/</guid>
+      <description>&lt;p&gt;我们可以从概率的角度去探讨深度学习任务，假设我们已有数据集&lt;code&gt;$ \mathcal{D}=\lbrace(\mathbf{x}_{i}, y_{i})\rbrace_{i=1}^{N} $&lt;/code&gt;或&lt;code&gt;$ \mathcal{D}=\lbrace\mathbf{x}_{i}\rbrace_{i=1}^{N} $&lt;/code&gt;，主要区分于有标签和无标签的情况。那么我们可以将常见深度学习任务中模型要建模的概率进行如下区分&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;有监督判别：模型根据输入预测真实标签的概率分布&lt;code&gt;$ p_{\boldsymbol{\theta}}(y\mid\mathbf{x}) $&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;自监督判别：模型根据输入预测伪标签的概率分布&lt;code&gt;$ p_{\boldsymbol{\theta}}(\hat{y}\mid\mathbf{x}) $&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;有监督生成：模型根据真实标签预测与标签对应的数据集的空间分布&lt;code&gt;$ p_{\boldsymbol{\theta}}(\mathbf{x}\mid y) $&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;无监督生成：模型预测数据集的空间分布&lt;code&gt;$ p_{\boldsymbol{\theta}}(\mathbf{x}) $&lt;/code&gt;
+其中&lt;code&gt;$ \mathbf{x} $&lt;/code&gt;和&lt;code&gt;$ y $&lt;/code&gt;分别表示输入和标签的随机张量，&lt;code&gt;$ \boldsymbol{\theta} $&lt;/code&gt;表示模型中可学习的参数。从概率角度探讨深度学习任务之前，我们应当明确如下假设：&lt;font color=&#34;#c00000&#34;&gt;输入到模型的数据满足独立同分布(independent and identically distributed)&lt;/font&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;center&gt;
+  &lt;img src=&#34;./img/prob_dl_summary.png&#34; alt=&#34;图片1&#34; width=&#34;400&#34;&gt;
+&lt;/center&gt;
+&lt;center&gt;&lt;strong&gt;不同深度学习任务所学习的概率分布总结&lt;/strong&gt;&lt;/center&gt;</description>
+    </item>
+  </channel>
+</rss>
